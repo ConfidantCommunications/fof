@@ -59,7 +59,7 @@ interface FilesystemInterface
      *
      * @return  string  A cleaned version of the path or exit on error.
      *
-     * @throws  Exception
+     * @throws  \Exception
      */
     public function pathCheck($path);
 
@@ -71,7 +71,7 @@ interface FilesystemInterface
      *
      * @return  string  The cleaned path.
      *
-     * @throws  UnexpectedValueException
+     * @throws  \UnexpectedValueException
      */
     public function pathClean($path, $ds = DIRECTORY_SEPARATOR);
 

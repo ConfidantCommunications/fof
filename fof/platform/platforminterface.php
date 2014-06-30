@@ -8,12 +8,14 @@
 
 namespace FOF30\Platform;
 
+use FOF30\Input\Input as FOFInput;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
 /**
- * Part of the F0F Platform Abstraction Layer. It implements everything that
- * depends on the platform F0F is running under, e.g. the Joomla! CMS front-end,
+ * Part of the FOF Platform Abstraction Layer. It implements everything that
+ * depends on the platform FOF is running under, e.g. the Joomla! CMS front-end,
  * the Joomla! CMS back-end, a CLI Joomla! Platform app, a bespoke Joomla!
  * Platform / Framework web application and so on.
  *
@@ -89,7 +91,7 @@ interface PlatformInterface
 	 * Is this platform enabled? This is used for automatic platform detection.
 	 * If the environment we're currently running in doesn't seem to be your
 	 * platform return false. If many classes return true, the one with the
-	 * lowest order will be picked by F0FPlatform.
+	 * lowest order will be picked by FOF Platform.
 	 *
 	 * @return  boolean
 	 */
@@ -99,7 +101,7 @@ interface PlatformInterface
 	 * Returns the (internal) name of the platform implementation, e.g.
 	 * "joomla", "foobar123" etc. This MUST be the last part of the platform
 	 * class name. For example, if you have a plaform implementation class
-	 * F0FPlatformFoobar you MUST return "foobar" (all lowercase).
+	 * FOF30\Platform\Foobar you MUST return "foobar" (all lowercase).
 	 *
 	 * @return  string
 	 *
@@ -230,7 +232,7 @@ interface PlatformInterface
 	public function loadTranslations($component);
 
 	/**
-	 * By default F0F will only use the Controller's onBefore* methods to
+	 * By default FOF will only use the Controller's onBefore* methods to
 	 * perform user authorisation. In some cases, like the Joomla! back-end,
 	 * you alos need to perform component-wide user authorisation in the
 	 * Dispatcher. This method MUST implement this authorisation check. If you
@@ -251,7 +253,7 @@ interface PlatformInterface
 	 *
 	 * @param   string    $key           The user state key for the variable
 	 * @param   string    $request       The request variable name for the variable
-	 * @param   F0FInput  $input         The F0FInput object with the request (input) data
+	 * @param   FOFInput  $input         The FOFInput object with the request (input) data
 	 * @param   mixed     $default       The default value. Default: null
 	 * @param   string    $type          The filter type for the variable data. Default: none (no filtering)
 	 * @param   boolean   $setUserState  Should I set the user state with the fetched value?
@@ -282,10 +284,10 @@ interface PlatformInterface
 	public function runPlugins($event, $data);
 
 	/**
-	 * Perform an ACL check. Please note that F0F uses by default the Joomla!
+	 * Perform an ACL check. Please note that FOF uses by default the Joomla!
 	 * CMS convention for ACL privileges, e.g core.edit for the edit privilege.
 	 * If your platform uses different conventions you'll have to override the
-	 * F0F defaults using fof.xml or by specialising the controller.
+	 * FOF defaults using fof.xml or by specialising the controller.
 	 *
 	 * @param   string  $action     The ACL privilege to check, e.g. core.edit
 	 * @param   string  $assetname  The asset name to check, typically the component's name
@@ -306,9 +308,9 @@ interface PlatformInterface
 
 	/**
 	 * Returns the JDocument object which handles this component's response. You
-	 * may also return null and F0F will a. try to figure out the output type by
+	 * may also return null and FOF will a. try to figure out the output type by
 	 * examining the "format" input parameter (or fall back to "html") and b.
-	 * F0F will not attempt to load CSS and Javascript files (as it doesn't make
+	 * FOF will not attempt to load CSS and Javascript files (as it doesn't make
 	 * sense if there's no JDocument to handle them).
 	 *
 	 * @return  JDocument
@@ -367,7 +369,7 @@ interface PlatformInterface
 	 * @param   string  $version2  Second version number
 	 * @param   string  $operator  Operator (see version_compare for valid operators)
 	 *
-     * @deprecated Use PHP's version_compare against JVERSION in your code. This method is scheduled for removal in F0F 3.0
+     * @deprecated Use PHP's version_compare against JVERSION in your code. This method is scheduled for removal in FOF 3.0
      *
 	 * @return  boolean
 	 */
@@ -375,7 +377,7 @@ interface PlatformInterface
 
 	/**
 	 * Saves something to the cache. This is supposed to be used for system-wide
-	 * F0F data, not application data.
+	 * FOF data, not application data.
 	 *
 	 * @param   string  $key      The key of the data to save
 	 * @param   string  $content  The actual data to save
@@ -386,7 +388,7 @@ interface PlatformInterface
 
 	/**
 	 * Retrieves data from the cache. This is supposed to be used for system-side
-	 * F0F data, not application data.
+	 * FOF data, not application data.
 	 *
 	 * @param   string  $key      The key of the data to retrieve
 	 * @param   string  $default  The default value to return if the key is not found or the cache is not populated
@@ -396,10 +398,10 @@ interface PlatformInterface
 	public function getCache($key, $default = null);
 
 	/**
-	 * Clears the cache of system-wide F0F data. You are supposed to call this in
+	 * Clears the cache of system-wide FOF data. You are supposed to call this in
 	 * your components' installation script post-installation and post-upgrade
 	 * methods or whenever you are modifying the structure of database tables
-	 * accessed by F0F. Please note that F0F's cache never expires and is not
+	 * accessed by FOF. Please note that FOF's cache never expires and is not
 	 * purged by Joomla!. You MUST use this method to manually purge the cache.
 	 *
 	 * @return  boolean  True on success
@@ -414,11 +416,11 @@ interface PlatformInterface
     public function getConfig();
 
 	/**
-	 * Is the global F0F cache enabled?
+	 * Is the global FOF cache enabled?
 	 *
 	 * @return  boolean
 	 */
-	public function isGlobalF0FCacheEnabled();
+	public function isGlobalFOFCacheEnabled();
 
 	/**
 	 * logs in a user

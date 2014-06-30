@@ -8,10 +8,15 @@
 
 namespace FOF30\Integration\Joomla\Filesystem;
 
+use FOF30\Platform\Filesystem\Filesystem as FOFPlatformFilesystem;
+use FOF30\Platform\Filesystem\FilesystemInterface as FOFPlatformFilesystemInterface;
+
+use JLoader, JFile, JFolder, JPath;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
-class Filesystem extends F0FPlatformFilesystem implements F0FPlatformFilesystemInterface
+class Filesystem extends FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
 {
 	public function __construct()
 	{
@@ -84,7 +89,7 @@ class Filesystem extends F0FPlatformFilesystem implements F0FPlatformFilesystemI
 	 *
 	 * @return  string  A cleaned version of the path or exit on error.
 	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
     public function pathCheck($path)
     {
@@ -99,7 +104,7 @@ class Filesystem extends F0FPlatformFilesystem implements F0FPlatformFilesystemI
 	 *
 	 * @return  string  The cleaned path.
 	 *
-	 * @throws  UnexpectedValueException
+	 * @throws  \UnexpectedValueException
 	 */
     public function pathClean($path, $ds = DIRECTORY_SEPARATOR)
     {

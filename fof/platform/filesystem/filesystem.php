@@ -54,7 +54,7 @@ abstract class Filesystem implements FilesystemInterface
 
             $return[] = array(
                 'fullpath'  => $file,
-                'classname' => 'F0FPlatform'.ucfirst($parts[0]).ucfirst(basename($parts[1], '.php'))
+                'classname' => '\\FOF30\\Platform\\'.ucfirst($parts[0]).ucfirst(basename($parts[1], '.php'))
             );
         }
 

@@ -425,7 +425,7 @@ class Table extends F0FUtilsObject implements JTableInterface
 			// Can we use the F0F cache?
 			if (!array_key_exists('use_table_cache', $config))
 			{
-				$config['use_table_cache'] = F0FPlatform::getInstance()->isGlobalF0FCacheEnabled();
+				$config['use_table_cache'] = F0FPlatform::getInstance()->isGlobalFOFCacheEnabled();
 			}
 
 			$alt_use_table_cache = $configProvider->get($configProviderKey . 'use_table_cache', null);
@@ -527,7 +527,7 @@ class Table extends F0FUtilsObject implements JTableInterface
 		// Make sure the use F0F cache information is in the config
 		if (!array_key_exists('use_table_cache', $config))
 		{
-			$config['use_table_cache'] = F0FPlatform::getInstance()->isGlobalF0FCacheEnabled();
+			$config['use_table_cache'] = F0FPlatform::getInstance()->isGlobalFOFCacheEnabled();
 		}
 		$this->config   = $config;
 

@@ -8,12 +8,16 @@
 
 namespace FOF30\Platform;
 
+use FOF30\Input\Input as FOFInput;
+
+use JDocument, JError;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
 /**
- * Part of the F0F Platform Abstraction Layer. It implements everything that
- * depends on the platform F0F is running under, e.g. the Joomla! CMS front-end,
+ * Part of the FOF Platform Abstraction Layer. It implements everything that
+ * depends on the platform FOF is running under, e.g. the Joomla! CMS front-end,
  * the Joomla! CMS back-end, a CLI Joomla! Platform app, a bespoke Joomla!
  * Platform / Framework web application and so on.
  *
@@ -38,7 +42,7 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * The internal name of this platform implementation. It must match the
 	 * last part of the platform class name and be in all lowercase letters,
-	 * e.g. "foobar" for F0FPlatformFoobar
+	 * e.g. "foobar" for FOF30\Platform\Foobar
 	 *
 	 * @var  string
 	 *
@@ -90,7 +94,7 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * The platform class instance which will be returned by getInstance
 	 *
-	 * @var  F0FPlatformInterface
+	 * @var  PlatformInterface
 	 */
 	protected static $instance = null;
 
@@ -136,13 +140,13 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Force a specific platform object to be used. If null, nukes the cache
 	 *
-	 * @param   F0FPlatformInterface|null  $instance  The Platform object to be used
+	 * @param   PlatformInterface|null  $instance  The Platform object to be used
 	 *
 	 * @return  void
 	 */
 	public static function forceInstance($instance)
 	{
-		if ($instance instanceof F0FPlatformInterface || is_null($instance))
+		if ($instance instanceof PlatformInterface || is_null($instance))
 		{
 			self::$instance = $instance;
 		}
@@ -151,7 +155,7 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Find and return the most relevant platform object
 	 *
-	 * @return  F0FPlatformInterface
+	 * @return  PlatformInterface
 	 */
 	public static function getInstance()
 	{
@@ -175,9 +179,10 @@ abstract class Platform implements PlatformInterface
 					continue;
 				}
 
-				$di = new DirectoryIterator($path);
+				$di = new \DirectoryIterator($path);
 				$temp = array();
 
+				/** @var \DirectoryIterator $fileSpec */
 				foreach ($di as $fileSpec)
 				{
 					if (!$fileSpec->isDir())
@@ -200,7 +205,7 @@ abstract class Platform implements PlatformInterface
 					}
 
 					$temp[] = array(
-						'classname'		=> 'F0FIntegration' . ucfirst($fileName) . 'Platform',
+						'classname'		=> '\\FOF30\\Integration\\' . ucfirst($fileName) . 'Platform',
 						'fullpath'		=> $path . '/' . $fileName . '/platform.php',
 					);
 				}
@@ -227,13 +232,14 @@ abstract class Platform implements PlatformInterface
 					continue;
 				}
 
-				// If it doesn't implement F0FPlatformInterface, skip it
-				if (!class_implements($class_name, 'F0FPlatformInterface'))
+				// If it doesn't implement PlatformInterface, skip it
+				if (!class_implements($class_name, '\\FOF30\\Platform\\PlatformInterface'))
 				{
 					continue;
 				}
 
 				// Get an object of this platform
+				/** @var PlatformInterface $o */
 				$o = new $class_name;
 
 				// If it's not enabled, skip it
@@ -270,7 +276,7 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Returns the ordering of the platform class.
 	 *
-	 * @see F0FPlatformInterface::getOrdering()
+	 * @see PlatformInterface::getOrdering()
 	 *
 	 * @return  integer
 	 */
@@ -282,7 +288,7 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Is this platform enabled?
 	 *
-	 * @see F0FPlatformInterface::isEnabled()
+	 * @see PlatformInterface::isEnabled()
 	 *
 	 * @return  boolean
 	 */
@@ -320,7 +326,7 @@ abstract class Platform implements PlatformInterface
 		if (!$hasObject)
 		{
 			// Instantiate a new platform integration object
-			$className = 'F0FIntegration' . ucfirst($this->getPlatformName()) . ucfirst($key);
+			$className = '\\FOF30\\Integration\\' . ucfirst($this->getPlatformName()) . ucfirst($key);
 			$this->objectCache[$key] = new $className;
 		}
 
@@ -369,7 +375,7 @@ abstract class Platform implements PlatformInterface
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
 	 *
-	 * @see F0FPlatformInterface::getComponentBaseDirs()
+	 * @see PlatformInterface::getComponentBaseDirs()
 	 *
 	 * @return  array  A hash array with keys main, alt, site and admin.
 	 */
@@ -397,7 +403,7 @@ abstract class Platform implements PlatformInterface
 	 *                               the 'default' layout if the specified layout
 	 *                               is not found.
 	 *
-	 * @see F0FPlatformInterface::getViewTemplateDirs()
+	 * @see PlatformInterface::getViewTemplateDirs()
 	 *
 	 * @return  array
 	 */
@@ -439,7 +445,7 @@ abstract class Platform implements PlatformInterface
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
 	 *
-	 * @see F0FPlatformInterface::loadTranslations()
+	 * @see PlatformInterface::loadTranslations()
 	 *
 	 * @return  void
 	 */
@@ -453,7 +459,7 @@ abstract class Platform implements PlatformInterface
 	 *
 	 * @param   string  $component  The name of the component.
 	 *
-	 * @see F0FPlatformInterface::authorizeAdmin()
+	 * @see PlatformInterface::authorizeAdmin()
 	 *
 	 * @return  boolean  True to allow loading the component, false to halt loading
 	 */
@@ -467,7 +473,7 @@ abstract class Platform implements PlatformInterface
 	 *
 	 * @param   integer  $id  The ID of the user to fetch
 	 *
-	 * @see F0FPlatformInterface::getUser()
+	 * @see PlatformInterface::getUser()
 	 *
 	 * @return  JDocument
 	 */
@@ -479,7 +485,7 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Returns the JDocument object which handles this component's response.
 	 *
-	 * @see F0FPlatformInterface::getDocument()
+	 * @see PlatformInterface::getDocument()
 	 *
 	 * @return  JDocument
 	 */
@@ -493,12 +499,12 @@ abstract class Platform implements PlatformInterface
 	 *
 	 * @param   string    $key           The user state key for the variable
 	 * @param   string    $request       The request variable name for the variable
-	 * @param   F0FInput  $input         The F0FInput object with the request (input) data
+	 * @param   FOFInput  $input         The FOFInput object with the request (input) data
 	 * @param   mixed     $default       The default value. Default: null
 	 * @param   string    $type          The filter type for the variable data. Default: none (no filtering)
 	 * @param   boolean   $setUserState  Should I set the user state with the fetched value?
 	 *
-	 * @see F0FPlatformInterface::getUserStateFromRequest()
+	 * @see PlatformInterface::getUserStateFromRequest()
 	 *
 	 * @return  mixed  The value of the variable
 	 */
@@ -513,7 +519,7 @@ abstract class Platform implements PlatformInterface
 	 *
 	 * @param   string  $type  The type of the plugins to be loaded
 	 *
-	 * @see F0FPlatformInterface::importPlugin()
+	 * @see PlatformInterface::importPlugin()
 	 *
 	 * @return void
 	 */
@@ -528,7 +534,7 @@ abstract class Platform implements PlatformInterface
 	 * @param   string  $event  The event (trigger) name, e.g. onBeforeScratchMyEar
 	 * @param   array   $data   A hash array of data sent to the plugins as part of the trigger
 	 *
-	 * @see F0FPlatformInterface::runPlugins()
+	 * @see PlatformInterface::runPlugins()
 	 *
 	 * @return  array  A simple array containing the results of the plugins triggered
 	 */
@@ -543,7 +549,7 @@ abstract class Platform implements PlatformInterface
 	 * @param   string  $action     The ACL privilege to check, e.g. core.edit
 	 * @param   string  $assetname  The asset name to check, typically the component's name
 	 *
-	 * @see F0FPlatformInterface::authorise()
+	 * @see PlatformInterface::authorise()
 	 *
 	 * @return  boolean  True if the user is allowed this action
 	 */
@@ -555,7 +561,7 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Is this the administrative section of the component?
 	 *
-	 * @see F0FPlatformInterface::isBackend()
+	 * @see PlatformInterface::isBackend()
 	 *
 	 * @return  boolean
 	 */
@@ -567,7 +573,7 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Is this the public section of the component?
 	 *
-	 * @see F0FPlatformInterface::isFrontend()
+	 * @see PlatformInterface::isFrontend()
 	 *
 	 * @return  boolean
 	 */
@@ -579,7 +585,7 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Is this a component running in a CLI application?
 	 *
-	 * @see F0FPlatformInterface::isCli()
+	 * @see PlatformInterface::isCli()
 	 *
 	 * @return  boolean
 	 */
@@ -592,7 +598,7 @@ abstract class Platform implements PlatformInterface
 	 * Is AJAX re-ordering supported? This is 100% Joomla!-CMS specific. All
 	 * other platforms should return false and never ask why.
 	 *
-	 * @see F0FPlatformInterface::supportsAjaxOrdering()
+	 * @see PlatformInterface::supportsAjaxOrdering()
 	 *
 	 * @return  boolean
 	 */
@@ -618,7 +624,7 @@ abstract class Platform implements PlatformInterface
 
 	/**
 	 * Saves something to the cache. This is supposed to be used for system-wide
-	 * F0F data, not application data.
+	 * FOF data, not application data.
 	 *
 	 * @param   string  $key      The key of the data to save
 	 * @param   string  $content  The actual data to save
@@ -632,7 +638,7 @@ abstract class Platform implements PlatformInterface
 
 	/**
 	 * Retrieves data from the cache. This is supposed to be used for system-side
-	 * F0F data, not application data.
+	 * FOF data, not application data.
 	 *
 	 * @param   string  $key      The key of the data to retrieve
 	 * @param   string  $default  The default value to return if the key is not found or the cache is not populated
@@ -645,20 +651,20 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * Is the global F0F cache enabled?
+	 * Is the global FOF cache enabled?
 	 *
 	 * @return  boolean
 	 */
-	public function isGlobalF0FCacheEnabled()
+	public function isGlobalFOFCacheEnabled()
 	{
 		return true;
 	}
 
 	/**
-	 * Clears the cache of system-wide F0F data. You are supposed to call this in
+	 * Clears the cache of system-wide FOF data. You are supposed to call this in
 	 * your components' installation script post-installation and post-upgrade
 	 * methods or whenever you are modifying the structure of database tables
-	 * accessed by F0F. Please note that F0F's cache never expires and is not
+	 * accessed by FOF. Please note that FOF's cache never expires and is not
 	 * purged by Joomla!. You MUST use this method to manually purge the cache.
 	 *
 	 * @return  boolean  True on success
@@ -694,7 +700,7 @@ abstract class Platform implements PlatformInterface
 	 * Logs a deprecated practice. In Joomla! this results in the $message being output in the
 	 * deprecated log file, found in your site's log directory.
 	 *
-	 * @param   $message  The deprecated practice log message
+	 * @param   string $message  The deprecated practice log message
 	 *
 	 * @return  void
 	 */
@@ -707,7 +713,7 @@ abstract class Platform implements PlatformInterface
 	 * Returns the (internal) name of the platform implementation, e.g.
 	 * "joomla", "foobar123" etc. This MUST be the last part of the platform
 	 * class name. For example, if you have a plaform implementation class
-	 * F0FPlatformFoobar you MUST return "foobar" (all lowercase).
+	 * FOF30\Platform\Foobar you MUST return "foobar" (all lowercase).
 	 *
 	 * @return  string
 	 *

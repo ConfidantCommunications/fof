@@ -8,18 +8,26 @@
 
 namespace FOF30\Integration\Joomla;
 
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Platform\PlatformInterface as FOFPlatformInterface;
+use FOF30\Inflector\Inflector as FOFInflector;
+use FOF30\Input\Input as FOFInput;
+
+use JFactory, JLoader, JUri, JRegistry, JError, JException, JApplicationCli, JUser, JDocument, JPluginHelper;
+use JEventDispatcher, JDispatcher, JAuthentication, JUserHelper, JLog, JResponse, JVersion, JDate;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
 /**
- * Part of the F0F Platform Abstraction Layer.
+ * Part of the FOF Platform Abstraction Layer.
  *
  * This implements the platform class for Joomla! 2.5 or later
  *
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Platform extends F0FPlatform implements F0FPlatformInterface
+class Platform extends FOFPlatform implements FOFPlatformInterface
 {
 	/**
 	 * The table and table field cache object, used to speed up database access
@@ -41,7 +49,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
     /**
      * Checks if the current script is run inside a valid CMS execution
      *
-     * @see F0FPlatformInterface::checkExecution()
+     * @see FOFPlatformInterface::checkExecution()
      *
      * @return bool
      */
@@ -54,7 +62,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
     {
         if (version_compare($this->version, '3.0', 'ge'))
         {
-            throw new Exception($message, $code);
+            throw new \Exception($message, $code);
         }
         else
         {
@@ -65,7 +73,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	/**
 	 * Is this platform enabled?
 	 *
-	 * @see F0FPlatformInterface::isEnabled()
+	 * @see FOFPlatformInterface::isEnabled()
 	 *
 	 * @return  boolean
 	 */
@@ -140,7 +148,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 					$isCLI = $app instanceof JException || $app instanceof JApplicationCli;
 				}
 			}
-			catch (Exception $e)
+			catch (\Exception $e)
 			{
 				$isCLI = true;
 			}
@@ -161,7 +169,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
     /**
      * Returns absolute path to directories used by the CMS.
      *
-     * @see F0FPlatformInterface::getPlatformBaseDirs()
+     * @see FOFPlatformInterface::getPlatformBaseDirs()
      *
      * @return  array  A hash array with keys root, public, admin, tmp and log.
      */
@@ -182,7 +190,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
 	 *
-	 * @see F0FPlatformInterface::getComponentBaseDirs()
+	 * @see FOFPlatformInterface::getComponentBaseDirs()
 	 *
 	 * @return  array  A hash array with keys main, alt, site and admin.
 	 */
@@ -220,7 +228,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	 *                               Otherwise we'll fall back to the 'default' layout if the
 	 *                               specified layout is not found.
 	 *
-	 * @see F0FPlatformInterface::getViewTemplateDirs()
+	 * @see FOFPlatformInterface::getViewTemplateDirs()
 	 *
 	 * @return  array
 	 */
@@ -232,7 +240,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 		$basePath .= $component . '/';
 		$altBasePath = $basePath;
 		$basePath .= $view . '/';
-		$altBasePath .= (F0FInflector::isSingular($view) ? F0FInflector::pluralize($view) : F0FInflector::singularize($view)) . '/';
+		$altBasePath .= (FOFInflector::isSingular($view) ? FOFInflector::pluralize($view) : FOFInflector::singularize($view)) . '/';
 
 		if ($strict)
 		{
@@ -330,7 +338,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
 	 *
-	 * @see F0FPlatformInterface::loadTranslations()
+	 * @see FOFPlatformInterface::loadTranslations()
 	 *
 	 * @return  void
 	 */
@@ -357,7 +365,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	 *
 	 * @param   string  $component  The name of the component.
 	 *
-	 * @see F0FPlatformInterface::authorizeAdmin()
+	 * @see FOFPlatformInterface::authorizeAdmin()
 	 *
 	 * @return  boolean  True to allow loading the component, false to halt loading
 	 */
@@ -384,7 +392,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	 * @param   integer  $id  The user ID to load. Skip or use null to retrieve
 	 *                        the object for the currently logged in user.
 	 *
-	 * @see F0FPlatformInterface::getUser()
+	 * @see FOFPlatformInterface::getUser()
 	 *
 	 * @return  JUser  The JUser object for the specified user
 	 */
@@ -396,7 +404,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	/**
 	 * Returns the JDocument object which handles this component's response.
 	 *
-	 * @see F0FPlatformInterface::getDocument()
+	 * @see FOFPlatformInterface::getDocument()
 	 *
 	 * @return  JDocument
 	 */
@@ -410,7 +418,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 			{
 				$document = JFactory::getDocument();
 			}
-			catch (Exception $exc)
+			catch (\Exception $exc)
 			{
 				$document = null;
 			}
@@ -455,12 +463,12 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	 *
 	 * @param   string    $key           The user state key for the variable
 	 * @param   string    $request       The request variable name for the variable
-	 * @param   F0FInput  $input         The F0FInput object with the request (input) data
+	 * @param   FOFInput  $input         The FOFInput object with the request (input) data
 	 * @param   mixed     $default       The default value. Default: null
 	 * @param   string    $type          The filter type for the variable data. Default: none (no filtering)
 	 * @param   boolean   $setUserState  Should I set the user state with the fetched value?
 	 *
-	 * @see F0FPlatformInterface::getUserStateFromRequest()
+	 * @see FOFPlatformInterface::getUserStateFromRequest()
 	 *
 	 * @return  mixed  The value of the variable
 	 */
@@ -513,7 +521,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	 *
 	 * @param   string  $type  The type of the plugins to be loaded
 	 *
-	 * @see F0FPlatformInterface::importPlugin()
+	 * @see FOFPlatformInterface::importPlugin()
 	 *
 	 * @return void
 	 */
@@ -533,7 +541,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	 * @param   string  $event  The event (trigger) name, e.g. onBeforeScratchMyEar
 	 * @param   array   $data   A hash array of data sent to the plugins as part of the trigger
 	 *
-	 * @see F0FPlatformInterface::runPlugins()
+	 * @see FOFPlatformInterface::runPlugins()
 	 *
 	 * @return  array  A simple array containing the results of the plugins triggered
 	 */
@@ -566,7 +574,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	 * @param   string  $action     The ACL privilege to check, e.g. core.edit
 	 * @param   string  $assetname  The asset name to check, typically the component's name
 	 *
-	 * @see F0FPlatformInterface::authorise()
+	 * @see FOFPlatformInterface::authorise()
 	 *
 	 * @return  boolean  True if the user is allowed this action
 	 */
@@ -583,7 +591,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	/**
 	 * Is this the administrative section of the component?
 	 *
-	 * @see F0FPlatformInterface::isBackend()
+	 * @see FOFPlatformInterface::isBackend()
 	 *
 	 * @return  boolean
 	 */
@@ -597,7 +605,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	/**
 	 * Is this the public section of the component?
 	 *
-	 * @see F0FPlatformInterface::isFrontend()
+	 * @see FOFPlatformInterface::isFrontend()
 	 *
 	 * @return  boolean
 	 */
@@ -611,7 +619,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	/**
 	 * Is this a component running in a CLI application?
 	 *
-	 * @see F0FPlatformInterface::isCli()
+	 * @see FOFPlatformInterface::isCli()
 	 *
 	 * @return  boolean
 	 */
@@ -626,7 +634,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	 * Is AJAX re-ordering supported? This is 100% Joomla!-CMS specific. All
 	 * other platforms should return false and never ask why.
 	 *
-	 * @see F0FPlatformInterface::supportsAjaxOrdering()
+	 * @see FOFPlatformInterface::supportsAjaxOrdering()
 	 *
 	 * @return  boolean
 	 */
@@ -636,18 +644,18 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	}
 
 	/**
-	 * Is the global F0F cache enabled?
+	 * Is the global FOF cache enabled?
 	 *
 	 * @return  boolean
 	 */
-	public function isGlobalF0FCacheEnabled()
+	public function isGlobalFOFCacheEnabled()
 	{
 		return !(defined('JDEBUG') && JDEBUG);
 	}
 
 	/**
 	 * Saves something to the cache. This is supposed to be used for system-wide
-	 * F0F data, not application data.
+	 * FOF data, not application data.
 	 *
 	 * @param   string  $key      The key of the data to save
 	 * @param   string  $content  The actual data to save
@@ -665,7 +673,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 
 	/**
 	 * Retrieves data from the cache. This is supposed to be used for system-side
-	 * F0F data, not application data.
+	 * FOF data, not application data.
 	 *
 	 * @param   string  $key      The key of the data to retrieve
 	 * @param   string  $default  The default value to return if the key is not found or the cache is not populated
@@ -700,7 +708,7 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 			$cache = JFactory::getCache('fof', '');
 			$data = $cache->get('cache', 'fof');
 
-			// If data is not found, fall back to the legacy (F0F 2.1.rc3 and earlier) method
+			// If data is not found, fall back to the legacy (FOF 2.1.rc3 and earlier) method
 			if ($data === false)
 			{
 				// Find the path to the file
@@ -716,16 +724,13 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 
 					$filesystem->fileDelete($filename);
 
-					$className = 'F0FCacheStorage';
+					$className = 'FOFCacheStorage';
 
 					if (class_exists($className))
 					{
 						$object = new $className;
 						$this->_cache->loadObject($object);
 
-						$options = array(
-							'class' => 'F0FCacheStorage'
-						);
 						$cache->store($this->_cache, 'cache', 'fof');
 					}
 				}
@@ -754,10 +759,10 @@ class Platform extends F0FPlatform implements F0FPlatformInterface
 	}
 
 	/**
-	 * Clears the cache of system-wide F0F data. You are supposed to call this in
+	 * Clears the cache of system-wide FOF data. You are supposed to call this in
 	 * your components' installation script post-installation and post-upgrade
 	 * methods or whenever you are modifying the structure of database tables
-	 * accessed by F0F. Please note that F0F's cache never expires and is not
+	 * accessed by FOF. Please note that FOF's cache never expires and is not
 	 * purged by Joomla!. You MUST use this method to manually purge the cache.
 	 *
 	 * @return  boolean  True on success
