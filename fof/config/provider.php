@@ -8,11 +8,13 @@
 
 namespace FOF30\Config;
 
+use FOF30\Platform\Platform as FOFPlatform;
+
 defined('FOF_INCLUDED') or die();
 
 /**
- * Reads and parses the fof.xml file in the back-end of a F0F-powered component,
- * provisioning the data to the rest of the F0F framework
+ * Reads and parses the fof.xml file in the back-end of a FOF-powered component,
+ * provisioning the data to the rest of the FOF framework
  *
  * @package  FrameworkOnFramework
  * @since    2.1
@@ -20,7 +22,7 @@ defined('FOF_INCLUDED') or die();
 class Provider
 {
 	/**
-	 * Cache of F0F components' configuration variables
+	 * Cache of FOF components' configuration variables
 	 *
 	 * @var array
 	 */
@@ -41,11 +43,11 @@ class Provider
 			return;
 		}
 
-		if (\F0FPlatform::getInstance()->isCli())
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			$order = array('cli', 'backend');
 		}
-		elseif (\F0FPlatform::getInstance()->isBackend())
+		elseif (FOFPlatform::getInstance()->isBackend())
 		{
 			$order = array('backend');
 		}
@@ -97,7 +99,7 @@ class Provider
 			return $default;
 		}
 
-		$class = 'F0FConfigDomain' . ucfirst($domain);
+		$class = '\\FOF30\\Config\\Domain\\' . ucfirst($domain);
 		$o = new $class;
 
 		return $o->get(self::$configurations[$component], $var, $default);
@@ -117,8 +119,8 @@ class Provider
 		$ret = array();
 
 		// Get the folders of the component
-		$componentPaths = \F0FPlatform::getInstance()->getComponentBaseDirs($component);
-        $filesystem     = \F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
+        $filesystem     = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		// Check that the path exists
 		$path = $componentPaths['admin'];
@@ -187,7 +189,7 @@ class Provider
 
 		if (empty($domains))
 		{
-			$filesystem = \F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+			$filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 			$files = $filesystem->folderFiles(__DIR__ . '/domain', '.php');
 
