@@ -7,7 +7,7 @@
  */
 
 // Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
+defined('FOF_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework model behavior class

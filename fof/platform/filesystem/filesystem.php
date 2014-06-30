@@ -6,7 +6,7 @@
 * @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
 // Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
+defined('FOF_INCLUDED') or die;
 
 abstract class F0FPlatformFilesystem implements F0FPlatformFilesystemInterface
 {

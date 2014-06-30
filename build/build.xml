@@ -128,7 +128,7 @@
 		</copy>
 
 		<!-- Create the package -->
-		<zipme basedir="${dirs.library}" prefix="fof/" destfile="${dirs.release}/lib_fof-${version}.zip" includeemptydirs="true">
+		<zipme basedir="${dirs.library}" prefix="fof/fof30" destfile="${dirs.release}/lib_fof-${version}.zip" includeemptydirs="true">
 			<fileset dir="${dirs.library}" id="library">
 				<include name="**" />
 			</fileset>

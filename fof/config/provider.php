@@ -6,7 +6,9 @@
  *  @license     GNU General Public License version 2, or later
  */
 
-defined('F0F_INCLUDED') or die();
+namespace FOF30\Config;
+
+defined('FOF_INCLUDED') or die();
 
 /**
  * Reads and parses the fof.xml file in the back-end of a F0F-powered component,
@@ -15,7 +17,7 @@ defined('F0F_INCLUDED') or die();
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class F0FConfigProvider
+class Provider
 {
 	/**
 	 * Cache of F0F components' configuration variables
@@ -39,11 +41,11 @@ class F0FConfigProvider
 			return;
 		}
 
-		if (F0FPlatform::getInstance()->isCli())
+		if (\F0FPlatform::getInstance()->isCli())
 		{
 			$order = array('cli', 'backend');
 		}
-		elseif (F0FPlatform::getInstance()->isBackend())
+		elseif (\F0FPlatform::getInstance()->isBackend())
 		{
 			$order = array('backend');
 		}
@@ -115,8 +117,8 @@ class F0FConfigProvider
 		$ret = array();
 
 		// Get the folders of the component
-		$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($component);
-        $filesystem     = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+		$componentPaths = \F0FPlatform::getInstance()->getComponentBaseDirs($component);
+        $filesystem     = \F0FPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		// Check that the path exists
 		$path = $componentPaths['admin'];
@@ -140,7 +142,7 @@ class F0FConfigProvider
 		// Load the XML data in a SimpleXMLElement object
 		$xml = simplexml_load_string($data);
 
-		if (!($xml instanceof SimpleXMLElement))
+		if (!($xml instanceof \SimpleXMLElement))
 		{
 			return $ret;
 		}
@@ -160,10 +162,11 @@ class F0FConfigProvider
 
 		foreach ($domains as $dom)
 		{
-			$class = 'F0FConfigDomain' . ucfirst($dom);
+			$class = '\\FOF30\\Config\\Domain\\' . ucfirst($dom);
 
 			if (class_exists($class, true))
 			{
+				/** @var \FOF30\Config\Domain\Domain $o */
 				$o = new $class;
 				$o->parseDomain($xml, $ret);
 			}
@@ -184,7 +187,7 @@ class F0FConfigProvider
 
 		if (empty($domains))
 		{
-			$filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+			$filesystem = \F0FPlatform::getInstance()->getIntegrationObject('filesystem');
 
 			$files = $filesystem->folderFiles(__DIR__ . '/domain', '.php');
 

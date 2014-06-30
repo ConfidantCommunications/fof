@@ -7,7 +7,7 @@
  */
 
 // Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
+defined('FOF_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework controller class. F0F is based on the thin controller

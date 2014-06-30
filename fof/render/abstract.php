@@ -5,7 +5,7 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('F0F_INCLUDED') or die;
+defined('FOF_INCLUDED') or die;
 
 /**
  * Abstract view renderer class. The renderer is what turns XML view templates
@@ -130,7 +130,7 @@ abstract class F0FRenderAbstract
 	 *			// Load F0F
 	 *			include_once JPATH_LIBRARIES . '/fof/include.php';
 	 *
-	 *			if (!defined('F0F_INCLUDED'))
+	 *			if (!defined('FOF_INCLUDED'))
 	 *			{
 	 *				JError::raiseError('500', 'F0F is not installed');
 	 *			}

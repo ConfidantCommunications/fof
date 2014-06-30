@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="library" version="2.5" method="upgrade">
+    <name>FOF</name>
+	<libraryname>fof</libraryname>
+	<description>Framework-on-Framework (FOF) 3.x</description>
+	<creationDate>##DATE##</creationDate>
+	<author>Nicholas K. Dionysopoulos / Akeeba Ltd</author>
+	<authorEmail>nicholas@akeebabackup.com</authorEmail>
+	<authorUrl>https://www.akeebabackup.com</authorUrl>
+	<copyright>(C)2011-2014 Nicholas K. Dionysopoulos</copyright>
+	<license>GNU GPLv2 or later</license>
+	<version>##VERSION##</version>
+	<packager>Akeeba Ltd</packager>
+	<packagerurl>https://www.akeebabackup.com/download.html</packagerurl>
+
+	<files folder="fof">
+		<folder>fof30</folder>
+	</files>
+</extension>

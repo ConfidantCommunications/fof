@@ -7,7 +7,7 @@
  */
 
 // Protect from unauthorized access
-defined('F0F_INCLUDED') or die;
+defined('FOF_INCLUDED') or die;
 
 /**
  * A helper Model to interact with Joomla!'s extensions update feature
