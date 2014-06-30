@@ -8,6 +8,15 @@
 
 namespace FOF30\Dispatcher;
 
+use FOF30\Utils\Object as FOFUtilsObject;
+use FOF30\Config\Provider as FOFConfigProvider;
+use FOF30\Controller\Controller as FOFController;
+use FOF30\Encrypt\Aes as FOFEncryptAes;
+use FOF30\Encrypt\Totp as FOFEncryptTotp;
+use FOF30\Inflector\Inflector as FOFInflector;
+use FOF30\Input\Input as FOFInput;
+use FOF30\Platform\Platform as FOFPlatform;
+
 // Joomla! class inclusion
 use JText;
 
@@ -24,21 +33,21 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class Dispatcher extends F0FUtilsObject
+class Dispatcher extends FOFUtilsObject
 {
 	/** @var array Configuration variables */
 	protected $config = array();
 
-	/** @var F0FInput Input variables */
+	/** @var FOFInput Input variables */
 	protected $input = array();
 
 	/** @var string The name of the default view, in case none is specified */
 	public $defaultView = 'cpanel';
 
-	// Variables for F0F's transparent user authentication. You can override them
+	// Variables for FOF's transparent user authentication. You can override them
 	// in your Dispatcher's __construct() method.
 
-	/** @var int The Time Step for the TOTP used in F0F's transparent user authentication */
+	/** @var int The Time Step for the TOTP used in FOF's transparent user authentication */
 	protected $fofAuth_timeStep = 6;
 
 	/** @var string The key for the TOTP, Base32 encoded (watch out; Base32, NOT Base64!) */
@@ -86,9 +95,9 @@ class Dispatcher extends F0FUtilsObject
 	 * @param   string  $view    The View name
 	 * @param   array   $config  Configuration data
 	 *
-	 * @staticvar  array  $instances  Holds the array of Dispatchers F0F knows about
+	 * @staticvar  array  $instances  Holds the array of Dispatchers FOF knows about
 	 *
-	 * @return  F0FDispatcher
+	 * @return  Dispatcher
 	 */
 	public static function &getAnInstance($option = null, $view = null, $config = array())
 	{
@@ -111,13 +120,13 @@ class Dispatcher extends F0FUtilsObject
 	 * @param   string  $view    The View name
 	 * @param   array   $config  Configuration data
 	 *
-	 * @return F0FDispatcher
+	 * @return Dispatcher
 	 */
 	public static function &getTmpInstance($option = null, $view = null, $config = array())
 	{
 		if (array_key_exists('input', $config))
 		{
-			if ($config['input'] instanceof F0FInput)
+			if ($config['input'] instanceof FOFInput)
 			{
 				$input = $config['input'];
 			}
@@ -129,12 +138,12 @@ class Dispatcher extends F0FUtilsObject
 				}
 
 				$config['input'] = array_merge($_REQUEST, $config['input']);
-				$input = new F0FInput($config['input']);
+				$input = new FOFInput($config['input']);
 			}
 		}
 		else
 		{
-			$input = new F0FInput;
+			$input = new FOFInput;
 		}
 
 		$config['option']   = !is_null($option) ? $option : $input->getCmd('option', 'com_foobar');
@@ -149,7 +158,7 @@ class Dispatcher extends F0FUtilsObject
 
 		if (!class_exists($className))
 		{
-			$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($config['option']);
+			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
 
 			$searchPaths = array(
 				$componentPaths['main'],
@@ -163,7 +172,7 @@ class Dispatcher extends F0FUtilsObject
 				array_unshift($searchPaths, $config['searchpath']);
 			}
 
-			$filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+			$filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 			$path = $filesystem->pathFind(
 					$searchPaths, 'dispatcher.php'
@@ -177,7 +186,7 @@ class Dispatcher extends F0FUtilsObject
 
 		if (!class_exists($className))
 		{
-			$className = 'F0FDispatcher';
+			$className = '\\FOF30\\Dispatcher';
 		}
 
 		$instance = new $className($config);
@@ -202,14 +211,14 @@ class Dispatcher extends F0FUtilsObject
 		}
 		else
 		{
-			$this->input = new F0FInput;
+			$this->input = new FOFInput;
 		}
 
 		// Get the default values for the component name
 		$this->component = $this->input->getCmd('option', 'com_foobar');
 
 		// Load the component's fof.xml configuration file
-		$configProvider = new F0FConfigProvider;
+		$configProvider = new FOFConfigProvider;
 		$this->defaultView = $configProvider->get($this->component . '.dispatcher.default_view', $this->defaultView);
 
 		// Get the default values for the view name
@@ -265,7 +274,7 @@ class Dispatcher extends F0FUtilsObject
      */
 	public function dispatch()
 	{
-        $platform = F0FPlatform::getInstance();
+        $platform = FOFPlatform::getInstance();
 
 		if (!$platform->authorizeAdmin($this->input->getCmd('option', 'com_foobar')))
 		{
@@ -310,11 +319,11 @@ class Dispatcher extends F0FUtilsObject
 		// Pluralise/sungularise the view name for typical tasks
 		if (in_array($task, array('edit', 'add', 'read')))
 		{
-			$view = F0FInflector::singularize($view);
+			$view = FOFInflector::singularize($view);
 		}
 		elseif (in_array($task, array('browse')))
 		{
-			$view = F0FInflector::pluralize($view);
+			$view = FOFInflector::pluralize($view);
 		}
 
 		$this->input->set('view', $view);
@@ -323,7 +332,7 @@ class Dispatcher extends F0FUtilsObject
 		$config = $this->config;
 		$config['input'] = $this->input;
 
-		$controller = F0FController::getTmpInstance($option, $view, $config);
+		$controller = FOFController::getTmpInstance($option, $view, $config);
 		$status = $controller->execute($task);
 
 		if (!$this->onAfterDispatch())
@@ -358,7 +367,7 @@ class Dispatcher extends F0FUtilsObject
 	{
 		// Get a default task based on plural/singular view
 		$request_task = $this->input->getCmd('task', null);
-		$task = F0FInflector::isPlural($view) ? 'browse' : 'edit';
+		$task = FOFInflector::isPlural($view) ? 'browse' : 'edit';
 
 		// Get a potential ID, we might need it later
 		$id = $this->input->get('id', null, 'int');
@@ -408,7 +417,7 @@ class Dispatcher extends F0FUtilsObject
 				}
 
 				// If it's an edit in the frontend, it's really a read
-				elseif (($task == 'edit') && F0FPlatform::getInstance()->isFrontend())
+				elseif (($task == 'edit') && FOFPlatform::getInstance()->isFrontend())
 				{
 					$task = 'read';
 				}
@@ -447,7 +456,7 @@ class Dispatcher extends F0FUtilsObject
 
 		if ($option)
 		{
-			$componentPaths = F0FPlatform::getInstance()->getComponentBaseDirs($option);
+			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($option);
 
 			if (!defined('JPATH_COMPONENT'))
 			{
@@ -478,7 +487,7 @@ class Dispatcher extends F0FUtilsObject
 		// If we have to log out the user, please do so now
 		if ($this->fofAuth_LogoutOnReturn && $this->_fofAuth_isLoggedIn)
 		{
-			F0FPlatform::getInstance()->logoutUser();
+			FOFPlatform::getInstance()->logoutUser();
 		}
 
 		return true;
@@ -492,7 +501,7 @@ class Dispatcher extends F0FUtilsObject
 	public function transparentAuthentication()
 	{
 		// Only run when there is no logged in user
-		if (!F0FPlatform::getInstance()->getUser()->guest)
+		if (!FOFPlatform::getInstance()->getUser()->guest)
 		{
 			return;
 		}
@@ -618,7 +627,7 @@ class Dispatcher extends F0FUtilsObject
 				continue;
 			}
 
-			$this->_fofAuth_isLoggedIn = F0FPlatform::getInstance()->loginUser($authInfo);
+			$this->_fofAuth_isLoggedIn = FOFPlatform::getInstance()->loginUser($authInfo);
 		}
 	}
 
@@ -639,7 +648,7 @@ class Dispatcher extends F0FUtilsObject
 			return null;
 		}
 
-		$totp = new F0FEncryptTotp($this->fofAuth_timeStep);
+		$totp = new FOFEncryptTotp($this->fofAuth_timeStep);
 		$period = $totp->getPeriod();
 		$period--;
 
@@ -649,7 +658,7 @@ class Dispatcher extends F0FUtilsObject
 			$otp = $totp->getCode($this->fofAuth_Key, $time);
 			$this->_fofAuth_CryptoKey = hash('sha256', $this->fofAuth_Key . $otp);
 
-			$aes = new F0FEncryptAes($this->_fofAuth_CryptoKey);
+			$aes = new FOFEncryptAes($this->_fofAuth_CryptoKey);
 			$ret = $aes->decryptString($encryptedData);
 			$ret = rtrim($ret, "\000");
 
@@ -690,7 +699,7 @@ class Dispatcher extends F0FUtilsObject
 	 */
 	private function _createDecryptionKey($time = null)
 	{
-		$totp = new F0FEncryptTotp($this->fofAuth_timeStep);
+		$totp = new FOFEncryptTotp($this->fofAuth_timeStep);
 		$otp = $totp->getCode($this->fofAuth_Key, $time);
 
 		$key = hash('sha256', $this->fofAuth_Key . $otp);
@@ -710,8 +719,8 @@ class Dispatcher extends F0FUtilsObject
 
 		if (is_null($isCLI) && is_null($isAdmin))
 		{
-			$isCLI   = F0FPlatform::getInstance()->isCli();
-			$isAdmin = F0FPlatform::getInstance()->isBackend();
+			$isCLI   = FOFPlatform::getInstance()->isCli();
+			$isAdmin = FOFPlatform::getInstance()->isBackend();
 		}
 
 		return array($isCLI, $isAdmin);

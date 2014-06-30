@@ -7,13 +7,18 @@
 
 namespace FOF30\Database;
 
+use FOF30\Input\Input as FOFInput;
+use FOF30\Platform\Platform as FOFPlatform;
+
+use JDatabase;
+
 class Installer
 {
 	/** @var  JDatabase  The database connector object */
 	private $db = null;
 
 	/**
-	 * @var   F0FInput  Input variables
+	 * @var   FOFInput  Input variables
 	 */
 	protected $input = array();
 
@@ -43,18 +48,18 @@ class Installer
 		// Get the input
 		if (array_key_exists('input', $config))
 		{
-			if ($config['input'] instanceof F0FInput)
+			if ($config['input'] instanceof FOFInput)
 			{
 				$this->input = $config['input'];
 			}
 			else
 			{
-				$this->input = new F0FInput($config['input']);
+				$this->input = new FOFInput($config['input']);
 			}
 		}
 		else
 		{
-			$this->input = new F0FInput;
+			$this->input = new FOFInput;
 		}
 
 		// Set the database object
@@ -64,7 +69,7 @@ class Installer
 		}
 		else
 		{
-			$this->db = F0FPlatform::getInstance()->getDbo();
+			$this->db = FOFPlatform::getInstance()->getDbo();
 		}
 
 		// Set the $name/$_name variable
@@ -83,7 +88,7 @@ class Installer
 		else
 		{
 			// Nothing is defined, assume the files are stored in the sql/xml directory inside the component's administrator section
-			$directories = F0FPlatform::getInstance()->getComponentBaseDirs($component);
+			$directories = FOFPlatform::getInstance()->getComponentBaseDirs($component);
 			$this->setXmlDirectory($directories['admin'] . '/sql/xml');
 		}
 

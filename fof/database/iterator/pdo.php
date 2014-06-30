@@ -12,6 +12,7 @@
 namespace FOF30\Database\Iterator;
 
 use FOF30\Database\DatabaseIterator as FOFDatabaseIterator;
+use PDOStatement;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
