@@ -10,11 +10,11 @@ namespace FOF30\Form\Field;
 
 use FOF30\Form\Field as FOFFormField;
 use FOF30\Table\Table as FOFTable;
-use FOF30\Platform\Platform as FOFPlatform;
-use FOF30\Form\Field\Select as FOFFormFieldSelect;
+use FOF30\String\Utils as FOFStringUtils;
+use FOF30\Form\Field\Published as FOFFormFieldPublished;
 
 // Joomla! class inclusion
-use JFactory, JHtml, JText, JFormHelper, JFormFieldList;
+use JFactory, JHtml, JText, JFormHelper, JFormFieldList, SimpleXMLElement;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -97,27 +97,27 @@ class Actions extends JFormFieldList implements FOFFormField
 
 		if (isset($this->element['show_published']))
 		{
-			$config['published'] = F0FStringUtils::toBool($this->element['show_published']);
+			$config['published'] = FOFStringUtils::toBool($this->element['show_published']);
 		}
 
 		if (isset($this->element['show_unpublished']))
 		{
-			$config['unpublished'] = F0FStringUtils::toBool($this->element['show_unpublished']);
+			$config['unpublished'] = FOFStringUtils::toBool($this->element['show_unpublished']);
 		}
 
 		if (isset($this->element['show_archived']))
 		{
-			$config['archived'] = F0FStringUtils::toBool($this->element['show_archived']);
+			$config['archived'] = FOFStringUtils::toBool($this->element['show_archived']);
 		}
 
 		if (isset($this->element['show_trash']))
 		{
-			$config['trash'] = F0FStringUtils::toBool($this->element['show_trash']);
+			$config['trash'] = FOFStringUtils::toBool($this->element['show_trash']);
 		}
 
 		if (isset($this->element['show_all']))
 		{
-			$config['all'] = F0FStringUtils::toBool($this->element['show_all']);
+			$config['all'] = FOFStringUtils::toBool($this->element['show_all']);
 		}
 
 		return $config;
@@ -169,7 +169,7 @@ class Actions extends JFormFieldList implements FOFFormField
 
 		$publishedXml = new SimpleXMLElement('<field ' . implode(' ', $renderedAttributes) . ' />');
 
-		$publishedField = new FOFFormFieldPublished($this->form);
+		$publishedField = new Published($this->form);
 
 		// Pass required objects to the field
 		$publishedField->item = $this->item;
@@ -186,10 +186,12 @@ class Actions extends JFormFieldList implements FOFFormField
 	 * @since 2.0
 	 *
 	 * @return  string  The field HTML
+	 *
+	 * @throws \Exception
 	 */
 	public function getStatic()
 	{
-		throw new Exception(__CLASS__ . ' cannot be used in single item display forms');
+		throw new \Exception(__CLASS__ . ' cannot be used in single item display forms');
 	}
 
 	/**
@@ -199,12 +201,14 @@ class Actions extends JFormFieldList implements FOFFormField
 	 * @since 2.0
 	 *
 	 * @return  string  The field HTML
+	 *
+	 * @throws \Exception
 	 */
 	public function getRepeatable()
 	{
 		if (!($this->item instanceof FOFTable))
 		{
-			throw new Exception(__CLASS__ . ' needs a FOFTable to act upon');
+			throw new \Exception(__CLASS__ . ' needs a FOFTable to act upon');
 		}
 
 		$config = $this->getConfig();

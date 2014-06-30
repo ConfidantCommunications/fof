@@ -10,6 +10,8 @@ namespace FOF30\Platform;
 
 use FOF30\Input\Input as FOFInput;
 
+use JDate, JDocument, JUser, JDatabaseDriver, JLanguage;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -328,9 +330,15 @@ interface PlatformInterface
      */
     public function getDate($time = 'now', $tzOffest = null, $locale = true);
 
-    public function getLanguage();
+	/**
+	 * @return JLanguage
+	 */
+	public function getLanguage();
 
-    public function getDbo();
+	/**
+	 * @return JDatabaseDriver
+	 */
+	public function getDbo();
 
 	/**
 	 * Is this the administrative section of the component?

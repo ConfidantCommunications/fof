@@ -10,7 +10,6 @@ namespace FOF30\Form\Field;
 
 use FOF30\Form\Field as FOFFormField;
 use FOF30\Table\Table as FOFTable;
-use FOF30\Platform\Platform as FOFPlatform;
 use FOF30\Form\Field\Select as FOFFormFieldSelect;
 
 // Joomla! class inclusion
@@ -146,6 +145,8 @@ class Groupedlist extends JFormFieldGroupedList implements FOFFormField
 	 * @param   string  $optText   Value name
 	 *
 	 * @return  mixed   The label of the currently selected option
+	 *
+	 * @throws \RuntimeException
 	 */
 	public static function getOptionName($data, $selected = null, $groupKey = 'items', $optKey = 'value', $optText = 'text')
 	{
@@ -153,25 +154,19 @@ class Groupedlist extends JFormFieldGroupedList implements FOFFormField
 
 		foreach ($data as $dataKey => $group)
 		{
-			$label = $dataKey;
-			$noGroup = is_int($dataKey);
-
 			if (is_array($group))
 			{
-				$subList = $group[$groupKey];
 				$label = $group[$optText];
 				$noGroup = false;
 			}
 			elseif (is_object($group))
 			{
-				// Sub-list is in a property of an object
-				$subList = $group->$groupKey;
 				$label = $group->$optText;
 				$noGroup = false;
 			}
 			else
 			{
-				throw new RuntimeException('Invalid group contents.', 1);
+				throw new \RuntimeException('Invalid group contents.', 1);
 			}
 
 			if ($noGroup)

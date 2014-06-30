@@ -10,7 +10,6 @@ namespace FOF30\Form\Field;
 
 use FOF30\Form\Field as FOFFormField;
 use FOF30\Table\Table as FOFTable;
-use FOF30\Platform\Platform as FOFPlatform;
 use FOF30\Form\Field\Select as FOFFormFieldSelect;
 
 // Joomla! class inclusion
@@ -106,7 +105,7 @@ class Password extends JFormFieldPassword implements FOFFormField
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .
-			htmlspecialchars(FOFFormFieldSelect::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 }

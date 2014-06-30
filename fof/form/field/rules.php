@@ -11,10 +11,9 @@ namespace FOF30\Form\Field;
 use FOF30\Form\Field as FOFFormField;
 use FOF30\Table\Table as FOFTable;
 use FOF30\Platform\Platform as FOFPlatform;
-use FOF30\Form\Field\Select as FOFFormFieldSelect;
 
 // Joomla! class inclusion
-use JFactory, JHtml, JText, JFormHelper, JFormFieldRules;
+use JFactory, JHtml, JText, JFormHelper, JFormFieldRules, JAccess, JError, JRequest;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;

@@ -11,10 +11,11 @@ namespace FOF30\Form\Field;
 use FOF30\Form\Field as FOFFormField;
 use FOF30\Table\Table as FOFTable;
 use FOF30\Platform\Platform as FOFPlatform;
-use FOF30\Form\Field\Select as FOFFormFieldSelect;
+use FOF30\Utils\ArrayUtils\ArrayUtils as FOFUtilsArray;
+use FOF30\Template\Utils as FOFTemplateUtils;
 
 // Joomla! class inclusion
-use JFactory, JHtml, JText, JFormHelper, JFormFieldList;
+use JFactory, JHtml, JText, JFormHelper, JFormFieldList, JLoader;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -272,7 +273,7 @@ class Select extends JFormFieldList implements FOFFormField
 		{
 			$name = JText::alt(trim((string) $option), preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname));
 
-			$sortOptions[$i] = new stdClass;
+			$sortOptions[$i] = new \stdClass;
 			$sortOptions[$i]->option = $option;
 			$sortOptions[$i]->value = $option['value'];
 			$sortOptions[$i]->name = $name;
@@ -282,8 +283,8 @@ class Select extends JFormFieldList implements FOFFormField
 		// Only order if it's set
 		if ($order)
 		{
-			jimport('joomla.utilities.arrayhelper');
-			F0FUtilsArray::sortObjects($sortOptions, $order, $order_dir == 'asc' ? 1 : -1, $order_case_sensitive, false);
+			JLoader::import('joomla.utilities.arrayhelper');
+			FOFUtilsArray::sortObjects($sortOptions, $order, $order_dir == 'asc' ? 1 : -1, $order_case_sensitive, false);
 		}
 
 		// Initialise the options
@@ -328,7 +329,7 @@ class Select extends JFormFieldList implements FOFFormField
 			// Maybe we have to load a file?
 			if (!empty($source_file))
 			{
-				$source_file = F0FTemplateUtils::parsePath($source_file, true);
+				$source_file = FOFTemplateUtils::parsePath($source_file, true);
 
 				if (FOFPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
 				{

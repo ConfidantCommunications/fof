@@ -10,8 +10,9 @@ namespace FOF30\Form\Field;
 
 use FOF30\Form\Field as FOFFormField;
 use FOF30\Table\Table as FOFTable;
-use FOF30\Platform\Platform as FOFPlatform;
 use FOF30\Form\Field\Select as FOFFormFieldSelect;
+use FOF30\Inflector\Inflector as FOFInflector;
+use FOF30\Model\Model as FOFModel;
 
 // Joomla! class inclusion
 use JFactory, JHtml, JText, JFormHelper;
@@ -22,7 +23,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('list');
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Generic list from a model's results
  *
  * @package  FrameworkOnFramework
@@ -230,13 +231,13 @@ class Model extends Select implements FOFFormField
 		$applyAccess = in_array($applyAccess, array('yes', 'on', 'true', '1'));
 
 		// Explode model name into model name and prefix
-		$parts = F0FInflector::explode($modelName);
+		$parts = FOFInflector::explode($modelName);
 		$mName = ucfirst(array_pop($parts));
-		$mPrefix = F0FInflector::implode($parts);
+		$mPrefix = FOFInflector::implode($parts);
 
 		// Get the model object
 		$config = array('savestate' => 0);
-		$model = F0FModel::getTmpInstance($mName, $mPrefix, $config);
+		$model = FOFModel::getTmpInstance($mName, $mPrefix, $config);
 
 		if ($applyAccess)
 		{

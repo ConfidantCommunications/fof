@@ -10,8 +10,6 @@ namespace FOF30\Form\Field;
 
 use FOF30\Form\Field as FOFFormField;
 use FOF30\Table\Table as FOFTable;
-use FOF30\Platform\Platform as FOFPlatform;
-use FOF30\Form\Field\Select as FOFFormFieldSelect;
 
 // Joomla! class inclusion
 use JFactory, JHtml, JText, JFormHelper, JFormField;
@@ -83,7 +81,7 @@ class Selectrow extends JFormField implements FOFFormField
 	 */
 	protected function getInput()
 	{
-		throw new Exception(__CLASS__ . ' cannot be used in input forms');
+		throw new \Exception(__CLASS__ . ' cannot be used in input forms');
 	}
 
 	/**
@@ -96,7 +94,7 @@ class Selectrow extends JFormField implements FOFFormField
 	 */
 	public function getStatic()
 	{
-		throw new Exception(__CLASS__ . ' cannot be used in single item display forms');
+		throw new \Exception(__CLASS__ . ' cannot be used in single item display forms');
 	}
 
 	/**
@@ -111,7 +109,7 @@ class Selectrow extends JFormField implements FOFFormField
 	{
 		if (!($this->item instanceof FOFTable))
 		{
-			throw new Exception(__CLASS__ . ' needs a FOFTable to act upon');
+			throw new \Exception(__CLASS__ . ' needs a FOFTable to act upon');
 		}
 
 		// Is this record checked out?

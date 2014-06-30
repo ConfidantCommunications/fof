@@ -17,7 +17,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Accesslevel extends F0FFormHeaderFieldselectable
+class Accesslevel extends Fieldselectable
 {
 	/**
 	 * Method to get the list of access levels

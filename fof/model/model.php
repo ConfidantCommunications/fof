@@ -414,7 +414,7 @@ class Model extends F0FUtilsObject
 	 * @param   string  $prefix  Model prefix, e.g. 'FoobarModel'
 	 * @param   array   $config  Model configuration variables
 	 *
-	 * @return F0FModel
+	 * @return Model
 	 */
 	public static function &getTmpInstance($type, $prefix = '', $config = array())
 	{

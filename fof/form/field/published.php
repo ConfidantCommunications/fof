@@ -10,7 +10,6 @@ namespace FOF30\Form\Field;
 
 use FOF30\Form\Field as FOFFormField;
 use FOF30\Table\Table as FOFTable;
-use FOF30\Platform\Platform as FOFPlatform;
 use FOF30\Form\Field\Select as FOFFormFieldSelect;
 
 // Joomla! class inclusion
@@ -121,11 +120,13 @@ class Published extends JFormFieldList implements FOFFormField
 				case '1':
 				case 'yes':
 					$config[$configKey] = true;
+					break;
 
 				case 'false':
 				case '0':
 				case 'no':
 					$config[$configKey] = false;
+					break;
 
 				default:
 					$config[$configKey] = $default;
@@ -184,12 +185,14 @@ class Published extends JFormFieldList implements FOFFormField
 	 * @since 2.0
 	 *
 	 * @return  string  The field HTML
+	 *
+	 * @throws \Exception
 	 */
 	public function getRepeatable()
 	{
 		if (!($this->item instanceof FOFTable))
 		{
-			throw new Exception(__CLASS__ . ' needs a FOFTable to act upon');
+			throw new \Exception(__CLASS__ . ' needs a FOFTable to act upon');
 		}
 
 		// Initialise

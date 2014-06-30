@@ -11,10 +11,10 @@ namespace FOF30\Form\Field;
 use FOF30\Form\Field as FOFFormField;
 use FOF30\Table\Table as FOFTable;
 use FOF30\Platform\Platform as FOFPlatform;
-use FOF30\Form\Field\Select as FOFFormFieldSelect;
+use FOF30\Utils\ArrayUtils\ArrayUtils as FOFUtilsArray;
 
 // Joomla! class inclusion
-use JFactory, JHtml, JText, JFormHelper, JFormFieldTag;
+use JFactory, JHtml, JText, JFormHelper, JFormFieldTag, JHelperTags;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -86,7 +86,7 @@ class Tag extends JFormFieldTag implements FOFFormField
 		{
 			// Only item assigned values
 			$values = (array) $this->value;
-            F0FUtilsArray::toInteger($values);
+            FOFUtilsArray::toInteger($values);
 			$query->where('a.id IN (' . implode(',', $values) . ')');
 		}
 
@@ -107,7 +107,7 @@ class Tag extends JFormFieldTag implements FOFFormField
 		}
 		elseif (is_array($published))
 		{
-            F0FUtilsArray::toInteger($published);
+			FOFUtilsArray::toInteger($published);
 			$query->where('a.published IN (' . implode(',', $published) . ')');
 		}
 
@@ -121,7 +121,7 @@ class Tag extends JFormFieldTag implements FOFFormField
 		{
 			$options = $db->loadObjectList();
 		}
-		catch (RuntimeException $e)
+		catch (\RuntimeException $e)
 		{
 			return false;
 		}
