@@ -6,10 +6,12 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+namespace FOF30\Platform\Filesystem;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-interface F0FPlatformFilesystemInterface
+interface FilesystemInterface
 {
     /**
      * Does the file exists?

@@ -6,6 +6,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+namespace FOF30\Utils\Observable;
+
 defined('FOF_INCLUDED') or die;
 
 /**
@@ -13,7 +15,7 @@ defined('FOF_INCLUDED') or die;
  *
  * This class is based on JEvent as found in Joomla! 3.2.0
  */
-abstract class F0FUtilsObservableEvent extends F0FUtilsObject
+abstract class Event extends F0FUtilsObject
 {
     /**
      * Event object to observe.

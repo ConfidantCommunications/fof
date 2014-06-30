@@ -5,6 +5,9 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Table;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -13,7 +16,7 @@ defined('FOF_INCLUDED') or die;
  * require this. Why? No idea whatsoever. If I remove it, F0F crashes on some
  * hosts. Same PHP version on another host and no problem occurs. Any takers?
  */
-if (class_exists('F0FTable', false))
+if (class_exists('\\FOF30\\Table\\Table', false))
 {
 	return;
 }
@@ -31,7 +34,7 @@ if (!interface_exists('JTableInterface', true))
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class F0FTable extends F0FUtilsObject implements JTableInterface
+class Table extends F0FUtilsObject implements JTableInterface
 {
 	/**
 	 * Cache array for instances

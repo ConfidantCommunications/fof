@@ -9,13 +9,17 @@
  * instead of plain stdClass objects
  */
 
+namespace FOF30\Database\Iterator;
+
+use FOF30\Database\DatabaseIterator as FOFDatabaseIterator;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
 /**
  * PDO database iterator.
  */
-class F0FDatabaseIteratorPdo extends F0FDatabaseIterator
+class Pdo extends FOFDatabaseIterator
 {
 	/**
 	 * Get the number of rows in the result set for the executed SQL given by the cursor.

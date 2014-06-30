@@ -5,6 +5,9 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Platform;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -21,7 +24,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-abstract class F0FPlatform implements F0FPlatformInterface
+abstract class Platform implements PlatformInterface
 {
 	/**
 	 * The ordering for this platform class. The lower this number is, the more

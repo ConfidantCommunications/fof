@@ -6,10 +6,12 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+namespace FOF30\Table;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-class F0FTableRelations
+class Relations
 {
 	/**
 	 * Holds all known relation definitions

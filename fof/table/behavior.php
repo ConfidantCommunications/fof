@@ -5,6 +5,9 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Table;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -16,7 +19,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-abstract class F0FTableBehavior extends F0FUtilsObservableEvent
+abstract class Behavior extends F0FUtilsObservableEvent
 {
 	/**
 	 * This event runs before binding data to the table

@@ -6,6 +6,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+namespace FOF30\Utils\ArrayUtils;
+
 defined('FOF_INCLUDED') or die;
 
 /**
@@ -13,7 +15,7 @@ defined('FOF_INCLUDED') or die;
  *
  * Based on the JArrayHelper class as found in Joomla! 3.2.0
  */
-abstract class F0FUtilsArray
+abstract class ArrayUtils
 {
 	/**
 	 * Option to perform case-sensitive sorts.

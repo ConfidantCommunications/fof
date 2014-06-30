@@ -5,6 +5,9 @@
  * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Form;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -19,7 +22,7 @@ JLoader::import('joomla.form.helper');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class F0FFormHelper extends JFormHelper
+class Helper extends JFormHelper
 {
 	/**
 	 * Method to load a form field object given a type.

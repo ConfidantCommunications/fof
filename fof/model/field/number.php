@@ -5,6 +5,9 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Model\Field;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -14,7 +17,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class F0FModelFieldNumber extends F0FModelField
+class Number extends F0FModelField
 {
 	/**
 	 * The partial match is mapped to an exact match

@@ -5,6 +5,9 @@
  * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Form;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -16,7 +19,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class F0FForm extends JForm
+class Form extends JForm
 {
 	/**
 	 * The model attached to this view
@@ -129,22 +132,6 @@ class F0FForm extends JForm
 			foreach ($cssfiles as $cssfile)
 			{
 				F0FTemplateUtils::addCSS(trim($cssfile));
-			}
-		}
-
-		// Support for LESS files
-		$lessfiles = $this->getAttribute('lessfiles');
-
-		if (!empty($lessfiles))
-		{
-			$lessfiles = explode(',', $lessfiles);
-
-			foreach ($lessfiles as $def)
-			{
-				$parts = explode('||', $def, 2);
-				$lessfile = $parts[0];
-				$alt = (count($parts) > 1) ? trim($parts[1]) : null;
-				F0FTemplateUtils::addLESS(trim($lessfile), $alt);
 			}
 		}
 	}

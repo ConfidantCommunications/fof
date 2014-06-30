@@ -5,6 +5,9 @@
  * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Form\Header;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -20,7 +23,7 @@ if (!class_exists('JFormFieldSql'))
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class F0FFormHeaderModel extends F0FFormHeaderFieldselectable
+class Model extends F0FFormHeaderFieldselectable
 {
 	/**
 	 * Method to get the field options.

@@ -5,6 +5,8 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+namespace FOF30\Hal\Render;
+
 defined('FOF_INCLUDED') or die;
 
 /**
@@ -13,7 +15,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-interface F0FHalRenderInterface
+interface RenderInterface
 {
 	/**
 	 * Render a HAL document into a representation suitable for consumption.

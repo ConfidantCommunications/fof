@@ -5,6 +5,9 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Inflector;
+
 defined('FOF_INCLUDED') or die;
 
 /**
@@ -18,7 +21,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class F0FInflector
+class Inflector
 {
 	/**
 	 * Rules for pluralizing and singularizing of nouns.

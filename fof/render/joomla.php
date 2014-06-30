@@ -5,6 +5,9 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Render;
+
 defined('FOF_INCLUDED') or die;
 
 /**
@@ -13,7 +16,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class F0FRenderJoomla extends F0FRenderAbstract
+class Joomla extends RenderAbstract
 {
 	/**
 	 * Public constructor. Determines the priority of this class and if it should be enabled

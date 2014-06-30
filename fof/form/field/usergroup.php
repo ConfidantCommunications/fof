@@ -6,6 +6,9 @@
  * @copyright  Copyright (C) 2010 - 2012 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Form\Field;
+
 // Protect from unauthorized access
 defined('_JEXEC') or die;
 
@@ -18,7 +21,7 @@ JFormHelper::loadFieldClass('usergroup');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class F0FFormFieldUsergroup extends JFormFieldUsergroup implements F0FFormField
+class Usergroup extends JFormFieldUsergroup implements F0FFormField
 {
 	protected $static;
 

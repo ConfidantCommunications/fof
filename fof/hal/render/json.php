@@ -5,6 +5,9 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Hal\Render;
+
 defined('FOF_INCLUDED') or die;
 
 /**
@@ -13,7 +16,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class F0FHalRenderJson implements F0FHalRenderInterface
+class Json implements RenderInterface
 {
 	/**
 	 * When data is an array we'll output the list of data under this key

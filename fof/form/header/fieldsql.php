@@ -5,6 +5,9 @@
  * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Form\Header;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -14,7 +17,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class F0FFormHeaderFieldsql extends F0FFormHeaderFieldselectable
+class Fieldsql extends F0FFormHeaderFieldselectable
 {
 	/**
 	 * Create objects for the options

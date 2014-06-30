@@ -5,6 +5,9 @@
  * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Form\Field;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -17,7 +20,7 @@ JFormHelper::loadFieldClass('plugins');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class F0FFormFieldPlugins extends JFormFieldPlugins implements F0FFormField
+class Plugins extends JFormFieldPlugins implements F0FFormField
 {
 	protected $static;
 

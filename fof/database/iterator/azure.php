@@ -9,12 +9,14 @@
  * instead of plain stdClass objects
  */
 
+namespace FOF30\Database\Iterator;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
 /**
  * SQL azure database iterator.
  */
-class F0FDatabaseIteratorAzure extends F0FDatabaseIteratorSqlsrv
+class Azure extends Sqlsrv
 {
 }

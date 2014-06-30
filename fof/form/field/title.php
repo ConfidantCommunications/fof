@@ -5,6 +5,9 @@
  * @copyright  Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Form\Field;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -17,7 +20,7 @@ JFormHelper::loadFieldClass('text');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class F0FFormFieldTitle extends F0FFormFieldText implements F0FFormField
+class Title extends F0FFormFieldText implements F0FFormField
 {
 	/**
 	 * Get the rendering of this field type for a repeatable (grid) display,

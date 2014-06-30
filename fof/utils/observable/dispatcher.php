@@ -6,6 +6,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+namespace FOF30\Utils\Observable;
+
 defined('FOF_INCLUDED') or die;
 
 /**
@@ -16,7 +18,7 @@ defined('FOF_INCLUDED') or die;
  *
  * This class is based on JEventDispatcher as found in Joomla! 3.2.0
  */
-class F0FUtilsObservableDispatcher extends F0FUtilsObject
+class Dispatcher extends F0FUtilsObject
 {
     /**
      * An array of Observer objects to notify

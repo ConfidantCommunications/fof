@@ -5,6 +5,9 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Model;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -19,7 +22,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class F0FModel extends F0FUtilsObject
+class Model extends F0FUtilsObject
 {
 	/**
 	 * Indicates if the internal state has been set

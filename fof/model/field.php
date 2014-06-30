@@ -6,6 +6,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+namespace FOF30\Model;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -15,7 +17,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-abstract class F0FModelField
+abstract class Field
 {
 	protected $_db = null;
 

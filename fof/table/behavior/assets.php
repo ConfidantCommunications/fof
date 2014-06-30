@@ -5,6 +5,9 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Table\Behavior;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -14,7 +17,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class F0FTableBehaviorAssets extends F0FTableBehavior
+class Assets extends F0FTableBehavior
 {
 	/**
 	 * The event which runs after storing (saving) data to the database

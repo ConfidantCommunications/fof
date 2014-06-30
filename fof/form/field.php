@@ -5,6 +5,9 @@
  * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
+
+namespace FOF30\Form;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -14,7 +17,7 @@ defined('FOF_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-interface F0FFormField
+interface Field
 {
 	/**
 	 * Get the rendering of this field type for static display, e.g. in a single

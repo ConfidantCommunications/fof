@@ -9,13 +9,17 @@
  * instead of plain stdClass objects
  */
 
+namespace FOF30\Database;
+
+use Countable, Iterator;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
 /**
  * Database iterator
  */
-abstract class F0FDatabaseIterator implements Countable, Iterator
+abstract class DatabaseIterator implements Countable, Iterator
 {
 	/**
 	 * The database cursor.

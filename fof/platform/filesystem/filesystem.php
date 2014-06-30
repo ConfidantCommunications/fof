@@ -5,10 +5,13 @@
 * @copyright   Copyright (C) 2010 - 2014 Akeeba Ltd. All rights reserved.
 * @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
+
+namespace FOF30\Platform\Filesystem;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
-abstract class F0FPlatformFilesystem implements F0FPlatformFilesystemInterface
+abstract class Filesystem implements FilesystemInterface
 {
     /**
      * The list of paths where platform class files will be looked for

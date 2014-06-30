@@ -5,7 +5,9 @@
  * @license		GNU GPL version 3 or later
  */
 
-class F0FDatabaseInstaller
+namespace FOF30\Database;
+
+class Installer
 {
 	/** @var  JDatabase  The database connector object */
 	private $db = null;

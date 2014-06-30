@@ -6,6 +6,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+namespace FOF30\Utils\Installscript;
+
 defined('FOF_INCLUDED') or die;
 
 JLoader::import('joomla.filesystem.folder');
@@ -16,7 +18,7 @@ JLoader::import('joomla.utilities.date');
 /**
  * A helper class which you can use to create component installation scripts
  */
-abstract class F0FUtilsInstallscript
+abstract class Installscript
 {
 	/**
 	 * The component's name

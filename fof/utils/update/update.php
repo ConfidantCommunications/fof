@@ -6,13 +6,15 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+namespace FOF30\Utils\Update;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
 /**
  * A helper Model to interact with Joomla!'s extensions update feature
  */
-class F0FUtilsUpdate extends F0FModel
+class Update extends F0FModel
 {
 	/** @var JUpdater The Joomla! updater object */
 	protected $updater = null;

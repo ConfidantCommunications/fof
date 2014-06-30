@@ -6,6 +6,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+namespace FOF30\Utils\Object;
+
 defined('FOF_INCLUDED') or die;
 
 /**
@@ -18,7 +20,7 @@ defined('FOF_INCLUDED') or die;
  * @deprecated  2.1
  * @codeCoverageIgnore
  */
-class F0FUtilsObject
+class Object
 {
     /**
      * An array of error messages or Exception objects.

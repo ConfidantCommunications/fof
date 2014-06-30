@@ -6,6 +6,8 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
+namespace FOF30\Table;
+
 // Protect from unauthorized access
 defined('FOF_INCLUDED') or die;
 
@@ -18,7 +20,7 @@ defined('FOF_INCLUDED') or die;
  * @property string $slug  Node's slug (optional)
  * @property string $title Title of the node (optional)
  */
-class F0FTableNested extends F0FTable
+class Nested extends Table
 {
 	/** @var int The level (depth) of this node in the tree */
 	protected $treeDepth = null;
