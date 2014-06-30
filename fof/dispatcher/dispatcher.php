@@ -8,6 +8,9 @@
 
 namespace FOF30\Dispatcher;
 
+// Joomla! class inclusion
+use JText;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 

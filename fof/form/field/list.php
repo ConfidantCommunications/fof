@@ -8,6 +8,9 @@
 
 namespace FOF30\Form\Field;
 
+// Joomla! class inclusion
+use JText;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -20,7 +23,7 @@ JFormHelper::loadFieldClass('list');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class List extends JFormFieldList implements F0FFormField
+class Select extends JFormFieldList implements F0FFormField
 {
 	protected $static;
 

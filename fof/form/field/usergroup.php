@@ -9,6 +9,9 @@
 
 namespace FOF30\Form\Field;
 
+// Joomla! class inclusion
+use JText;
+
 // Protect from unauthorized access
 defined('_JEXEC') or die;
 

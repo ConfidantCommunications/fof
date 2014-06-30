@@ -8,6 +8,9 @@
 
 namespace FOF30\Render;
 
+// Joomla! class inclusion
+use JText;
+
 defined('FOF30_INCLUDED') or die;
 
 /**

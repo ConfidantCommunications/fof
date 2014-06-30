@@ -8,6 +8,9 @@
 
 namespace FOF30\Utils\Installscript;
 
+// Joomla! class inclusion
+use JText;
+
 defined('FOF30_INCLUDED') or die;
 
 JLoader::import('joomla.filesystem.folder');
