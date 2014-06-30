@@ -8,7 +8,7 @@
 
 namespace FOF30\Hal\Render;
 
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * Implements the HAL over JSON renderer

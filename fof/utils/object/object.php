@@ -8,7 +8,7 @@
 
 namespace FOF30\Utils\Object;
 
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * Temporary class for backwards compatibility. You should not be using this

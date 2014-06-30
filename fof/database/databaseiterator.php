@@ -14,7 +14,7 @@ namespace FOF30\Database;
 use Countable, Iterator;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * Database iterator

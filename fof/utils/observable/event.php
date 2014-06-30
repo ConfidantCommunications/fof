@@ -8,7 +8,7 @@
 
 namespace FOF30\Utils\Observable;
 
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * Defines an observable event.

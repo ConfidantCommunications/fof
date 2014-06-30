@@ -9,7 +9,7 @@
 namespace FOF30\Encrypt;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * A simple implementation of AES-128, AES-192 and AES-256 encryption using the

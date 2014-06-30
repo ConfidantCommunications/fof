@@ -8,7 +8,7 @@
 
 namespace FOF30\Config\Domain;
 
-defined('FOF_INCLUDED') or die();
+defined('FOF30_INCLUDED') or die();
 
 /**
  * Configuration parser for the tables-specific settings

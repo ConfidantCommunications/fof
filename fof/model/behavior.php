@@ -9,7 +9,7 @@
 namespace FOF30\Model;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework model behavior class. It defines the events which are

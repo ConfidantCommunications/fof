@@ -8,7 +8,7 @@
 
 namespace FOF30\Hal;
 
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * Implementation of the Hypertext Application Language document in PHP. It can

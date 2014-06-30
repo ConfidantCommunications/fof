@@ -8,7 +8,7 @@
 
 namespace FOF30\Utils\ArrayUtils;
 
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * A utility class to handle array manipulation.

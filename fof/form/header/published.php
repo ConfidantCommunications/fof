@@ -9,7 +9,7 @@
 namespace FOF30\Form\Header;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * Field header for Published (enabled) columns

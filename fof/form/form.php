@@ -9,7 +9,7 @@
 namespace FOF30\Form;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * F0FForm is an extension to JForm which support not only edit views but also

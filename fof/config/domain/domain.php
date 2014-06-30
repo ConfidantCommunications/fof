@@ -8,7 +8,7 @@
 
 namespace FOF30\Config\Domain;
 
-defined('FOF_INCLUDED') or die();
+defined('FOF30_INCLUDED') or die();
 
 /**
  * The Interface of an F0FConfigDomain class. The methods are used to parse and

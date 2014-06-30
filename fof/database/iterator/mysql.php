@@ -14,7 +14,7 @@ namespace FOF30\Database\Iterator;
 use FOF30\Database\DatabaseIterator as FOFDatabaseIterator;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * MySQL database iterator.

@@ -8,7 +8,7 @@
 
 namespace FOF30\Encrypt;
 
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * This class provides an RFC6238-compliant Time-based One Time Passwords,

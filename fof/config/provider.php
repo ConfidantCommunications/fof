@@ -10,7 +10,7 @@ namespace FOF30\Config;
 
 use FOF30\Platform\Platform as FOFPlatform;
 
-defined('FOF_INCLUDED') or die();
+defined('FOF30_INCLUDED') or die();
 
 /**
  * Reads and parses the fof.xml file in the back-end of a FOF-powered component,

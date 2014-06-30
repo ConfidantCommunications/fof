@@ -9,7 +9,7 @@
 namespace FOF30\Integration\Joomla;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * Part of the F0F Platform Abstraction Layer.

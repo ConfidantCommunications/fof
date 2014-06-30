@@ -8,7 +8,7 @@
 
 namespace FOF30\Render;
 
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * Joomla! 3 view renderer class

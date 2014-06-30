@@ -9,7 +9,7 @@
 namespace FOF30\View;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework JSON View class. Renders the data as a JSON object or

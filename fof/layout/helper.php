@@ -9,7 +9,7 @@
 namespace FOF30\Layout;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * Helper to render a F0FLayout object, storing a base path

@@ -8,7 +8,7 @@
 
 namespace FOF30\Inflector;
 
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * The F0FInflector is an adaptation of the Akelos PHP Inflector which is a PHP

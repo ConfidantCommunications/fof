@@ -9,7 +9,7 @@
 namespace FOF30\Dispatcher;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework dispatcher class

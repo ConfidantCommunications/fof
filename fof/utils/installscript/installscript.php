@@ -8,7 +8,7 @@
 
 namespace FOF30\Utils\Installscript;
 
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 JLoader::import('joomla.filesystem.folder');
 JLoader::import('joomla.filesystem.file');

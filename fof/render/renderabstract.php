@@ -8,7 +8,7 @@
 
 namespace FOF30\Render;
 
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * Abstract view renderer class. The renderer is what turns XML view templates
@@ -133,7 +133,7 @@ abstract class RenderAbstract
 	 *			// Load F0F
 	 *			include_once JPATH_LIBRARIES . '/fof/include.php';
 	 *
-	 *			if (!defined('FOF_INCLUDED'))
+	 *			if (!defined('FOF30_INCLUDED'))
 	 *			{
 	 *				JError::raiseError('500', 'F0F is not installed');
 	 *			}

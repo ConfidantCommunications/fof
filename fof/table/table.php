@@ -9,7 +9,7 @@
 namespace FOF30\Table;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * Normally this shouldn't be required. Some PHP versions, however, seem to

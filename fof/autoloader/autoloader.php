@@ -1,14 +1,14 @@
 <?php
 /**
- *  @package     FrameworkOnFramework
- *  @subpackage  autoloader
- *  @copyright   Copyright (c)2010-2014 Nicholas K. Dionysopoulos
- *  @license     GNU General Public License version 2, or later
+ * @package     FrameworkOnFramework
+ * @subpackage  autoloader
+ * @copyright   Copyright (c)2010-2014 Nicholas K. Dionysopoulos
+ * @license     GNU General Public License version 2, or later
  */
 
 namespace FOF30\Autoloader;
 
-defined('FOF_INCLUDED') or die();
+defined('FOF30_INCLUDED') or die();
 
 /**
  * The main class autoloader for FOF itself
@@ -65,9 +65,9 @@ class Autoloader
 	 * Registers a set of PSR-4 directories for a given namespace, either
 	 * appending or prefixing to the ones previously set for this namespace.
 	 *
-	 * @param   string        $prefix   The prefix/namespace, with trailing '\\'
-	 * @param   array|string  $paths    The PSR-0 base directories
-	 * @param   boolean       $prepend  Whether to prefix the directories
+	 * @param   string       $prefix  The prefix/namespace, with trailing '\\'
+	 * @param   array|string $paths   The PSR-0 base directories
+	 * @param   boolean      $prepend Whether to prefix the directories
 	 *
 	 * @return  void
 	 *
@@ -126,8 +126,8 @@ class Autoloader
 	 * Registers a set of PSR-4 directories for a given namespace,
 	 * replacing any others previously set for this namespace.
 	 *
-	 * @param   string        $prefix  The prefix/namespace, with trailing '\\'
-	 * @param   array|string  $paths   The PSR-4 base directories
+	 * @param   string       $prefix The prefix/namespace, with trailing '\\'
+	 * @param   array|string $paths  The PSR-4 base directories
 	 *
 	 * @return  void
 	 *
@@ -154,7 +154,7 @@ class Autoloader
 	/**
 	 * Registers this instance as an autoloader.
 	 *
-	 * @param   boolean  $prepend  Whether to prepend the autoloader or not
+	 * @param   boolean $prepend Whether to prepend the autoloader or not
 	 *
 	 * @return  void
 	 */
@@ -176,7 +176,7 @@ class Autoloader
 	/**
 	 * Loads the given class or interface.
 	 *
-	 * @param   string  $class  The name of the class
+	 * @param   string $class The name of the class
 	 *
 	 * @return  boolean|null True if loaded, null otherwise
 	 */
@@ -188,12 +188,14 @@ class Autoloader
 
 			return true;
 		}
+
+		return null;
 	}
 
 	/**
 	 * Finds the path to the file where the class is defined.
 	 *
-	 * @param   string  $class  The name of the class
+	 * @param   string $class The name of the class
 	 *
 	 * @return  string|false  The path if found, false otherwise
 	 */
@@ -238,5 +240,7 @@ class Autoloader
 				return $file;
 			}
 		}
+
+		return false;
 	}
 }

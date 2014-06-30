@@ -21,7 +21,7 @@ use FOF30\Platform\Platform as FOFPlatform;
 use JText, JDocument, JFactory, JCache, JRoute, JUtility;
 
 // Protect from unauthorized access
-defined('FOF_INCLUDED') or die;
+defined('FOF30_INCLUDED') or die;
 
 /**
  * FrameworkOnFramework controller class. FOF is based on the thin controller
