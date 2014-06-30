@@ -8,8 +8,13 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
 // Joomla! class inclusion
-use JText;
+use JFactory, JHtml, JText, JFormHelper, JFormField;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -21,13 +26,13 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Ordering extends JFormField implements F0FFormField
+class Ordering extends JFormField implements FOFFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
@@ -134,9 +139,9 @@ class Ordering extends JFormField implements F0FFormField
 	 */
 	public function getRepeatable()
 	{
-		if (!($this->item instanceof F0FTable))
+		if (!($this->item instanceof FOFTable))
 		{
-			throw new Exception(__CLASS__ . ' needs a F0FTable to act upon');
+			throw new Exception(__CLASS__ . ' needs a FOFTable to act upon');
 		}
 
 		$html = '';

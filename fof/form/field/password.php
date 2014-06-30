@@ -8,6 +8,14 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
+// Joomla! class inclusion
+use JFactory, JHtml, JText, JFormHelper, JFormFieldPassword;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -20,13 +28,13 @@ JFormHelper::loadFieldClass('password');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Password extends JFormFieldPassword implements F0FFormField
+class Password extends JFormFieldPassword implements FOFFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
@@ -98,7 +106,7 @@ class Password extends JFormFieldPassword implements F0FFormField
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .
-			htmlspecialchars(F0FFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(FOFFormFieldSelect::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 }

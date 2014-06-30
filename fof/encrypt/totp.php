@@ -8,6 +8,8 @@
 
 namespace FOF30\Encrypt;
 
+use FOF30\Encrypt\Base32 as FOFEncryptBase32;
+
 defined('FOF30_INCLUDED') or die;
 
 /**
@@ -49,7 +51,7 @@ class Totp
 
 		if (is_null($base32))
 		{
-			$this->_base32 = new F0FEncryptBase32;
+			$this->_base32 = new FOFEncryptBase32;
 		}
 		else
 		{
@@ -177,7 +179,7 @@ class Totp
 			$c = rand(0, 255);
 			$secret .= pack("c", $c);
 		}
-		$base32 = new F0FEncryptBase32;
+		$base32 = new FOFEncryptBase32;
 
 		return $this->_base32->encode($secret);
 	}

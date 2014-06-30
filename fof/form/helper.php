@@ -8,14 +8,18 @@
 
 namespace FOF30\Form;
 
+use FOF30\Platform\Platform as FOFPlatform;
+
+use JLoader, JFormHelper, JString;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
 JLoader::import('joomla.form.helper');
 
 /**
- * F0FForm's helper class.
- * Provides a storage for filesystem's paths where F0FForm's entities reside and
+ * Form's helper class.
+ * Provides a storage for filesystem's paths where Form's entities reside and
  * methods for creating those entities. Also stores objects with entities'
  * prototypes for further reusing.
  *
@@ -111,7 +115,7 @@ class Helper extends JFormHelper
 	}
 
 	/**
-	 * Attempt to import the F0FFormHeader class file if it isn't already imported.
+	 * Attempt to import the Form\Header class file if it isn't already imported.
 	 * You can use this method outside of JForm for loading a field for inheritance or composition.
 	 *
 	 * @param   string  $type  Type of a field whose class should be loaded.
@@ -146,20 +150,22 @@ class Helper extends JFormHelper
 		}
 		else
 		{
-			$prefix = 'F0F';
+			$prefix = '\\FOF30\\';
 			$altPrefix = 'J';
 		}
 
-		$class = JString::ucfirst($prefix, '_') . 'Form' . JString::ucfirst($entity, '_') . JString::ucfirst($type, '_');
-		$altClass = JString::ucfirst($altPrefix, '_') . 'Form' . JString::ucfirst($entity, '_') . JString::ucfirst($type, '_');
+		$classes = array(
+			$prefix . 'Form\\' . ucfirst($entity) . '\\' . ucfirst($type),
+			JString::ucfirst($prefix, '_') . 'Form' . JString::ucfirst($entity, '_') . JString::ucfirst($type, '_'),
+			JString::ucfirst($altPrefix, '_') . 'Form' . JString::ucfirst($entity, '_') . JString::ucfirst($type, '_'),
+		);
 
-		if (class_exists($class))
+		foreach ($classes as $class)
 		{
-			return $class;
-		}
-		elseif (class_exists($altClass))
-		{
-			return $altClass;
+			if (class_exists($class))
+			{
+				return $class;
+			}
 		}
 
 		// Get the field search path array.
@@ -187,7 +193,7 @@ class Helper extends JFormHelper
 
 		// Try to find the class file.
 		$type       = strtolower($type) . '.php';
-        $filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+        $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		foreach ($paths as $path)
 		{
@@ -195,30 +201,26 @@ class Helper extends JFormHelper
 			{
 				require_once $file;
 
-				if (class_exists($class))
+				foreach ($classes as $class)
 				{
-					break;
-				}
-				elseif (class_exists($altClass))
-				{
-					break;
+					if (class_exists($class))
+					{
+						return $class;
+					}
 				}
 			}
 		}
 
 		// Check for all if the class exists.
-		if (class_exists($class))
+		foreach ($classes as $class)
 		{
-			return $class;
+			if (class_exists($class))
+			{
+				return $class;
+			}
 		}
-		elseif (class_exists($altClass))
-		{
-			return $altClass;
-		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	/**

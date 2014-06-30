@@ -8,6 +8,14 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
+// Joomla! class inclusion
+use JFactory, JHtml, JText, JFormHelper, JFormFieldTimezone;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -20,13 +28,13 @@ JFormHelper::loadFieldClass('timezone');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Timezone extends JFormFieldTimezone implements F0FFormField
+class Timezone extends JFormFieldTimezone implements FOFFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
@@ -80,7 +88,7 @@ class Timezone extends JFormFieldTimezone implements F0FFormField
 	{
 		$class = $this->element['class'] ? (string) $this->element['class'] : '';
 
-		$selected = F0FFormFieldGroupedlist::getOptionName($this->getOptions(), $this->value);
+		$selected = FOFFormFieldGroupedlist::getOptionName($this->getOptions(), $this->value);
 
 		if (is_null($selected))
 		{

@@ -8,6 +8,14 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
+// Joomla! class inclusion
+use JFactory, JHtml, JText, JFormHelper, JFormFieldUser;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -20,13 +28,13 @@ JFormHelper::loadFieldClass('user');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class User extends JFormFieldUser implements F0FFormField
+class User extends JFormFieldUser implements FOFFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
@@ -219,7 +227,7 @@ class User extends JFormFieldUser implements F0FFormField
 		}
 		else
 		{
-			if (F0FPlatform::getInstance()->isBackend())
+			if (FOFPlatform::getInstance()->isBackend())
 			{
 				// If no link is defined in the back-end, assume the user edit
 				// link in the User Manager component
@@ -257,8 +265,8 @@ class User extends JFormFieldUser implements F0FFormField
 			if ($avatar_method == 'plugin')
 			{
 				// Use the user plugins to get an avatar
-				F0FPlatform::getInstance()->importPlugin('user');
-				$jResponse = F0FPlatform::getInstance()->runPlugins('onUserAvatar', array($user, $avatar_size));
+				FOFPlatform::getInstance()->importPlugin('user');
+				$jResponse = FOFPlatform::getInstance()->runPlugins('onUserAvatar', array($user, $avatar_size));
 
 				if (!empty($jResponse))
 				{
@@ -281,7 +289,7 @@ class User extends JFormFieldUser implements F0FFormField
 				// Fall back to the Gravatar method
 				$md5 = md5($user->email);
 
-				if (F0FPlatform::getInstance()->isCli())
+				if (FOFPlatform::getInstance()->isCli())
 				{
 					$scheme = 'http';
 				}

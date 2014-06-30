@@ -8,8 +8,13 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
 // Joomla! class inclusion
-use JText;
+use JFactory, JHtml, JText, JFormHelper;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -23,7 +28,7 @@ JFormHelper::loadFieldClass('list');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Model extends F0FFormFieldList implements F0FFormField
+class Model extends Select implements FOFFormField
 {
 	protected $static;
 
@@ -78,7 +83,7 @@ class Model extends F0FFormFieldList implements F0FFormField
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
-			htmlspecialchars(F0FFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(FOFFormFieldSelect::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 
@@ -123,7 +128,7 @@ class Model extends F0FFormFieldList implements F0FFormField
 			$show_link = false;
 		}
 
-		if ($show_link && ($this->item instanceof F0FTable))
+		if ($show_link && ($this->item instanceof FOFTable))
 		{
 			// Replace [ITEM:ID] in the URL with the item's key value (usually:
 			// the auto-incrementing numeric ID)
@@ -161,7 +166,7 @@ class Model extends F0FFormFieldList implements F0FFormField
 			$empty_replacement = (string) $this->element['empty_replacement'];
 		}
 
-		$value = F0FFormFieldList::getOptionName($this->getOptions(), $this->value);
+		$value = FOFFormFieldSelect::getOptionName($this->getOptions(), $this->value);
 
 		// Get the (optionally formatted) value
 		if (!empty($empty_replacement) && empty($value))

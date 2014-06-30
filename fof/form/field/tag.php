@@ -8,6 +8,14 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
+// Joomla! class inclusion
+use JFactory, JHtml, JText, JFormHelper, JFormFieldTag;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -20,13 +28,13 @@ JFormHelper::loadFieldClass('tag');
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Tag extends JFormFieldTag implements F0FFormField
+class Tag extends JFormFieldTag implements FOFFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
@@ -46,7 +54,7 @@ class Tag extends JFormFieldTag implements F0FFormField
 		$published = $this->element['published']? $this->element['published'] : array(0,1);
 		$name = (string) $this->element['name'];
 
-		$db		= F0FPlatform::getInstance()->getDbo();
+		$db		= FOFPlatform::getInstance()->getDbo();
 		$query	= $db->getQuery(true)
 			->select('a.id AS value, a.path, a.title AS text, a.level, a.published')
 			->from('#__tags AS a')
@@ -54,7 +62,7 @@ class Tag extends JFormFieldTag implements F0FFormField
 
 		$item = $this->form->getModel()->getItem();
 
-		if ($item instanceof F0FTable)
+		if ($item instanceof FOFTable)
 		{
 			// Fake value for selected tags
 			$keyfield = $item->getKeyName();

@@ -8,6 +8,14 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
+// Joomla! class inclusion
+use JFactory, JHtml, JText, JFormHelper, JFormFieldList;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -20,7 +28,7 @@ JFormHelper::loadFieldClass('list');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Actions extends JFormFieldList implements F0FFormField
+class Actions extends JFormFieldList implements FOFFormField
 {
 	protected $static;
 
@@ -29,7 +37,7 @@ class Actions extends JFormFieldList implements F0FFormField
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/**
@@ -132,7 +140,7 @@ class Actions extends JFormFieldList implements F0FFormField
 	 *
 	 * @param   string  $enabledFieldName  Name of the enabled/published field
 	 *
-	 * @return  F0FFormFieldPublished  Field
+	 * @return  FOFFormFieldPublished  Field
 	 */
 	protected function getPublishedField($enabledFieldName)
 	{
@@ -161,7 +169,7 @@ class Actions extends JFormFieldList implements F0FFormField
 
 		$publishedXml = new SimpleXMLElement('<field ' . implode(' ', $renderedAttributes) . ' />');
 
-		$publishedField = new F0FFormFieldPublished($this->form);
+		$publishedField = new FOFFormFieldPublished($this->form);
 
 		// Pass required objects to the field
 		$publishedField->item = $this->item;
@@ -194,9 +202,9 @@ class Actions extends JFormFieldList implements F0FFormField
 	 */
 	public function getRepeatable()
 	{
-		if (!($this->item instanceof F0FTable))
+		if (!($this->item instanceof FOFTable))
 		{
-			throw new Exception(__CLASS__ . ' needs a F0FTable to act upon');
+			throw new Exception(__CLASS__ . ' needs a FOFTable to act upon');
 		}
 
 		$config = $this->getConfig();
@@ -215,7 +223,7 @@ class Actions extends JFormFieldList implements F0FFormField
 		{
 			if ($config['published'] || $config['unpublished'])
 			{
-				// Generate a F0FFormFieldPublished field
+				// Generate a FOFFormFieldPublished field
 				$publishedField = $this->getPublishedField($publishedFieldName);
 
 				// Render the publish button

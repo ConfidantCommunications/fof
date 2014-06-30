@@ -8,8 +8,13 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
 // Joomla! class inclusion
-use JText;
+use JFactory, JHtml, JText, JFormHelper, JFormFieldRules;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -23,13 +28,13 @@ JFormHelper::loadFieldClass('rules');
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Rules extends JFormFieldRules implements F0FFormField
+class Rules extends JFormFieldRules implements FOFFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
@@ -136,7 +141,7 @@ class Rules extends JFormFieldRules implements F0FFormField
         if ($section == 'component')
         {
             // Need to find the asset id by the name of the component.
-            $db    = F0FPlatform::getInstance()->getDbo();
+            $db    = FOFPlatform::getInstance()->getDbo();
             $query = $db->getQuery(true);
             $query->select($db->quoteName('id'));
             $query->from($db->quoteName('#__assets'));
@@ -402,7 +407,7 @@ class Rules extends JFormFieldRules implements F0FFormField
         if ($section == 'component')
         {
             // Need to find the asset id by the name of the component.
-            $db    = F0FPlatform::getInstance()->getDbo();
+            $db    = FOFPlatform::getInstance()->getDbo();
             $query = $db->getQuery(true)
                         ->select($db->quoteName('id'))
                         ->from($db->quoteName('#__assets'))

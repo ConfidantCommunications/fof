@@ -9,8 +9,13 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
 // Joomla! class inclusion
-use JText;
+use JFactory, JHtml, JText, JFormHelper, JFormFieldUsergroup;
 
 // Protect from unauthorized access
 defined('_JEXEC') or die;
@@ -24,7 +29,7 @@ JFormHelper::loadFieldClass('usergroup');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Usergroup extends JFormFieldUsergroup implements F0FFormField
+class Usergroup extends JFormFieldUsergroup implements FOFFormField
 {
 	protected $static;
 
@@ -33,7 +38,7 @@ class Usergroup extends JFormFieldUsergroup implements F0FFormField
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
 	public $rowid;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/**
@@ -112,7 +117,7 @@ class Usergroup extends JFormFieldUsergroup implements F0FFormField
 		}
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
-			htmlspecialchars(F0FFormFieldList::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(FOFFormFieldSelect::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 
@@ -143,7 +148,7 @@ class Usergroup extends JFormFieldUsergroup implements F0FFormField
 
 
 		return '<span class="' . $this->id . ' ' . $class . '">' .
-			htmlspecialchars(F0FFormFieldList::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(FOFFormFieldSelect::getOptionName($options, $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 }

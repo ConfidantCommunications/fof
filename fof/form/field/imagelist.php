@@ -8,8 +8,13 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
 // Joomla! class inclusion
-use JText;
+use JFactory, JHtml, JText, JFormHelper, JFormFieldImageList;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -23,13 +28,13 @@ JFormHelper::loadFieldClass('imagelist');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Imagelist extends JFormFieldImageList implements F0FFormField
+class Imagelist extends JFormFieldImageList implements FOFFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
@@ -134,7 +139,7 @@ class Imagelist extends JFormFieldImageList implements F0FFormField
 
 		if ($this->value && file_exists(JPATH_ROOT . '/' . $path . '/' . $this->value))
 		{
-			$src = F0FPlatform::getInstance()->URIroot() . '/' . $path . '/' . $this->value;
+			$src = FOFPlatform::getInstance()->URIroot() . '/' . $path . '/' . $this->value;
 		}
 		else
 		{

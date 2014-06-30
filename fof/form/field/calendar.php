@@ -8,6 +8,14 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
+// Joomla! class inclusion
+use JFactory, JHtml, JText, JFormHelper, JFormFieldCalendar;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -20,13 +28,13 @@ JFormHelper::loadFieldClass('calendar');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Calendar extends JFormFieldCalendar implements F0FFormField
+class Calendar extends JFormFieldCalendar implements FOFFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
@@ -124,13 +132,13 @@ class Calendar extends JFormFieldCalendar implements F0FFormField
 		}
 
 		// Get some system objects.
-		$config = F0FPlatform::getInstance()->getConfig();
+		$config = FOFPlatform::getInstance()->getConfig();
 		$user   = JFactory::getUser();
 
 		// Format date if exists
 		if (!empty($this->value))
 		{
-			$date   = F0FPlatform::getInstance()->getDate($this->value, 'UTC');
+			$date   = FOFPlatform::getInstance()->getDate($this->value, 'UTC');
 
 			// If a known filter is given use it.
 			switch (strtoupper((string) $this->element['filter']))

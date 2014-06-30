@@ -12,7 +12,7 @@ namespace FOF30\Form;
 defined('FOF30_INCLUDED') or die;
 
 /**
- * Generic interface that a F0F form field class must implement
+ * Generic interface that a FOF form field class must implement
  *
  * @package  FrameworkOnFramework
  * @since    2.0

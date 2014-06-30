@@ -8,8 +8,13 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
 // Joomla! class inclusion
-use JText;
+use JFactory, JHtml, JText, JFormHelper, JFormFieldList;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -23,13 +28,13 @@ JFormHelper::loadFieldClass('list');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Published extends JFormFieldList implements F0FFormField
+class Published extends JFormFieldList implements FOFFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
@@ -168,7 +173,7 @@ class Published extends JFormFieldList implements F0FFormField
 		$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 
 		return '<span id="' . $this->id . '" ' . $class . '>' .
-			htmlspecialchars(F0FFormFieldList::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
+			htmlspecialchars(FOFFormFieldSelect::getOptionName($this->getOptions(), $this->value), ENT_COMPAT, 'UTF-8') .
 			'</span>';
 	}
 
@@ -182,9 +187,9 @@ class Published extends JFormFieldList implements F0FFormField
 	 */
 	public function getRepeatable()
 	{
-		if (!($this->item instanceof F0FTable))
+		if (!($this->item instanceof FOFTable))
 		{
-			throw new Exception(__CLASS__ . ' needs a F0FTable to act upon');
+			throw new Exception(__CLASS__ . ' needs a FOFTable to act upon');
 		}
 
 		// Initialise

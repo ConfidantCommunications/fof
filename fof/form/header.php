@@ -8,6 +8,10 @@
 
 namespace FOF30\Form;
 
+use FOF30\Inflector\Inflector as FOFInflector;
+
+use SimpleXMLElement;
+
 // Joomla! class inclusion
 use JText;
 
@@ -15,7 +19,7 @@ use JText;
 defined('FOF30_INCLUDED') or die;
 
 /**
- * An interface for F0FFormHeader fields, used to define the filters and the
+ * An interface for Form\Header fields, used to define the filters and the
  * elements of the header row in repeatable (browse) views
  *
  * @package  FrameworkOnFramework
@@ -40,9 +44,9 @@ abstract class Header
 	protected $element;
 
 	/**
-	 * The F0FForm object of the form attached to the header field.
+	 * The Form object of the form attached to the header field.
 	 *
-	 * @var    F0FForm
+	 * @var    Form
 	 * @since  2.0
 	 */
 	protected $form;
@@ -154,14 +158,14 @@ abstract class Header
 	/**
 	 * Method to instantiate the form field object.
 	 *
-	 * @param   F0FForm  $form  The form to attach to the form field object.
+	 * @param   Form  $form  The form to attach to the form field object.
 	 *
 	 * @since   2.0
 	 */
-	public function __construct(F0FForm $form = null)
+	public function __construct(Form $form = null)
 	{
 		// If there is a form passed into the constructor set the form and form control properties.
-		if ($form instanceof F0FForm)
+		if ($form instanceof Form)
 		{
 			$this->form = $form;
 		}
@@ -258,13 +262,13 @@ abstract class Header
 	/**
 	 * Method to attach a JForm object to the field.
 	 *
-	 * @param   F0FForm  $form  The JForm object to attach to the form field.
+	 * @param   Form  $form  The JForm object to attach to the form field.
 	 *
-	 * @return  F0FFormHeader  The form field object so that the method can be used in a chain.
+	 * @return  Header  The form field object so that the method can be used in a chain.
 	 *
 	 * @since   2.0
 	 */
-	public function setForm(F0FForm $form)
+	public function setForm(Form $form)
 	{
 		$this->form = $form;
 
@@ -272,7 +276,7 @@ abstract class Header
 	}
 
 	/**
-	 * Method to attach a F0FForm object to the field.
+	 * Method to attach a Form object to the field.
 	 *
 	 * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form field object.
 	 * @param   mixed             $value    The form field value to validate.
@@ -462,7 +466,7 @@ abstract class Header
 			$view = $this->form->getView();
 			$params = $view->getViewOptionAndName();
 			$title = $params['option'] . '_' .
-				F0FInflector::pluralize($params['view']) . '_FIELD_' .
+				FOFInflector::pluralize($params['view']) . '_FIELD_' .
 				(string) $this->element['name'];
 			$title = strtoupper($title);
 			$result = JText::_($title);

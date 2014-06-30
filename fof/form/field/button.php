@@ -8,8 +8,13 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
 // Joomla! class inclusion
-use JText;
+use JFactory, JHtml, JText, JFormHelper;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -23,7 +28,7 @@ JFormHelper::loadFieldClass('text');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Button extends F0FFormFieldText implements F0FFormField
+class Button extends Text implements FOFFormField
 {
 	protected $static;
 

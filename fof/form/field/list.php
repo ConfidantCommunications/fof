@@ -8,8 +8,13 @@
 
 namespace FOF30\Form\Field;
 
+use FOF30\Form\Field as FOFFormField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Field\Select as FOFFormFieldSelect;
+
 // Joomla! class inclusion
-use JText;
+use JFactory, JHtml, JText, JFormHelper, JFormFieldList;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -23,13 +28,13 @@ JFormHelper::loadFieldClass('list');
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Select extends JFormFieldList implements F0FFormField
+class Select extends JFormFieldList implements FOFFormField
 {
 	protected $static;
 
 	protected $repeatable;
 
-	/** @var   F0FTable  The item being rendered in a repeatable form field */
+	/** @var   FOFTable  The item being rendered in a repeatable form field */
 	public $item;
 
 	/** @var int A monotonically increasing number, denoting the row number in a repeatable view */
@@ -117,7 +122,7 @@ class Select extends JFormFieldList implements F0FFormField
 			$show_link = false;
 		}
 
-		if ($show_link && ($this->item instanceof F0FTable))
+		if ($show_link && ($this->item instanceof FOFTable))
 		{
 			// Replace [ITEM:ID] in the URL with the item's key value (usually:
 			// the auto-incrementing numeric ID)
@@ -325,7 +330,7 @@ class Select extends JFormFieldList implements F0FFormField
 			{
 				$source_file = F0FTemplateUtils::parsePath($source_file, true);
 
-				if (F0FPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
+				if (FOFPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
 				{
 					include_once $source_file;
 				}
