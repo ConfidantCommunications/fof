@@ -21,7 +21,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('user');
 
 /**
- * Form Field class for the F0F framework
+ * Form Field class for the FOF framework
  * A user selection box / display field
  *
  * @package  FrameworkOnFramework

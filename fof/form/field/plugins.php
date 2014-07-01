@@ -21,7 +21,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('plugins');
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Plugins installed on the site
  *
  * @package  FrameworkOnFramework

@@ -18,7 +18,7 @@ use JFactory, JHtml, JText, JFormHelper, JFormField, JDatabaseQuery;
 defined('FOF30_INCLUDED') or die;
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Renders the row ordering interface checkbox in browse views
  *
  * @package  FrameworkOnFramework

@@ -21,7 +21,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('media');
 
 /**
- * Form Field class for the F0F framework
+ * Form Field class for the FOF framework
  * Media selection field.
  *
  * @package  FrameworkOnFramework

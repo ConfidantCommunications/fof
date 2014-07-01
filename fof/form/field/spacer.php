@@ -20,7 +20,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('spacer');
 
 /**
- * Form Field class for the F0F framework
+ * Form Field class for the FOF framework
  * Spacer used between form elements
  *
  * @package  FrameworkOnFramework

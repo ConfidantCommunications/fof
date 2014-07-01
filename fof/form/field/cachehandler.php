@@ -21,7 +21,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('cachehandler');
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Joomla! cache handlers
  *
  * @package  FrameworkOnFramework

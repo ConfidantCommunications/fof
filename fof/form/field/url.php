@@ -20,7 +20,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('url');
 
 /**
- * Form Field class for the F0F framework
+ * Form Field class for the FOF framework
  * Supports a URL text field.
  *
  * @package  FrameworkOnFramework

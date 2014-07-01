@@ -21,7 +21,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('sql');
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Radio selection listGeneric list from an SQL statement
  *
  * @package  FrameworkOnFramework

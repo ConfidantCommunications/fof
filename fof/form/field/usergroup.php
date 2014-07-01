@@ -22,7 +22,7 @@ defined('_JEXEC') or die;
 JFormHelper::loadFieldClass('usergroup');
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Joomla! user groups
  *
  * @package  FrameworkOnFramework

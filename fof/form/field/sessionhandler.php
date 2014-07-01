@@ -21,7 +21,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('sessionhandler');
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Joomla! session handlers
  *
  * @package  FrameworkOnFramework

@@ -22,7 +22,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('calendar');
 
 /**
- * Form Field class for the F0F framework
+ * Form Field class for the FOF framework
  * Supports a calendar / date field.
  *
  * @package  FrameworkOnFramework

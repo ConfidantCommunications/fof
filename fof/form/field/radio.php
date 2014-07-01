@@ -21,7 +21,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('radio');
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Radio selection list
  *
  * @package  FrameworkOnFramework

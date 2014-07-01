@@ -23,7 +23,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('accesslevel');
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Joomla! access levels
  *
  * @package  FrameworkOnFramework

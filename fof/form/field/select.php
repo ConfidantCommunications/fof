@@ -23,7 +23,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('list');
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Supports a generic list of options.
  *
  * @package  FrameworkOnFramework
@@ -233,7 +233,7 @@ class Select extends JFormFieldList implements FOFFormField
 	 *
 	 * @return  array  The field option objects.
 	 *
-	 * @since	Ordering is available since F0F 2.1.b2.
+	 * @since	Ordering is available since FOF 2.1.b2.
 	 */
 	protected function getOptions()
 	{

@@ -20,7 +20,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('hidden');
 
 /**
- * Form Field class for the F0F framework
+ * Form Field class for the FOF framework
  * A hidden field
  *
  * @package  FrameworkOnFramework

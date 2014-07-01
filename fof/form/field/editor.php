@@ -20,7 +20,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('editor');
 
 /**
- * Form Field class for the F0F framework
+ * Form Field class for the FOF framework
  * An editarea field for content creation and formatted HTML display
  *
  * @package  FrameworkOnFramework

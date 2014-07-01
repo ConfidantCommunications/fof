@@ -21,7 +21,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('rules');
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Joomla! ACL Rules
  *
  * @package  FrameworkOnFramework
@@ -98,7 +98,7 @@ class Rules extends JFormFieldRules implements FOFFormField
 	 * dealing with a new record it gets the default permissions from the root asset node, which
 	 * is fine for the default permissions of Joomla articles, but unsuitable for third party software.
 	 * We had to copy & paste the whole code, since we can't "inject" the correct asset id if one is
-	 * not found. Our fixes are surrounded by `F0F Library fix` remarks.
+	 * not found. Our fixes are surrounded by `FOF Library fix` remarks.
      *
      * @return  string  The input field's HTML for this field type
      */
@@ -159,7 +159,7 @@ class Rules extends JFormFieldRules implements FOFFormField
             // Note that for global configuration, com_config injects asset_id = 1 into the form.
             $assetId = $this->form->getValue($assetField);
 
-            // ==== F0F Library fix - Start ====
+            // ==== FOF Library fix - Start ====
             // If there is no assetId (let's say we are dealing with a new record), let's ask the table
             // to give it to us. Here you should implement your logic (ie getting default permissions from
             // the component or from the category)
@@ -168,7 +168,7 @@ class Rules extends JFormFieldRules implements FOFFormField
                 $table   = $this->form->getModel()->getTable();
                 $assetId = $table->getAssetParentId();
             }
-            // ==== F0F Library fix - End   ====
+            // ==== FOF Library fix - End   ====
         }
 
         // Use the compact form for the content rules (deprecated).
@@ -420,7 +420,7 @@ class Rules extends JFormFieldRules implements FOFFormField
             // Note that for global configuration, com_config injects asset_id = 1 into the form.
             $assetId = $this->form->getValue($assetField);
 
-            // ==== F0F Library fix - Start ====
+            // ==== FOF Library fix - Start ====
             // If there is no assetId (let's say we are dealing with a new record), let's ask the table
             // to give it to us. Here you should implement your logic (ie getting default permissions from
             // the component or from the category)
@@ -429,7 +429,7 @@ class Rules extends JFormFieldRules implements FOFFormField
                 $table   = $this->form->getModel()->getTable();
                 $assetId = $table->getAssetParentId();
             }
-            // ==== F0F Library fix - End   ====
+            // ==== FOF Library fix - End   ====
         }
 
         // Full width format.

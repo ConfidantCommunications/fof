@@ -20,7 +20,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('captcha');
 
 /**
- * Form Field class for the F0F framework
+ * Form Field class for the FOF framework
  * Supports a captcha field.
  *
  * @package  FrameworkOnFramework

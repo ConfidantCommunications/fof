@@ -18,7 +18,7 @@ use JFactory, JHtml, JText, JFormHelper, JFormField;
 defined('FOF30_INCLUDED') or die;
 
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Renders the checkbox in browse views which allows you to select rows
  *
  * @package  FrameworkOnFramework

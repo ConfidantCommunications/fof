@@ -17,7 +17,7 @@ use JFactory, JHtml, JText, JFormHelper;
 defined('FOF30_INCLUDED') or die;
 
 /**
- * Form Field class for the F0F framework
+ * Form Field class for the FOF framework
  * Media selection field. This is an alias of the "media" field type.
  *
  * @package  FrameworkOnFramework

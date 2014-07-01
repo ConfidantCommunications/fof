@@ -11,9 +11,9 @@ namespace FOF30\Config\Domain;
 defined('FOF30_INCLUDED') or die();
 
 /**
- * The Interface of an F0FConfigDomain class. The methods are used to parse and
- * provision sensible information to consumers. F0FConfigProvider acts as an
- * adapter to the F0FConfigDomain classes.
+ * The Interface of an FOFConfigDomain class. The methods are used to parse and
+ * provision sensible information to consumers. FOFConfigProvider acts as an
+ * adapter to the FOFConfigDomain classes.
  *
  * @package  FrameworkOnFramework
  * @since    2.1

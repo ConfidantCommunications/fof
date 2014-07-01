@@ -11,8 +11,6 @@ namespace FOF30\Encrypt;
 defined('FOF30_INCLUDED') or die;
 
 /**
- * F0FEncryptBase32
- *
  * @package  FrameworkOnFramework
  * @since    1.0
  */

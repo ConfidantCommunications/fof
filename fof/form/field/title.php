@@ -19,7 +19,7 @@ defined('FOF30_INCLUDED') or die;
 JFormHelper::loadFieldClass('text');
 
 /**
- * Form Field class for the F0F framework
+ * Form Field class for the FOF framework
  * Supports a title field with an optional slug display below it.
  *
  * @package  FrameworkOnFramework
