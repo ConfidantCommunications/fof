@@ -365,7 +365,7 @@ abstract class Platform implements PlatformInterface
 	{
 		if (version_compare(JVERSION, '3.0', 'lt') )
 		{
-			return JError::setErrorHandling($level, $log_level, $options);
+			JError::setErrorHandling($level, $log_level, $options);
 		}
 	}
 

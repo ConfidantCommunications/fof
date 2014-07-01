@@ -8,8 +8,15 @@
 
 namespace FOF30\Render;
 
+use FOF30\Input\Input as FOFInput;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Form as FOFForm;
+use FOF30\Model\Model as FOFModel;
+use FOF30\Inflector\Inflector as FOFInflector;
+use FOF30\Toolbar\Toolbar as FOFToolbar;
+
 // Joomla! class inclusion
-use JText;
+use JText, JVersion, JHtml, JFactory, JDocument, JSubMenuHelper, JToolBar, stdClass;
 
 defined('FOF30_INCLUDED') or die;
 
@@ -35,7 +42,7 @@ class Joomla extends RenderAbstract
 	 *
 	 * @param   string    $view    The current view
 	 * @param   string    $task    The current task
-	 * @param   F0FInput  $input   The input array (request parameters)
+	 * @param   FOFInput  $input   The input array (request parameters)
 	 * @param   array     $config  The view configuration array
 	 *
 	 * @return  void
@@ -54,7 +61,7 @@ class Joomla extends RenderAbstract
 			return;
 		}
 
-		$platform = F0FPlatform::getInstance();
+		$platform = FOFPlatform::getInstance();
 
 		if ($platform->isCli())
 		{
@@ -111,7 +118,7 @@ class Joomla extends RenderAbstract
 	 *
 	 * @param   string    $view    The current view
 	 * @param   string    $task    The current task
-	 * @param   F0FInput  $input   The input array (request parameters)
+	 * @param   FOFInput  $input   The input array (request parameters)
 	 * @param   array     $config  The view configuration array
 	 *
 	 * @return  void
@@ -131,7 +138,7 @@ class Joomla extends RenderAbstract
 		}
 
 		// Closing tag only if we're not in CLI
-		if (F0FPlatform::getInstance()->isCli())
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
@@ -140,15 +147,15 @@ class Joomla extends RenderAbstract
 	}
 
 	/**
-	 * Renders a F0FForm for a Browse view and returns the corresponding HTML
+	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   F0FForm   &$form  The form to render
-	 * @param   F0FModel  $model  The model providing our data
-	 * @param   F0FInput  $input  The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	protected function renderFormBrowse(F0FForm &$form, F0FModel $model, F0FInput $input)
+	protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
 		JHtml::_('behavior.multiselect');
 
@@ -162,14 +169,14 @@ class Joomla extends RenderAbstract
 
 		$html .= '<form action="index.php" method="post" name="adminForm" id="adminForm">' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="option" value="' . $input->getCmd('option') . '" />' . PHP_EOL;
-		$html .= "\t" . '<input type="hidden" name="view" value="' . F0FInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
+		$html .= "\t" . '<input type="hidden" name="view" value="' . FOFInflector::pluralize($input->getCmd('view')) . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="boxchecked" value="" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="hidemainmenu" value="" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="filter_order" value="' . $filter_order . '" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="filter_order_Dir" value="' . $filter_order_Dir . '" />' . PHP_EOL;
 
-		if (F0FPlatform::getInstance()->isFrontend() && ($input->getCmd('Itemid', 0) != 0))
+		if (FOFPlatform::getInstance()->isFrontend() && ($input->getCmd('Itemid', 0) != 0))
 		{
 			$html .= "\t" . '<input type="hidden" name="Itemid" value="' . $input->getCmd('Itemid', 0) . '" />' . PHP_EOL;
 		}
@@ -349,15 +356,15 @@ class Joomla extends RenderAbstract
 	}
 
 	/**
-	 * Renders a F0FForm for a Read view and returns the corresponding HTML
+	 * Renders a FOFForm for a Read view and returns the corresponding HTML
 	 *
-	 * @param   F0FForm   &$form  The form to render
-	 * @param   F0FModel  $model  The model providing our data
-	 * @param   F0FInput  $input  The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	protected function renderFormRead(F0FForm &$form, F0FModel $model, F0FInput $input)
+	protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
 		$html = $this->renderFormRaw($form, $model, $input, 'read');
 
@@ -365,15 +372,15 @@ class Joomla extends RenderAbstract
 	}
 
 	/**
-	 * Renders a F0FForm for an Edit view and returns the corresponding HTML
+	 * Renders a FOFForm for an Edit view and returns the corresponding HTML
 	 *
-	 * @param   F0FForm   &$form  The form to render
-	 * @param   F0FModel  $model  The model providing our data
-	 * @param   F0FInput  $input  The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	protected function renderFormEdit(F0FForm &$form, F0FModel $model, F0FInput $input)
+	protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input)
 	{
 		// Get the key for this model's table
 		$key		 = $model->getTable()->getKeyName();
@@ -430,7 +437,7 @@ class Joomla extends RenderAbstract
 		$html .= "\t" . '<input type="hidden" name="task" value="" />' . PHP_EOL;
 		$html .= "\t" . '<input type="hidden" name="' . $key . '" value="' . $keyValue . '" />' . PHP_EOL;
 
-		if (F0FPlatform::getInstance()->isFrontend() && ($input->getCmd('Itemid', 0) != 0))
+		if (FOFPlatform::getInstance()->isFrontend() && ($input->getCmd('Itemid', 0) != 0))
 		{
 			$html .= "\t" . '<input type="hidden" name="Itemid" value="' . $input->getCmd('Itemid', 0) . '" />' . PHP_EOL;
 		}
@@ -444,16 +451,16 @@ class Joomla extends RenderAbstract
 	}
 
 	/**
-	 * Renders a raw F0FForm and returns the corresponding HTML
+	 * Renders a raw FOFForm and returns the corresponding HTML
 	 *
-	 * @param   F0FForm   &$form     The form to render
-	 * @param   F0FModel  $model     The model providing our data
-	 * @param   F0FInput  $input     The input object
+	 * @param   FOFForm   &$form     The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
 	 * @param   string    $formType  The form type e.g. 'edit' or 'read'
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	protected function renderFormRaw(F0FForm &$form, F0FModel $model, F0FInput $input, $formType)
+	protected function renderFormRaw(FOFForm &$form, FOFModel $model, FOFInput $input, $formType)
 	{
 		$html = '';
 
@@ -466,18 +473,18 @@ class Joomla extends RenderAbstract
 	}
 
 	/**
-	 * Renders a raw fieldset of a F0FForm and returns the corresponding HTML
+	 * Renders a raw fieldset of a FOFForm and returns the corresponding HTML
 	 *
 	 * @param   stdClass  &$fieldset   The fieldset to render
-	 * @param   F0FForm   &$form       The form to render
-	 * @param   F0FModel  $model       The model providing our data
-	 * @param   F0FInput  $input       The input object
+	 * @param   FOFForm   &$form       The form to render
+	 * @param   FOFModel  $model       The model providing our data
+	 * @param   FOFInput  $input       The input object
 	 * @param   string    $formType    The form type e.g. 'edit' or 'read'
 	 * @param   boolean   $showHeader  Should I render the fieldset's header?
 	 *
 	 * @return  string    The HTML rendering of the fieldset
 	 */
-	protected function renderFieldset(stdClass &$fieldset, F0FForm &$form, F0FModel $model, F0FInput $input, $formType, $showHeader = true)
+	protected function renderFieldset(stdClass &$fieldset, FOFForm &$form, FOFModel $model, FOFInput $input, $formType, $showHeader = true)
 	{
 		$html = '';
 
@@ -577,12 +584,12 @@ class Joomla extends RenderAbstract
 	 * Renders a label for a fieldset.
 	 *
 	 * @param   object  	$field  	The field of the label to render
-	 * @param   F0FForm   	&$form      The form to render
+	 * @param   FOFForm   	&$form      The form to render
 	 * @param 	string		$title		The title of the label
 	 *
 	 * @return 	string		The rendered label
 	 */
-	protected function renderFieldsetLabel($field, F0FForm &$form, $title)
+	protected function renderFieldsetLabel($field, FOFForm &$form, $title)
 	{
 		$html = '';
 
@@ -626,11 +633,11 @@ class Joomla extends RenderAbstract
 	/**
 	 * Loads the validation script for an edit form
 	 *
-	 * @param   F0FForm  &$form  The form we are rendering
+	 * @param   FOFForm  &$form  The form we are rendering
 	 *
 	 * @return  void
 	 */
-	protected function loadValidationScript(F0FForm &$form)
+	protected function loadValidationScript(FOFForm &$form)
 	{
 		$message = $form->getView()->escape(JText::_('JGLOBAL_VALIDATION_FORM_FAILED'));
 
@@ -647,7 +654,7 @@ Joomla.submitbutton = function(task)
 };
 JS;
 
-		$document = F0FPlatform::getInstance()->getDocument();
+		$document = FOFPlatform::getInstance()->getDocument();
 
 		if ($document instanceof JDocument)
 		{
@@ -660,7 +667,7 @@ JS;
 	 *
 	 * @param   string    $view    The active view name
 	 * @param   string    $task    The current task
-	 * @param   F0FInput  $input   The input object
+	 * @param   FOFInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
 	 *
 	 * @return  void
@@ -669,16 +676,16 @@ JS;
 	{
 		// On command line don't do anything
 
-		if (F0FPlatform::getInstance()->isCli())
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
 
 		// Do not render a submenu unless we are in the the admin area
-		$toolbar				 = F0FToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
+		$toolbar				 = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendSubmenu	 = $toolbar->getRenderFrontendSubmenu();
 
-		if (!F0FPlatform::getInstance()->isBackend() && !$renderFrontendSubmenu)
+		if (!FOFPlatform::getInstance()->isBackend() && !$renderFrontendSubmenu)
 		{
 			return;
 		}
@@ -689,7 +696,7 @@ JS;
 	/**
 	 * do the rendering job for the linkbar
 	 *
-	 * @param   F0FToolbar  $toolbar  A toolbar object
+	 * @param   FOFToolbar  $toolbar  A toolbar object
 	 *
 	 * @return  void
 	 */
@@ -711,7 +718,7 @@ JS;
 	 *
 	 * @param   string    $view    The active view name
 	 * @param   string    $task    The current task
-	 * @param   F0FInput  $input   The input object
+	 * @param   FOFInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
 	 *
 	 * @return  void
@@ -720,23 +727,23 @@ JS;
 	{
 		// On command line don't do anything
 
-		if (F0FPlatform::getInstance()->isCli())
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
 
 		// Do not render buttons unless we are in the the frontend area and we are asked to do so
-		$toolbar				 = F0FToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
+		$toolbar				 = FOFToolbar::getAnInstance($input->getCmd('option', 'com_foobar'), $config);
 		$renderFrontendButtons	 = $toolbar->getRenderFrontendButtons();
 
-		if (F0FPlatform::getInstance()->isBackend() || !$renderFrontendButtons)
+		if (FOFPlatform::getInstance()->isBackend() || !$renderFrontendButtons)
 		{
 			return;
 		}
 
 		// Load main backend language, in order to display toolbar strings
 		// (JTOOLBAR_BACK, JTOOLBAR_PUBLISH etc etc)
-		F0FPlatform::getInstance()->loadTranslations('joomla');
+		FOFPlatform::getInstance()->loadTranslations('joomla');
 
 		$title	 = JFactory::getApplication()->get('JComponentTitle');
 		$bar	 = JToolBar::getInstance('toolbar');
@@ -744,6 +751,6 @@ JS;
 		// Delete faux links, since if SEF is on, Joomla will follow the link instead of submitting the form
 		$bar_content = str_replace('href="#"', '', $bar->render());
 
-		echo '<div id="F0FHeaderHolder">', $bar_content, $title, '<div style="clear:both"></div>', '</div>';
+		echo '<div id="FOFHeaderHolder">', $bar_content, $title, '<div style="clear:both"></div>', '</div>';
 	}
 }

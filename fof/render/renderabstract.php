@@ -8,6 +8,17 @@
 
 namespace FOF30\Render;
 
+use FOF30\Input\Input as FOFInput;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Form as FOFForm;
+use FOF30\Model\Model as FOFModel;
+use FOF30\Toolbar\Toolbar as FOFToolbar;
+
+use stdClass, SimpleXMLElement;
+
+// Joomla! class inclusion
+use JText, JVersion, JHtml, JFactory, JDocument, JSubMenuHelper, JToolBar;
+
 defined('FOF30_INCLUDED') or die;
 
 /**
@@ -44,7 +55,7 @@ abstract class RenderAbstract
 	 *
 	 * @param   string    $view    The current view
 	 * @param   string    $task    The current task
-	 * @param   F0FInput  $input   The input array (request parameters)
+	 * @param   FOFInput  $input   The input array (request parameters)
 	 * @param   array     $config  The view configuration array
 	 *
 	 * @return  void
@@ -56,7 +67,7 @@ abstract class RenderAbstract
 	 *
 	 * @param   string    $view    The current view
 	 * @param   string    $task    The current task
-	 * @param   F0FInput  $input   The input array (request parameters)
+	 * @param   FOFInput  $input   The input array (request parameters)
 	 * @param   array     $config  The view configuration array
 	 *
 	 * @return  void
@@ -64,17 +75,17 @@ abstract class RenderAbstract
 	abstract public function postRender($view, $task, $input, $config = array());
 
 	/**
-	 * Renders a F0FForm and returns the corresponding HTML
+	 * Renders a FOFForm and returns the corresponding HTML
 	 *
-	 * @param   F0FForm   &$form     The form to render
-	 * @param   F0FModel  $model     The model providing our data
-	 * @param   F0FInput  $input     The input object
+	 * @param   FOFForm   &$form     The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
 	 * @param   string    $formType  The form type: edit, browse or read
 	 * @param   boolean   $raw       If true, the raw form fields rendering (without the surrounding form tag) is returned.
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	public function renderForm(F0FForm &$form, F0FModel $model, F0FInput $input, $formType = null, $raw = false)
+	public function renderForm(FOFForm &$form, FOFModel $model, FOFInput $input, $formType = null, $raw = false)
 	{
 		if (is_null($formType))
 		{
@@ -130,21 +141,21 @@ abstract class RenderAbstract
 	 *	{
 	 * 		public static function addSubmenu($vName)
 	 *		{
-	 *			// Load F0F
+	 *			// Load FOF
 	 *			include_once JPATH_LIBRARIES . '/fof/include.php';
 	 *
 	 *			if (!defined('FOF30_INCLUDED'))
 	 *			{
-	 *				JError::raiseError('500', 'F0F is not installed');
+	 *				JError::raiseError('500', 'FOF is not installed');
 	 *			}
 	 *
 	 *			if (version_compare(JVERSION, '3.0', 'ge'))
 	 *			{
-	 *				$strapper = new F0FRenderJoomla3;
+	 *				$strapper = new FOFRenderJoomla3;
 	 *			}
 	 *			else
 	 *			{
-	 *				$strapper = new F0FRenderJoomla;
+	 *				$strapper = new FOFRenderJoomla;
 	 *			}
 	 *
 	 *			$strapper->renderCategoryLinkbar('com_babioonevent');
@@ -159,83 +170,83 @@ abstract class RenderAbstract
 	public function renderCategoryLinkbar($extension, $config = array())
 	{
 		// On command line don't do anything
-		if (F0FPlatform::getInstance()->isCli())
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
 
 		// Do not render a category submenu unless we are in the the admin area
-		if (!F0FPlatform::getInstance()->isBackend())
+		if (!FOFPlatform::getInstance()->isBackend())
 		{
 			return;
 		}
 
-		$toolbar = F0FToolbar::getAnInstance($extension, $config);
+		$toolbar = FOFToolbar::getAnInstance($extension, $config);
 		$toolbar->renderSubmenu();
 
 		$this->renderLinkbarItems($toolbar);
 	}
 
 	/**
-	 * Renders a F0FForm for a Browse view and returns the corresponding HTML
+	 * Renders a FOFForm for a Browse view and returns the corresponding HTML
 	 *
-	 * @param   F0FForm   &$form  The form to render
-	 * @param   F0FModel  $model  The model providing our data
-	 * @param   F0FInput  $input  The input object
-	 *
-	 * @return  string    The HTML rendering of the form
-	 */
-	abstract protected function renderFormBrowse(F0FForm &$form, F0FModel $model, F0FInput $input);
-
-	/**
-	 * Renders a F0FForm for a Read view and returns the corresponding HTML
-	 *
-	 * @param   F0FForm   &$form  The form to render
-	 * @param   F0FModel  $model  The model providing our data
-	 * @param   F0FInput  $input  The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	abstract protected function renderFormRead(F0FForm &$form, F0FModel $model, F0FInput $input);
+	abstract protected function renderFormBrowse(FOFForm &$form, FOFModel $model, FOFInput $input);
 
 	/**
-	 * Renders a F0FForm for an Edit view and returns the corresponding HTML
+	 * Renders a FOFForm for a Read view and returns the corresponding HTML
 	 *
-	 * @param   F0FForm   &$form  The form to render
-	 * @param   F0FModel  $model  The model providing our data
-	 * @param   F0FInput  $input  The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	abstract protected function renderFormEdit(F0FForm &$form, F0FModel $model, F0FInput $input);
+	abstract protected function renderFormRead(FOFForm &$form, FOFModel $model, FOFInput $input);
 
 	/**
-	 * Renders a raw F0FForm and returns the corresponding HTML
+	 * Renders a FOFForm for an Edit view and returns the corresponding HTML
 	 *
-	 * @param   F0FForm   &$form     The form to render
-	 * @param   F0FModel  $model     The model providing our data
-	 * @param   F0FInput  $input     The input object
+	 * @param   FOFForm   &$form  The form to render
+	 * @param   FOFModel  $model  The model providing our data
+	 * @param   FOFInput  $input  The input object
+	 *
+	 * @return  string    The HTML rendering of the form
+	 */
+	abstract protected function renderFormEdit(FOFForm &$form, FOFModel $model, FOFInput $input);
+
+	/**
+	 * Renders a raw FOFForm and returns the corresponding HTML
+	 *
+	 * @param   FOFForm   &$form     The form to render
+	 * @param   FOFModel  $model     The model providing our data
+	 * @param   FOFInput  $input     The input object
 	 * @param   string    $formType  The form type e.g. 'edit' or 'read'
 	 *
 	 * @return  string    The HTML rendering of the form
 	 */
-	abstract protected function renderFormRaw(F0FForm &$form, F0FModel $model, F0FInput $input, $formType);
+	abstract protected function renderFormRaw(FOFForm &$form, FOFModel $model, FOFInput $input, $formType);
 
 	/**
-	 * Renders a raw fieldset of a F0FForm and returns the corresponding HTML
+	 * Renders a raw fieldset of a FOFForm and returns the corresponding HTML
 	 *
 	 * @TODO: Convert to an abstract method or interface at FOF3
 	 *
 	 * @param   stdClass  &$fieldset   The fieldset to render
-	 * @param   F0FForm   &$form       The form to render
-	 * @param   F0FModel  $model       The model providing our data
-	 * @param   F0FInput  $input       The input object
+	 * @param   FOFForm   &$form       The form to render
+	 * @param   FOFModel  $model       The model providing our data
+	 * @param   FOFInput  $input       The input object
 	 * @param   string    $formType    The form type e.g. 'edit' or 'read'
 	 * @param   boolean   $showHeader  Should I render the fieldset's header?
 	 *
 	 * @return  string    The HTML rendering of the fieldset
 	 */
-	protected function renderFieldset(stdClass &$fieldset, F0FForm &$form, F0FModel $model, F0FInput $input, $formType, $showHeader = true)
+	protected function renderFieldset(stdClass &$fieldset, FOFForm &$form, FOFModel $model, FOFInput $input, $formType, $showHeader = true)
 	{
 
 	}
@@ -246,12 +257,12 @@ abstract class RenderAbstract
 	 * @TODO: Convert to an abstract method or interface at FOF3
 	 *
 	 * @param   object  	$field  	The field of the label to render
-	 * @param   F0FForm   	&$form      The form to render
+	 * @param   FOFForm   	&$form      The form to render
 	 * @param 	string		$title		The title of the label
 	 *
 	 * @return 	string		The rendered label
 	 */
-	protected function renderFieldsetLabel($field, F0FForm &$form, $title)
+	protected function renderFieldsetLabel($field, FOFForm &$form, $title)
 	{
 
 	}

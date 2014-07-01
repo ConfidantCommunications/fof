@@ -8,8 +8,15 @@
 
 namespace FOF30\Render;
 
+use FOF30\Input\Input as FOFInput;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Form\Form as FOFForm;
+use FOF30\Model\Model as FOFModel;
+use FOF30\Inflector\Inflector as FOFInflector;
+use FOF30\Toolbar\Toolbar as FOFToolbar;
+
 // Joomla! class inclusion
-use JText;
+use JText, JVersion, JHtml, JFactory, JDocument, JSubMenuHelper, JToolBar, stdClass;
 
 defined('FOF30_INCLUDED') or die;
 
@@ -35,7 +42,7 @@ class Joomla3 extends Strapper
 	 *
 	 * @param   string    $view    The current view
 	 * @param   string    $task    The current task
-	 * @param   F0FInput  $input   The input array (request parameters)
+	 * @param   FOFInput  $input   The input array (request parameters)
 	 * @param   array     $config  The view configuration array
 	 *
 	 * @return  void
@@ -54,7 +61,7 @@ class Joomla3 extends Strapper
 			return;
 		}
 
-		$platform = F0FPlatform::getInstance();
+		$platform = FOFPlatform::getInstance();
 
 		if ($platform->isCli())
 		{
@@ -106,7 +113,7 @@ class Joomla3 extends Strapper
 	 *
 	 * @param   string    $view    The current view
 	 * @param   string    $task    The current task
-	 * @param   F0FInput  $input   The input array (request parameters)
+	 * @param   FOFInput  $input   The input array (request parameters)
 	 * @param   array     $config  The view configuration array
 	 *
 	 * @return  void
@@ -126,7 +133,7 @@ class Joomla3 extends Strapper
 		}
 
 		// Closing tag only if we're not in CLI
-		if (F0FPlatform::getInstance()->isCli())
+		if (FOFPlatform::getInstance()->isCli())
 		{
 			return;
 		}
@@ -139,7 +146,7 @@ class Joomla3 extends Strapper
 	 *
 	 * @param   string    $view    The active view name
 	 * @param   string    $task    The current task
-	 * @param   F0FInput  $input   The input object
+	 * @param   FOFInput  $input   The input object
 	 * @param   array     $config  Extra configuration variables for the toolbar
 	 *
 	 * @return  void
@@ -170,12 +177,12 @@ class Joomla3 extends Strapper
 	 * Renders a label for a fieldset.
 	 *
 	 * @param   object  	$field  	The field of the label to render
-	 * @param   F0FForm   	&$form      The form to render
+	 * @param   FOFForm   	&$form      The form to render
 	 * @param 	string		$title		The title of the label
 	 *
 	 * @return 	string		The rendered label
 	 */
-	protected function renderFieldsetLabel($field, F0FForm &$form, $title)
+	protected function renderFieldsetLabel($field, FOFForm &$form, $title)
 	{
 		$html = '';
 
