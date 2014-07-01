@@ -1,4 +1,10 @@
 <?php
+
+use FOF30\Render\RenderAbstract as F0FRenderAbstract;
+use FOF30\Input\Input as F0FInput;
+use FOF30\Form\Form as F0FForm;
+use FOF30\Model\Model as F0FModel;
+
 class FtestRenderer extends F0FRenderAbstract {
 
 	/**

@@ -7,8 +7,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-//require_once 'PHPUnit/Framework.php';
-//require_once 'PHPUnit/Autoload.php';
+use FOF30\Platform\Platform as F0FPlatform;
 
 abstract class FtestCase extends PHPUnit_Framework_TestCase
 {

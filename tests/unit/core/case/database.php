@@ -1,9 +1,9 @@
 <?php
 
-// require_once 'PHPUnit/Autoload.php';
-// require_once 'PHPUnit/Framework.php';
 require_once 'PHPUnit/Extensions/Database/TestCase.php';
 require_once 'PHPUnit/Extensions/Database/DataSet/XmlDataSet.php';
+
+use FOF30\Platform\Platform as F0FPlatform;
 
 abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 {
@@ -139,7 +139,7 @@ abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 	/**
 	 * Sets the connection to the database
 	 *
-	 * @return connection
+	 * @return PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection
 	 */
 	protected function getConnection()
 	{
@@ -165,7 +165,7 @@ abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 	/**
 	 * Gets the data set to be loaded into the database during setup
 	 *
-	 * @return xml dataset
+	 * @return PHPUnit_Extensions_Database_DataSet_XmlDataSet XML dataset
 	 */
 	protected function getDataSet()
 	{

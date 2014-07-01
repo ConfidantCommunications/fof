@@ -1,5 +1,7 @@
 <?php
 
+use FOF30\Table\Table as F0FTable;
+
 /**
  * Sometimes we have to perform some tasks BEFORE calling the constructor. In production we can easily do that,
  * since we just need to extend the base class; if you need to do something like this in test, you must use this
