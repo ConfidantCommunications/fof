@@ -690,24 +690,6 @@ class Dispatcher extends FOFUtilsObject
 	}
 
 	/**
-	 * Creates a decryption key for use with the TOTP decryption method
-	 *
-	 * @param   integer  $time  The timestamp used for TOTP calculation, leave empty to use current timestamp
-	 *
-     * @codeCoverageIgnore
-	 * @return  string  THe encryption key
-	 */
-	private function _createDecryptionKey($time = null)
-	{
-		$totp = new FOFEncryptTotp($this->fofAuth_timeStep);
-		$otp = $totp->getCode($this->fofAuth_Key, $time);
-
-		$key = hash('sha256', $this->fofAuth_Key . $otp);
-
-		return $key;
-	}
-
-	/**
 	 * Main function to detect if we're running in a CLI environment and we're admin
 	 *
 	 * @return  array  isCLI and isAdmin. It's not an associtive array, so we can use list.

@@ -10,7 +10,7 @@ namespace FOF30\Database;
 use FOF30\Input\Input as FOFInput;
 use FOF30\Platform\Platform as FOFPlatform;
 
-use JDatabase;
+use JDatabase, Exception, SimpleXMLElement, JError;
 
 class Installer
 {

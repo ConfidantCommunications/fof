@@ -8,6 +8,8 @@
 
 namespace FOF30\Utils\ArrayUtils;
 
+use JString;
+
 defined('FOF30_INCLUDED') or die;
 
 /**

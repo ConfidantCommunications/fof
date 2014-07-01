@@ -15,7 +15,7 @@ use FOF30\Config\Provider as FOFConfigProvider;
 use FOF30\Utils\ArrayUtils\ArrayUtils as FOFUtilsArray;
 use FOF30\String\Utils as FOFStringUtils;
 
-use InvalidArgumentException;
+use InvalidArgumentException, stdClass;
 
 // Joomla! class inclusion
 use JText, JHtml, JToolBarHelper;

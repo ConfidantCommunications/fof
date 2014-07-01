@@ -62,7 +62,7 @@ abstract class DatabaseIterator implements Countable, Iterator
 	/**
 	 * A numeric or string key for the current database record.
 	 *
-	 * @var    scalar
+	 * @var    string|int
 	 */
 	private $_key;
 
@@ -158,7 +158,7 @@ abstract class DatabaseIterator implements Countable, Iterator
 	/**
 	 * The key of the current element in the iterator.
 	 *
-	 * @return  scalar
+	 * @return  string|int
 	 *
 	 * @see     Iterator::key()
 	 */

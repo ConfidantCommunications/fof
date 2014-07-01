@@ -11,12 +11,9 @@ namespace FOF30\Render;
 use FOF30\Input\Input as FOFInput;
 use FOF30\Platform\Platform as FOFPlatform;
 use FOF30\Form\Form as FOFForm;
-use FOF30\Model\Model as FOFModel;
-use FOF30\Inflector\Inflector as FOFInflector;
-use FOF30\Toolbar\Toolbar as FOFToolbar;
 
 // Joomla! class inclusion
-use JText, JVersion, JHtml, JFactory, JDocument, JSubMenuHelper, JToolBar, stdClass;
+use JText, JVersion, JHtml, JFactory, JDocument, JSubMenuHelper, JToolBar;
 
 defined('FOF30_INCLUDED') or die;
 

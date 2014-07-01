@@ -9,7 +9,6 @@
 namespace FOF30\Form\Header;
 
 use FOF30\Form\Header as FOFFormHeader;
-use FOF30\Platform\Platform as FOFPlatform;
 
 // Joomla! class inclusion
 use JText, JHtml;

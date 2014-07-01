@@ -18,7 +18,7 @@ use FOF30\Inflector\Inflector as FOFInflector;
 use FOF30\Platform\Platform as FOFPlatform;
 use FOF30\String\Utils as FOFStringUtils;
 
-use InvalidArgumentException, RuntimeException, UnexpectedValueException;
+use InvalidArgumentException, RuntimeException, UnexpectedValueException, Exception;
 
 // Joomla! class inclusion
 use JText, JTableInterface, JDatabaseDriver, JAccessRules, JDatabaseQuery, JTable, JLoader, JTableAsset,
@@ -1819,7 +1819,7 @@ class Table extends FOFUtilsObject implements JTableInterface
 			{
 				$this->_db->execute();
 			}
-			catch (JDatabaseException $e)
+			catch (Exception $e)
 			{
 				$this->setError($e->getMessage());
 			}

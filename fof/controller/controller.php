@@ -17,7 +17,7 @@ use FOF30\Table\Table as FOFTable;
 use FOF30\Inflector\Inflector as FOFInflector;
 use FOF30\Platform\Platform as FOFPlatform;
 
-use ReflectionClass, ReflectionMethod;
+use ReflectionClass, ReflectionMethod, stdClass;
 
 // Import Joomla! include files
 use JText, JDocument, JFactory, JCache, JRoute, JUtility;

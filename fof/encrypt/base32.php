@@ -8,6 +8,8 @@
 
 namespace FOF30\Encrypt;
 
+use Exception;
+
 defined('FOF30_INCLUDED') or die;
 
 /**
@@ -81,7 +83,7 @@ class Base32
 	 *
 	 * @return  string  String encoded as base32
 	 *
-	 * @throws exception
+	 * @throws Exception
 	 */
 	private function fromBin($str)
 	{

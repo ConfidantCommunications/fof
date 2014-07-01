@@ -24,6 +24,6 @@ if (!defined('FOF30_INCLUDED'))
 	// Register a debug log
 	if (defined('JDEBUG') && JDEBUG)
 	{
-		Platform::getInstance()->logAddLogger('fof30.log.php');
+		FOF30\Platform\Platform::getInstance()->logAddLogger('fof30.log.php');
 	}
 }
