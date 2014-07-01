@@ -8,8 +8,14 @@
 
 namespace FOF30\View;
 
+
+use FOF30\View\Raw as FOFViewRaw;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Toolbar\Toolbar as FOFToolbar;
+use FOF30\Render\RenderAbstract as FOFRenderAbstract;
+
 // Joomla! class inclusion
-use JText;
+use JText, JRequest, JFactory;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -21,7 +27,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Html extends F0FViewRaw
+class Html extends FOFViewRaw
 {
 	/** @var bool Should I set the page title in the front-end of the site? */
 	public $setFrontendPageTitle = false;
@@ -72,14 +78,14 @@ class Html extends F0FViewRaw
 
 		// Don't load the toolbar on CLI
 
-		if (!F0FPlatform::getInstance()->isCli())
+		if (!FOFPlatform::getInstance()->isCli())
 		{
-			$toolbar = F0FToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
+			$toolbar = FOFToolbar::getAnInstance($this->input->getCmd('option', 'com_foobar'), $this->config);
 			$toolbar->perms = $this->perms;
 			$toolbar->renderToolbar($view, $task, $this->input);
 		}
 
-		if (F0FPlatform::getInstance()->isFrontend())
+		if (FOFPlatform::getInstance()->isFrontend())
 		{
 			if ($this->setFrontendPageTitle)
 			{
@@ -104,7 +110,7 @@ class Html extends F0FViewRaw
 
 		$renderer = $this->getRenderer();
 
-		if ($renderer instanceof F0FRenderAbstract)
+		if ($renderer instanceof FOFRenderAbstract)
 		{
 			$renderer->postRender($view, $task, $this->input, $this->config);
 		}

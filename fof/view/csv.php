@@ -8,6 +8,12 @@
 
 namespace FOF30\View;
 
+use FOF30\View\Html as FOFViewHtml;
+use FOF30\Inflector\Inflector as FOFInflector;
+use FOF30\Platform\Platform as FOFPlatform;
+
+use JDocument, Exception;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -18,7 +24,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class Csv extends F0FViewHtml
+class Csv extends FOFViewHtml
 {
 	/**
 	 *  Should I produce a CSV header row.
@@ -42,7 +48,7 @@ class Csv extends F0FViewHtml
 	protected $csvFields = array();
 
 	/**
-	* Public constructor. Instantiates a F0FViewCsv object.
+	* Public constructor. Instantiates a FOFViewCsv object.
 	*
 	* @param   array  $config  The configuration data array
 	*/
@@ -81,7 +87,7 @@ class Csv extends F0FViewHtml
 		if (empty($this->csvFilename))
 		{
 			$view              = $this->input->getCmd('view', 'cpanel');
-			$view              = F0FInflector::pluralize($view);
+			$view              = FOFInflector::pluralize($view);
 			$this->csvFilename = strtolower($view);
 		}
 
@@ -106,7 +112,7 @@ class Csv extends F0FViewHtml
 		$items = $model->getItemList();
 		$this->items = $items;
 
-        $platform = F0FPlatform::getInstance();
+        $platform = FOFPlatform::getInstance();
 		$document = $platform->getDocument();
 
 		if ($document instanceof JDocument)
@@ -126,7 +132,7 @@ class Csv extends F0FViewHtml
 			$tpl = 'csv';
 		}
 
-		F0FPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
+		FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$hasFailed = false;
 

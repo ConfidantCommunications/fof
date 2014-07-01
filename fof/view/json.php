@@ -8,6 +8,16 @@
 
 namespace FOF30\View;
 
+use FOF30\View\Html as FOFViewHtml;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Model\Model as FOFModel;
+use FOF30\Hal\Document as FOFHalDocument;
+use FOF30\Hal\Link as FOFHalLink;
+
+use Exception;
+
+use JDocument, JUri, JRoute;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -18,7 +28,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Json extends F0FViewHtml
+class Json extends FOFViewHtml
 {
 	/**
 	 * When set to true we'll add hypermedia to the output, implementing the
@@ -58,7 +68,7 @@ class Json extends F0FViewHtml
 		$items = $model->getItemList();
 		$this->items = $items;
 
-		$document = F0FPlatform::getInstance()->getDocument();
+		$document = FOFPlatform::getInstance()->getDocument();
 
 		if ($document instanceof JDocument)
 		{
@@ -77,7 +87,7 @@ class Json extends F0FViewHtml
 			$tpl = 'json';
 		}
 
-		F0FPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
+		FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$hasFailed = false;
 
@@ -148,7 +158,7 @@ class Json extends F0FViewHtml
 		$item = $model->getItem();
 		$this->item = $item;
 
-		$document = F0FPlatform::getInstance()->getDocument();
+		$document = FOFPlatform::getInstance()->getDocument();
 
 		if ($document instanceof JDocument)
 		{
@@ -167,7 +177,7 @@ class Json extends F0FViewHtml
 			$tpl = 'json';
 		}
 
-    	F0FPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
+    	FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$hasFailed = false;
 
@@ -225,12 +235,12 @@ class Json extends F0FViewHtml
 	}
 
 	/**
-	 * Creates a F0FHalDocument using the provided data
+	 * Creates a FOFHalDocument using the provided data
 	 *
 	 * @param   array     $data   The data to put in the document
-	 * @param   F0FModel  $model  The model of this view
+	 * @param   FOFModel  $model  The model of this view
 	 *
-	 * @return  F0FHalDocument  A HAL-enabled document
+	 * @return  FOFHalDocument  A HAL-enabled document
 	 */
 	protected function _createDocumentWithHypermedia($data, $model = null)
 	{
@@ -248,22 +258,22 @@ class Json extends F0FViewHtml
 		if ($count == 1)
 		{
 			reset($data);
-			$document = new F0FHalDocument(end($data));
+			$document = new FOFHalDocument(end($data));
 		}
 		else
 		{
-			$document = new F0FHalDocument($data);
+			$document = new FOFHalDocument($data);
 		}
 
 		// Create a self link
 		$uri = (string) (JUri::getInstance());
 		$uri = $this->_removeURIBase($uri);
 		$uri = JRoute::_($uri);
-		$document->addLink('self', new F0FHalLink($uri));
+		$document->addLink('self', new FOFHalLink($uri));
 
 		// Create relative links in a record list context
 
-		if (is_array($data) && ($model instanceof F0FModel))
+		if (is_array($data) && ($model instanceof FOFModel))
 		{
 			$pagination = $model->getPagination();
 
@@ -278,7 +288,7 @@ class Json extends F0FViewHtml
 				$uri->setVar('limitstart', 0);
 				$uri = JRoute::_((string) $uri);
 
-				$document->addLink('first', new F0FHalLink($uri));
+				$document->addLink('first', new FOFHalLink($uri));
 
 				// Do we need a "prev" link?
 
@@ -290,7 +300,7 @@ class Json extends F0FViewHtml
 					$uri->setVar('limitstart', $limitstart);
 					$uri = JRoute::_((string) $uri);
 
-					$document->addLink('prev', new F0FHalLink($uri));
+					$document->addLink('prev', new FOFHalLink($uri));
 				}
 
 				// Do we need a "next" link?
@@ -303,7 +313,7 @@ class Json extends F0FViewHtml
 					$uri->setVar('limitstart', $limitstart);
 					$uri = JRoute::_((string) $uri);
 
-					$document->addLink('next', new F0FHalLink($uri));
+					$document->addLink('next', new FOFHalLink($uri));
 				}
 
 				// The "last" link?
@@ -313,7 +323,7 @@ class Json extends F0FViewHtml
 				$uri->setVar('limitstart', $limitstart);
 				$uri = JRoute::_((string) $uri);
 
-				$document->addLink('last', new F0FHalLink($uri));
+				$document->addLink('last', new FOFHalLink($uri));
 			}
 		}
 
@@ -333,7 +343,7 @@ class Json extends F0FViewHtml
 
 		if (is_null($root))
 		{
-			$root = rtrim(F0FPlatform::getInstance()->URIbase(), '/');
+			$root = rtrim(FOFPlatform::getInstance()->URIbase(), '/');
 			$rootlen = strlen($root);
 		}
 

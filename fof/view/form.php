@@ -8,6 +8,13 @@
 
 namespace FOF30\View;
 
+use FOF30\View\Html as FOFViewHtml;
+use FOF30\Form\Form as FOFForm;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Render\RenderAbstract as FOFRenderAbstract;
+
+use Exception, JRequest;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -18,9 +25,9 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Form extends F0FViewHtml
+class Form extends FOFViewHtml
 {
-	/** @var F0FForm The form to render */
+	/** @var FOFForm The form to render */
 	protected $form;
 
 	/**
@@ -66,7 +73,7 @@ class Form extends F0FViewHtml
 		$this->preRender();
 
 		// -- Try to load a view template; if not exists render the form directly
-		$basePath = F0FPlatform::getInstance()->isBackend() ? 'admin:' : 'site:';
+		$basePath = FOFPlatform::getInstance()->isBackend() ? 'admin:' : 'site:';
 		$basePath .= $this->config['option'] . '/';
 		$basePath .= $this->config['view'] . '/';
 		$path = $basePath . $this->getLayout();
@@ -92,7 +99,7 @@ class Form extends F0FViewHtml
 	}
 
 	/**
-	 * Returns the HTML rendering of the F0FForm attached to this view. Very
+	 * Returns the HTML rendering of the FOFForm attached to this view. Very
 	 * useful for customising a form page without having to meticulously hand-
 	 * code the entire form.
 	 *
@@ -103,7 +110,7 @@ class Form extends F0FViewHtml
 		$html = '';
 		$renderer = $this->getRenderer();
 
-		if ($renderer instanceof F0FRenderAbstract)
+		if ($renderer instanceof FOFRenderAbstract)
 		{
 			// Load CSS and Javascript files defined in the form
 			$this->form->loadCSSFiles();

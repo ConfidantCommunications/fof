@@ -8,6 +8,13 @@
 
 namespace FOF30\View;
 
+use FOF30\View\View as FOFView;
+use FOF30\Input\Input as FOFInput;
+use FOF30\Utils\Object\Object as FOFUtilsObject;
+use FOF30\Platform\Platform as FOFPlatform;
+
+use JFactory, JRequest, JHtml, stdClass;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -18,7 +25,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Raw extends F0FView
+class Raw extends FOFView
 {
 	/** @var array Data lists */
 	protected $lists = null;
@@ -50,18 +57,18 @@ class Raw extends F0FView
 		// Get the input
 		if (array_key_exists('input', $config))
 		{
-			if ($config['input'] instanceof F0FInput)
+			if ($config['input'] instanceof FOFInput)
 			{
 				$this->input = $config['input'];
 			}
 			else
 			{
-				$this->input = new F0FInput($config['input']);
+				$this->input = new FOFInput($config['input']);
 			}
 		}
 		else
 		{
-			$this->input = new F0FInput;
+			$this->input = new FOFInput;
 		}
 
 		if (!array_key_exists('option', $this->config))
@@ -74,11 +81,11 @@ class Raw extends F0FView
 			$this->config['view'] = $this->input->getCmd('view', 'cpanel');
 		}
 
-		$this->lists = new F0FUtilsObject;
+		$this->lists = new FOFUtilsObject;
 
-		if (!F0FPlatform::getInstance()->isCli())
+		if (!FOFPlatform::getInstance()->isCli())
 		{
-			$platform = F0FPlatform::getInstance();
+			$platform = FOFPlatform::getInstance();
 			$perms = (object) array(
 					'create'	 => $platform->authorise('core.create'     , $this->input->getCmd('option', 'com_foobar')),
 					'edit'		 => $platform->authorise('core.edit'       , $this->input->getCmd('option', 'com_foobar')),
@@ -184,7 +191,7 @@ class Raw extends F0FView
 
 		if (in_array($view, array('cpanel', 'cpanels')))
 		{
-			return;
+			return true;
 		}
 
 		// Load the model
@@ -199,7 +206,7 @@ class Raw extends F0FView
 		$this->pagination = $model->getPagination();
 
 		// Pass page params on frontend only
-		if (F0FPlatform::getInstance()->isFrontend())
+		if (FOFPlatform::getInstance()->isFrontend())
 		{
 			$params = JFactory::getApplication()->getParams();
 			$this->params = $params;
@@ -247,7 +254,7 @@ class Raw extends F0FView
                 // Ok, record is tracked, let's see if I can this record
                 if($table->isAssetsTracked())
                 {
-                    $platform = F0FPlatform::getInstance();
+                    $platform = FOFPlatform::getInstance();
 
                     if(!$this->perms->edit)
                     {
@@ -336,7 +343,7 @@ class Raw extends F0FView
 
 	/**
 	 * Returns the internal list of useful variables to the benefit of
-	 * F0FFormHeader fields.
+	 * FOFFormHeader fields.
 	 *
 	 * @return array
 	 *
