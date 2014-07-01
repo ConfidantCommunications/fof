@@ -103,3 +103,4 @@ jimport('joomla.application.input');
 require_once JPATH_TESTS.'/unit/core/reflection/reflection.php';
 require_once JPATH_TESTS.'/unit/core/closure/closure.php';
 require_once __DIR__ . '/../../fof/include.php';
+require_once __DIR__ . '/../../fof/legacy/f0fcompat.php';
