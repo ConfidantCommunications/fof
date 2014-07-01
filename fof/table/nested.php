@@ -9,8 +9,9 @@
 namespace FOF30\Table;
 
 use FOF30\Database\DatabaseIterator as FOFDatabaseIterator;
+use FOF30\String\Utils as FOFStringUtils;
 
-use Exception, RuntimeException;
+use Exception, RuntimeException, UnexpectedValueException;
 
 use JDatabaseDriver, JDatabaseQuery;
 
