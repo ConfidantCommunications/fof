@@ -8,6 +8,8 @@
 
 namespace FOF30\Hal;
 
+use FOF30\Hal\Link as FOFHalLink;
+
 defined('FOF30_INCLUDED') or die;
 
 /**
@@ -32,14 +34,14 @@ class Links
 	 * @param   string      $rel        The relation of the link to the document. See RFC 5988
 	 *                                  http://tools.ietf.org/html/rfc5988#section-6.2.2 A document
 	 *                                  MUST always have a "self" link.
-	 * @param   F0FHalLink  $link       The actual link object
+	 * @param   FOFHalLink  $link       The actual link object
 	 * @param   boolean     $overwrite  When false and a link of $rel relation exists, an array of
 	 *                                  links is created. Otherwise the existing link is overwriten
 	 *                                  with the new one
 	 *
 	 * @return  boolean  True if the link was added to the collection
 	 */
-	public function addLink($rel, F0FHalLink $link, $overwrite = true)
+	public function addLink($rel, FOFHalLink $link, $overwrite = true)
 	{
 		if (!$link->check())
 		{
@@ -69,7 +71,7 @@ class Links
 	 * Add multiple links to the links collection
 	 *
 	 * @param   string   $rel        The relation of the links to the document. See RFC 5988.
-	 * @param   array    $links      An array of F0FHalLink objects
+	 * @param   array    $links      An array of FOFHalLink objects
 	 * @param   boolean  $overwrite  When false and a link of $rel relation exists, an array
 	 *                               of links is created. Otherwise the existing link is
 	 *                               overwriten with the new one
@@ -87,7 +89,7 @@ class Links
 
 		foreach ($links as $link)
 		{
-			if ($link instanceof F0FHalLink)
+			if ($link instanceof FOFHalLink)
 			{
 				$this->addLink($rel, $link, $localOverwrite);
 			}
@@ -107,7 +109,7 @@ class Links
 	 *
 	 * @param   string  $rel  Optional; the relation to return the links for
 	 *
-	 * @return  array|F0FHalLink
+	 * @return  array|FOFHalLink
 	 */
 	public function getLinks($rel = null)
 	{

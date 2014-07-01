@@ -59,7 +59,7 @@ class Link
 	protected $_title = null;
 
 	/**
-	 * Public constructor of a F0FHalLink object
+	 * Public constructor of a FOFHalLink object
 	 *
 	 * @param   string   $href       See $this->_href
 	 * @param   boolean  $templated  See $this->_templated
@@ -67,13 +67,13 @@ class Link
 	 * @param   string   $hreflang   See $this->_hreflang
 	 * @param   string   $title      See $this->_title
 	 *
-	 * @throws  RuntimeException  If $href is empty
+	 * @throws  \RuntimeException  If $href is empty
 	 */
 	public function __construct($href, $templated = false, $name = null, $hreflang = null, $title = null)
 	{
 		if (empty($href))
 		{
-			throw new RuntimeException('A HAL link must always have a non-empty href');
+			throw new \RuntimeException('A HAL link must always have a non-empty href');
 		}
 
 		$this->_href = $href;

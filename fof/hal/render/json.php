@@ -8,6 +8,11 @@
 
 namespace FOF30\Hal\Render;
 
+use FOF30\Hal\Link as FOFHalLink;
+use FOF30\Hal\Document as FOFHalDocument;
+use FOF30\Table\Table as FOFTable;
+use stdClass;
+
 defined('FOF30_INCLUDED') or die;
 
 /**
@@ -28,14 +33,14 @@ class Json implements RenderInterface
 	/**
 	 * The document to render
 	 *
-	 * @var   F0FHalDocument
+	 * @var   FOFHalDocument
 	 */
 	protected $_document;
 
 	/**
 	 * Public constructor
 	 *
-	 * @param   F0FHalDocument  &$document  The document to render
+	 * @param   FOFHalDocument  &$document  The document to render
 	 */
 	public function __construct(&$document)
 	{
@@ -105,7 +110,7 @@ class Json implements RenderInterface
 
 				foreach ($embeddeddocs as $embedded)
 				{
-					$renderer = new F0FHalRenderJson($embedded);
+					$renderer = new Json($embedded);
 					array_push($serialiseThis->_embedded->$rel, $renderer->render($options));
 				}
 			}
@@ -116,7 +121,7 @@ class Json implements RenderInterface
 
 		if (is_object($data))
 		{
-			if ($data instanceof F0FTable)
+			if ($data instanceof FOFTable)
 			{
 				$data = $data->getData();
 			}
@@ -142,14 +147,14 @@ class Json implements RenderInterface
 	}
 
 	/**
-	 * Converts a F0FHalLink object into a stdClass object which will be used
+	 * Converts a FOFHalLink object into a stdClass object which will be used
 	 * for JSON serialisation
 	 *
-	 * @param   F0FHalLink  $link  The link you want converted
+	 * @param   FOFHalLink  $link  The link you want converted
 	 *
 	 * @return  stdClass  The converted link object
 	 */
-	protected function _getLink(F0FHalLink $link)
+	protected function _getLink(FOFHalLink $link)
 	{
 		$ret = array(
 			'href'	=> $link->href

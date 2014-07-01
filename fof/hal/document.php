@@ -8,6 +8,9 @@
 
 namespace FOF30\Hal;
 
+use FOF30\Hal\Links as FOFHalLinks;
+use FOF30\Hal\Link as FOFHalLink;
+
 defined('FOF30_INCLUDED') or die;
 
 /**
@@ -22,7 +25,7 @@ class Document
 	/**
 	 * The collection of links of this document
 	 *
-	 * @var   F0FHalLinks
+	 * @var   FOFHalLinks
 	 */
 	private $_links = null;
 
@@ -35,7 +38,7 @@ class Document
 	private $_data = null;
 
 	/**
-	 * Embedded documents. This is an array of F0FHalDocument instances.
+	 * Embedded documents. This is an array of Document instances.
 	 *
 	 * @var   array
 	 */
@@ -57,7 +60,7 @@ class Document
 	public function __construct($data = null)
 	{
 		$this->_data = $data;
-		$this->_links = new F0FHalLinks;
+		$this->_links = new FOFHalLinks;
 	}
 
 	/**
@@ -66,15 +69,15 @@ class Document
 	 * @param   string      $rel        The relation of the link to the document.
 	 *                                  See RFC 5988 http://tools.ietf.org/html/rfc5988#section-6.2.2 A document MUST always have
 	 *                                  a "self" link.
-	 * @param   F0FHalLink  $link       The actual link object
+	 * @param   FOFHalLink  $link       The actual link object
 	 * @param   boolean     $overwrite  When false and a link of $rel relation exists, an array of links is created. Otherwise the
 	 *                                  existing link is overwriten with the new one
 	 *
-	 * @see F0FHalLinks::addLink
+	 * @see FOFHalLinks::addLink
 	 *
 	 * @return  boolean  True if the link was added to the collection
 	 */
-	public function addLink($rel, F0FHalLink $link, $overwrite = true)
+	public function addLink($rel, FOFHalLink $link, $overwrite = true)
 	{
 		return $this->_links->addLink($rel, $link, $overwrite);
 	}
@@ -83,12 +86,12 @@ class Document
 	 * Add links to the document
 	 *
 	 * @param   string   $rel        The relation of the link to the document. See RFC 5988
-	 * @param   array    $links      An array of F0FHalLink objects
+	 * @param   array    $links      An array of FOFHalLink objects
 	 * @param   boolean  $overwrite  When false and a link of $rel relation exists, an array of
 	 *                               links is created. Otherwise the existing link is overwriten
 	 *                               with the new one
 	 *
-	 * @see F0FHalLinks::addLinks
+	 * @see FOFHalLinks::addLinks
 	 *
 	 * @return  boolean
 	 */
@@ -100,7 +103,7 @@ class Document
 	/**
 	 * Add data to the document
 	 *
-	 * @param   stdClass  $data       The data to add
+	 * @param   \stdClass  $data       The data to add
 	 * @param   boolean   $overwrite  Should I overwrite existing data?
 	 *
 	 * @return  void
@@ -131,18 +134,19 @@ class Document
 	 * Add an embedded document
 	 *
 	 * @param   string          $rel        The relation of the embedded document to its container document
-	 * @param   F0FHalDocument  $document   The document to add
+	 * @param   Document  $document   The document to add
 	 * @param   boolean         $overwrite  Should I overwrite existing data with the same relation?
 	 *
 	 * @return  boolean
 	 */
-	public function addEmbedded($rel, F0FHalDocument $document, $overwrite = true)
+	public function addEmbedded($rel, Document $document, $overwrite = true)
 	{
 		if (!array_key_exists($rel, $this->_embedded) || !$overwrite)
 		{
 			$this->_embedded[$rel] = $document;
 		}
-		elseif (array_key_exists($rel, $this->_embedded) && !$overwrite)
+
+		if (array_key_exists($rel, $this->_embedded) && !$overwrite)
 		{
 			if (!is_array($this->_embedded[$rel]))
 			{
@@ -151,10 +155,8 @@ class Document
 
 			$this->_embedded[$rel][] = $document;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
 	}
 
 	/**
@@ -174,7 +176,7 @@ class Document
 	 *
 	 * @param   string  $rel  Optional; the relation to return the embedded documents for
 	 *
-	 * @return  array|F0FHalDocument
+	 * @return  array|Document
 	 */
 	public function getEmbedded($rel = null)
 	{
@@ -195,7 +197,7 @@ class Document
 	/**
 	 * Return the data attached to this document
 	 *
-	 * @return   array|stdClass
+	 * @return   array|\stdClass
 	 */
 	public function getData()
 	{
@@ -210,15 +212,15 @@ class Document
 	 *
 	 * @return  string  The rendered document
 	 *
-	 * @throws  RuntimeException  If the format is unknown, i.e. there is no suitable renderer
+	 * @throws  \RuntimeException  If the format is unknown, i.e. there is no suitable renderer
 	 */
 	public function render($format = 'json')
 	{
-		$class_name = 'F0FHalRender' . ucfirst($format);
+		$class_name = 'FOFHalRender' . ucfirst($format);
 
 		if (!class_exists($class_name, true))
 		{
-			throw new RuntimeException("Unsupported HAL Document format '$format'. Render aborted.");
+			throw new \RuntimeException("Unsupported HAL Document format '$format'. Render aborted.");
 		}
 
 		$renderer = new $class_name($this);
