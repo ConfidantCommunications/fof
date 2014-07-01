@@ -205,7 +205,7 @@ abstract class Platform implements PlatformInterface
 					}
 
 					$temp[] = array(
-						'classname'		=> '\\FOF30\\Integration\\' . ucfirst($fileName) . 'Platform',
+						'classname'		=> '\\FOF30\\Integration\\' . ucfirst($fileName) . '\\Platform',
 						'fullpath'		=> $path . '/' . $fileName . '/platform.php',
 					);
 				}
@@ -326,7 +326,7 @@ abstract class Platform implements PlatformInterface
 		if (!$hasObject)
 		{
 			// Instantiate a new platform integration object
-			$className = '\\FOF30\\Integration\\' . ucfirst($this->getPlatformName()) . ucfirst($key);
+			$className = '\\FOF30\\Integration\\' . ucfirst($this->getPlatformName()) . '\\' . ucfirst($key) . '\\' . ucfirst($key);
 			$this->objectCache[$key] = new $className;
 		}
 

@@ -9,13 +9,15 @@
 namespace FOF30\Controller;
 
 use FOF30\Config\Provider as FOFConfigProvider;
-use FOF30\Utils\Object as FOFUtilsObject;
+use FOF30\Utils\Object\Object as FOFUtilsObject;
 use FOF30\Input\Input as FOFInput;
 use FOF30\View\View as FOFView;
 use FOF30\Model\Model as FOFModel;
-use FOF30\Table\Talbe as FOFTable;
+use FOF30\Table\Table as FOFTable;
 use FOF30\Inflector\Inflector as FOFInflector;
 use FOF30\Platform\Platform as FOFPlatform;
+
+use ReflectionClass, ReflectionMethod;
 
 // Import Joomla! include files
 use JText, JDocument, JFactory, JCache, JRoute, JUtility;

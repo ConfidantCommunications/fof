@@ -8,7 +8,7 @@
 
 namespace FOF30\Dispatcher;
 
-use FOF30\Utils\Object as FOFUtilsObject;
+use FOF30\Utils\Object\Object as FOFUtilsObject;
 use FOF30\Config\Provider as FOFConfigProvider;
 use FOF30\Controller\Controller as FOFController;
 use FOF30\Encrypt\Aes as FOFEncryptAes;
@@ -18,7 +18,7 @@ use FOF30\Input\Input as FOFInput;
 use FOF30\Platform\Platform as FOFPlatform;
 
 // Joomla! class inclusion
-use JText;
+use JText, JLoader, Exception;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -186,7 +186,7 @@ class Dispatcher extends FOFUtilsObject
 
 		if (!class_exists($className))
 		{
-			$className = '\\FOF30\\Dispatcher';
+			$className = '\\FOF30\\Dispatcher\\Dispatcher';
 		}
 
 		$instance = new $className($config);
