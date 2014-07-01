@@ -207,9 +207,6 @@ class Autoloader
 			$class = substr($class, 1);
 		}
 
-		// Lowercase everything
-		$class = strtolower($class);
-
 		// PSR-4 lookup
 		$logicalPath = strtr($class, '\\', DIRECTORY_SEPARATOR) . '.php';
 
@@ -223,7 +220,18 @@ class Autoloader
 				{
 					foreach ($this->prefixDirs[$prefix] as $dir)
 					{
-						if (file_exists($file = $dir . DIRECTORY_SEPARATOR . substr($logicalPath, $length)))
+						// First try lowercase file
+						$file = $dir . DIRECTORY_SEPARATOR . substr(strtolower($logicalPath), $length);
+
+						if (file_exists($file))
+						{
+							return $file;
+						}
+
+						// The try file with the case as-is
+						$file = $dir . DIRECTORY_SEPARATOR . substr($logicalPath, $length);
+
+						if (file_exists($file))
 						{
 							return $file;
 						}
@@ -235,7 +243,9 @@ class Autoloader
 		// PSR-4 fallback dirs
 		foreach ($this->fallbackDirs as $dir)
 		{
-			if (file_exists($file = $dir . DIRECTORY_SEPARATOR . $logicalPath))
+			$file = $dir . DIRECTORY_SEPARATOR . $logicalPath;
+
+			if (file_exists($file))
 			{
 				return $file;
 			}
