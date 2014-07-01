@@ -8,8 +8,11 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Form\Header as FOFFormHeader;
+use FOF30\Form\Header\Field as FOFFormHeaderField;
+
 // Joomla! class inclusion
-use JText;
+use JText, JHtml;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -20,7 +23,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Fieldsearchable extends F0FFormHeaderField
+class Fieldsearchable extends FOFFormHeaderField
 {
 	/**
 	 * Get the filter field

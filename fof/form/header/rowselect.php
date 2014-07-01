@@ -8,6 +8,8 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Form\Header as FOFFormHeader;
+
 // Joomla! class inclusion
 use JText;
 
@@ -20,7 +22,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Rowselect extends F0FFormHeader
+class Rowselect extends FOFFormHeader
 {
 	/**
 	 * Get the header

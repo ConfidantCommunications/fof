@@ -8,6 +8,12 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Form\Header\Fieldsql as FOFFormHeaderFieldsql;
+use FOF30\Form\Header as FOFFormHeader;
+
+// Joomla! class inclusion
+use JText, JHtml, JFactory;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -17,7 +23,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Filtersql extends F0FFormHeaderFieldsql
+class Filtersql extends FOFFormHeaderFieldsql
 {
 	/**
 	 * Get the header

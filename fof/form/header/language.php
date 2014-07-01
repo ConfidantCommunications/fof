@@ -8,6 +8,12 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Form\Header\Fieldselectable as FOFFormHeaderFieldselectable;
+use FOF30\Form\Header as FOFFormHeader;
+
+// Joomla! class inclusion
+use JText, JHtml, JFactory, JLanguageHelper;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -17,7 +23,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Language extends F0FFormHeaderFieldselectable
+class Language extends FOFFormHeaderFieldselectable
 {
 	/**
 	 * Method to get the filter options.

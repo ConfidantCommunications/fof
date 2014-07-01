@@ -8,6 +8,8 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Platform\Platform as FOFPlatform;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -28,7 +30,7 @@ class Accesslevel extends Fieldselectable
 	 */
 	protected function getOptions()
 	{
-		$db    = F0FPlatform::getInstance()->getDbo();
+		$db    = FOFPlatform::getInstance()->getDbo();
 		$query = $db->getQuery(true);
 
 		$query->select('a.id AS value, a.title AS text');

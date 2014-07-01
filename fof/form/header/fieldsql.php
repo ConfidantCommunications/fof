@@ -8,8 +8,12 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Form\Header\Fieldselectable as FOFFormHeaderFieldselectable;
+use FOF30\Form\Header as FOFFormHeader;
+use FOF30\Platform\Platform as FOFPlatform;
+
 // Joomla! class inclusion
-use JText;
+use JText, JHtml, JFactory;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -20,7 +24,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Fieldsql extends F0FFormHeaderFieldselectable
+class Fieldsql extends FOFFormHeaderFieldselectable
 {
 	/**
 	 * Create objects for the options
@@ -38,7 +42,7 @@ class Fieldsql extends F0FFormHeaderFieldselectable
 		$query     = (string) $this->element['query'];
 
 		// Get the database object.
-		$db = F0FPlatform::getInstance()->getDbo();
+		$db = FOFPlatform::getInstance()->getDbo();
 
 		// Set the query and get the result list.
 		$db->setQuery($query);

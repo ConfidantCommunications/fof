@@ -8,6 +8,12 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Form\Header\Fieldselectable as FOFFormHeaderFieldselectable;
+use FOF30\Form\Header as FOFFormHeader;
+
+// Joomla! class inclusion
+use JText, JHtml, JFactory;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -17,7 +23,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Published extends F0FFormHeaderFieldselectable
+class Published extends FOFFormHeaderFieldselectable
 {
 	/**
 	 * Create objects for the options
@@ -33,8 +39,6 @@ class Published extends F0FFormHeaderFieldselectable
 			'trash'			 => 0,
 			'all'			 => 0,
 		);
-
-		$stack = array();
 
 		if ($this->element['show_published'] == 'false')
 		{

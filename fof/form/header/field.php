@@ -8,8 +8,11 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Form\Header as FOFFormHeader;
+use FOF30\Platform\Platform as FOFPlatform;
+
 // Joomla! class inclusion
-use JText;
+use JText, JHtml;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -20,7 +23,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Field extends F0FFormHeader
+class Field extends FOFFormHeader
 {
 	/**
 	 * Get the header

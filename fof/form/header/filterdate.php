@@ -8,8 +8,11 @@
 
 namespace FOF30\Form\Header;
 
-// Protect from unauthorized access
-defined('FOF30_INCLUDED') or die;
+use FOF30\Form\Header\Fielddate as FOFFormHeaderFielddate;
+use FOF30\Form\Header as FOFFormHeader;
+
+// Joomla! class inclusion
+use JText, JHtml, JFactory;
 
 /**
  * Generic filter, text box entry with calendar button
@@ -17,7 +20,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.3.3
  */
-class Filterdate extends F0FFormHeaderFielddate
+class Filterdate extends FOFFormHeaderFielddate
 {
 	/**
 	 * Get the header

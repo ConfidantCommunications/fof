@@ -8,8 +8,13 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Form\Header\Field as FOFFormHeaderField;
+use FOF30\Form\Header as FOFFormHeader;
+use FOF30\Platform\Platform as FOFPlatform;
+use DateTimeZone;
+
 // Joomla! class inclusion
-use JText;
+use JText, JHtml, JFactory;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -20,7 +25,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Fielddate extends F0FFormHeaderField
+class Fielddate extends FOFFormHeaderField
 {
 	/**
 	 * Get the filter field
@@ -85,7 +90,7 @@ class Fielddate extends F0FFormHeaderField
 		}
 
 		// Get some system objects.
-		$config = F0FPlatform::getInstance()->getConfig();
+		$config = FOFPlatform::getInstance()->getConfig();
 		$user   = JFactory::getUser();
 
 		// If a known filter is given use it.
@@ -96,7 +101,7 @@ class Fielddate extends F0FFormHeaderField
 				if ((int) $this->value)
 				{
 					// Get a date object based on the correct timezone.
-					$date = F0FPlatform::getInstance()->getDate($searchvalue, 'UTC');
+					$date = FOFPlatform::getInstance()->getDate($searchvalue, 'UTC');
 					$date->setTimezone(new DateTimeZone($config->get('offset')));
 
 					// Transform the date string.
@@ -109,7 +114,7 @@ class Fielddate extends F0FFormHeaderField
 				if ((int) $searchvalue)
 				{
 					// Get a date object based on the correct timezone.
-					$date = F0FPlatform::getInstance()->getDate($this->value, 'UTC');
+					$date = FOFPlatform::getInstance()->getDate($this->value, 'UTC');
 					$date->setTimezone(new DateTimeZone($user->getParam('timezone', $config->get('offset'))));
 
 					// Transform the date string.

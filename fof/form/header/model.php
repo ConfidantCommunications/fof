@@ -8,25 +8,25 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Form\Header\Fieldselectable as FOFFormHeaderFieldselectable;
+use FOF30\Form\Header as FOFFormHeader;
+use FOF30\Inflector\Inflector as FOFInflector;
+use FOF30\Model\Model as FOFModel;
+
 // Joomla! class inclusion
-use JText;
+use JText, JHtml, JFactory;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
-if (!class_exists('JFormFieldSql'))
-{
-	require_once JPATH_LIBRARIES . '/joomla/form/fields/sql.php';
-}
-
 /**
- * Form Field class for F0F
+ * Form Field class for FOF
  * Generic list from a model's results
  *
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Model extends F0FFormHeaderFieldselectable
+class Model extends FOFFormHeaderFieldselectable
 {
 	/**
 	 * Method to get the field options.
@@ -56,13 +56,13 @@ class Model extends F0FFormHeaderFieldselectable
 		$applyAccess = in_array($applyAccess, array('yes', 'on', 'true', '1'));
 
 		// Explode model name into model name and prefix
-		$parts = F0FInflector::explode($modelName);
+		$parts = FOFInflector::explode($modelName);
 		$mName = ucfirst(array_pop($parts));
-		$mPrefix = F0FInflector::implode($parts);
+		$mPrefix = FOFInflector::implode($parts);
 
 		// Get the model object
 		$config = array('savestate' => 0);
-		$model = F0FModel::getTmpInstance($mName, $mPrefix, $config);
+		$model = FOFModel::getTmpInstance($mName, $mPrefix, $config);
 
 		if ($applyAccess)
 		{

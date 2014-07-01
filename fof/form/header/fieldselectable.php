@@ -8,8 +8,13 @@
 
 namespace FOF30\Form\Header;
 
+use FOF30\Form\Header\Field as FOFFormHeaderField;
+use FOF30\Form\Header as FOFFormHeader;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Template\Utils as FOFTemplateUtils;
+
 // Joomla! class inclusion
-use JText;
+use JText, JHtml, JFactory;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -20,7 +25,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.0
  */
-class Fieldselectable extends F0FFormHeaderField
+class Fieldselectable extends FOFFormHeaderField
 {
 	/**
 	 * Create objects for the options
@@ -67,9 +72,9 @@ class Fieldselectable extends F0FFormHeaderField
 			// Maybe we have to load a file?
 			if (!empty($source_file))
 			{
-				$source_file = F0FTemplateUtils::parsePath($source_file, true);
+				$source_file = FOFTemplateUtils::parsePath($source_file, true);
 
-				if (F0FPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
+				if (FOFPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
 				{
 					include_once $source_file;
 				}
