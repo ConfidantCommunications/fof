@@ -17,7 +17,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Boolean extends F0FModelFieldNumber
+class Boolean extends Number
 {
 	/**
 	 * Is it a null or otherwise empty value?

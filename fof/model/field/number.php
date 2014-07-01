@@ -8,6 +8,8 @@
 
 namespace FOF30\Model\Field;
 
+use FOF30\Model\Field as FOFModelField;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -17,7 +19,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Number extends F0FModelField
+class Number extends FOFModelField
 {
 	/**
 	 * The partial match is mapped to an exact match

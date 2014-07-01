@@ -8,6 +8,10 @@
 
 namespace FOF30\Model\Field;
 
+use FOF30\Model\Field as FOFModelField;
+
+use JDatabaseDriver;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -17,7 +21,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Text extends F0FModelField
+class Text extends FOFModelField
 {
 	/**
 	 * Constructor

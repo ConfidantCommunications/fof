@@ -8,6 +8,8 @@
 
 namespace FOF30\Model\Dispatcher;
 
+use FOF30\Utils\Observable\Dispatcher as FOFUtilsObservableDispatcher;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -17,6 +19,6 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Behavior extends F0FUtilsObservableDispatcher
+class Behavior extends FOFUtilsObservableDispatcher
 {
 }

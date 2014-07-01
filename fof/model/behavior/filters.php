@@ -8,6 +8,12 @@
 
 namespace FOF30\Model\Behavior;
 
+use FOF30\Model\Behavior as FOFModelBehavior;
+use FOF30\Model\Model as FOFModel;
+use FOF30\Model\Field as FOFModelField;
+
+use JDatabaseQuery, JRegistry, stdClass;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -17,13 +23,13 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Filters extends F0FModelBehavior
+class Filters extends FOFModelBehavior
 {
 	/**
 	 * This event runs after we have built the query used to fetch a record
 	 * list in a model. It is used to apply automatic query filters.
 	 *
-	 * @param   F0FModel        &$model  The model which calls this event
+	 * @param   FOFModel        &$model  The model which calls this event
 	 * @param   JDatabaseQuery  &$query  The model which calls this event
 	 *
 	 * @return  void
@@ -31,7 +37,6 @@ class Filters extends F0FModelBehavior
 	public function onAfterBuildQuery(&$model, &$query)
 	{
 		$table = $model->getTable();
-		$tableName = $table->getTableName();
 		$tableKey = $table->getKeyName();
 		$db = $model->getDBO();
 
@@ -46,7 +51,7 @@ class Filters extends F0FModelBehavior
 			$filterName = ($field->name == $tableKey) ? 'id' : $field->name;
 			$filterState = $model->getState($filterName, null);
 
-			$field = F0FModelField::getField($field, array('dbo' => $db, 'table_alias' => $model->getTableAlias()));
+			$field = FOFModelField::getField($field, array('dbo' => $db, 'table_alias' => $model->getTableAlias()));
 
 			if ((is_array($filterState) && (
 					array_key_exists('value', $filterState) ||

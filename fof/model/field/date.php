@@ -17,7 +17,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Date extends F0FModelFieldText
+class Date extends Text
 {
 	/**
 	 * Returns the default search method for this field.

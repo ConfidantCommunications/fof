@@ -8,6 +8,13 @@
 
 namespace FOF30\Model\Behavior;
 
+use FOF30\Model\Behavior as FOFModelBehavior;
+use FOF30\Model\Model as FOFModel;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+
+use JDatabaseQuery;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -18,13 +25,13 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Access extends F0FModelBehavior
+class Access extends FOFModelBehavior
 {
 	/**
 	 * This event runs after we have built the query used to fetch a record
 	 * list in a model. It is used to apply automatic query filters.
 	 *
-	 * @param   F0FModel        &$model  The model which calls this event
+	 * @param   FOFModel        &$model  The model which calls this event
 	 * @param   JDatabaseQuery  &$query  The model which calls this event
 	 *
 	 * @return  void
@@ -32,7 +39,7 @@ class Access extends F0FModelBehavior
 	public function onAfterBuildQuery(&$model, &$query)
 	{
 		// This behavior only applies to the front-end.
-		if (!F0FPlatform::getInstance()->isFrontend())
+		if (!FOFPlatform::getInstance()->isFrontend())
 		{
 			return;
 		}
@@ -51,17 +58,17 @@ class Access extends F0FModelBehavior
 	}
 
 	/**
-	 * The event runs after F0FModel has called F0FTable and retrieved a single
+	 * The event runs after FOFModel has called FOFTable and retrieved a single
 	 * item from the database. It is used to apply automatic filters.
 	 *
-	 * @param   F0FModel  &$model   The model which was called
-	 * @param   F0FTable  &$record  The record loaded from the databae
+	 * @param   FOFModel  &$model   The model which was called
+	 * @param   FOFTable  &$record  The record loaded from the databae
 	 *
 	 * @return  void
 	 */
 	public function onAfterGetItem(&$model, &$record)
 	{
-		if ($record instanceof F0FTable)
+		if ($record instanceof FOFTable)
 		{
 			$fieldName = $record->getColumnAlias('access');
 
@@ -72,7 +79,7 @@ class Access extends F0FModelBehavior
 			}
 
 			// Get the user
-			$user = F0FPlatform::getInstance()->getUser();
+			$user = FOFPlatform::getInstance()->getUser();
 
 			// Filter by authorised access levels
 			if (!in_array($record->$fieldName, $user->getAuthorisedViewLevels()))

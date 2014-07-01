@@ -8,6 +8,14 @@
 
 namespace FOF30\Model\Behavior;
 
+use FOF30\Model\Behavior as FOFModelBehavior;
+use FOF30\Model\Model as FOFModel;
+use FOF30\Model\Field as FOFModelField;
+use FOF30\Table\Table as FOFTable;
+use FOF30\Platform\Platform as FOFPlatform;
+
+use JDatabaseQuery, JRegistry, JPluginHelper, JFactory;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -18,13 +26,13 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Language extends F0FModelBehavior
+class Language extends FOFModelBehavior
 {
 	/**
 	 * This event runs after we have built the query used to fetch a record
 	 * list in a model. It is used to apply automatic query filters.
 	 *
-	 * @param   F0FModel        &$model  The model which calls this event
+	 * @param   FOFModel        &$model  The model which calls this event
 	 * @param   JDatabaseQuery  &$query  The model which calls this event
 	 *
 	 * @return  void
@@ -32,7 +40,7 @@ class Language extends F0FModelBehavior
 	public function onAfterBuildQuery(&$model, &$query)
 	{
 		// This behavior only applies to the front-end.
-		if (!F0FPlatform::getInstance()->isFrontend())
+		if (!FOFPlatform::getInstance()->isFrontend())
 		{
 			return;
 		}
@@ -69,7 +77,7 @@ class Language extends F0FModelBehavior
 		if ($lang_filter_params->get('remove_default_prefix'))
 		{
 			// Get default site language
-			$lg = F0FPlatform::getInstance()->getLanguage();
+			$lg = FOFPlatform::getInstance()->getLanguage();
 			$languages[] = $lg->getTag();
 		}
 		else
@@ -81,7 +89,7 @@ class Language extends F0FModelBehavior
 		$languages = array_unique($languages);
 
 		// And filter the query output by these languages
-		$db = F0FPlatform::getInstance()->getDbo();
+		$db = FOFPlatform::getInstance()->getDbo();
 
 		// Alias
 		$alias = $model->getTableAlias();
@@ -92,17 +100,17 @@ class Language extends F0FModelBehavior
 	}
 
 	/**
-	 * The event runs after F0FModel has called F0FTable and retrieved a single
+	 * The event runs after FOFModel has called FOFTable and retrieved a single
 	 * item from the database. It is used to apply automatic filters.
 	 *
-	 * @param   F0FModel  &$model   The model which was called
-	 * @param   F0FTable  &$record  The record loaded from the databae
+	 * @param   FOFModel  &$model   The model which was called
+	 * @param   FOFTable  &$record  The record loaded from the databae
 	 *
 	 * @return  void
 	 */
 	public function onAfterGetItem(&$model, &$record)
 	{
-		if ($record instanceof F0FTable)
+		if ($record instanceof FOFTable)
 		{
 			$fieldName = $record->getColumnAlias('language');
 
@@ -134,7 +142,7 @@ class Language extends F0FModelBehavior
 			if ($lang_filter_params->get('remove_default_prefix'))
 			{
 				// Get default site language
-				$lg = F0FPlatform::getInstance()->getLanguage();
+				$lg = FOFPlatform::getInstance()->getLanguage();
 				$languages[] = $lg->getTag();
 			}
 			else

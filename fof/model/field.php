@@ -8,6 +8,13 @@
 
 namespace FOF30\Model;
 
+use FOF30\Platform\Platform as FOFPlatform;
+
+use ReflectionClass, ReflectionMethod;
+
+// Joomla! class inclusion
+use JText, JPagination, JFactory, JTable, JArrayHelper, JLoader, JFilterInput, JDatabaseQuery, JDatabaseDriver, JCache;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -52,9 +59,9 @@ abstract class Field
 	/**
 	 * Constructor
 	 *
-	 * @param   JDatabaseDriver  $db           The database object
-	 * @param   object           $field        The field informations as taken from the db
-	 * @param   string           $table_alias  The table alias to use when filtering
+	 * @param   JDatabaseDriver $db          The database object
+	 * @param   object          $field       The field informations as taken from the db
+	 * @param   string          $table_alias The table alias to use when filtering
 	 */
 	public function __construct($db, $field, $table_alias = false)
 	{
@@ -68,7 +75,7 @@ abstract class Field
 	/**
 	 * Is it a null or otherwise empty value?
 	 *
-	 * @param   mixed  $value  The value to test for emptiness
+	 * @param   mixed $value The value to test for emptiness
 	 *
 	 * @return  boolean
 	 */
@@ -124,7 +131,7 @@ abstract class Field
 	/**
 	 * Perform an exact match (equality matching)
 	 *
-	 * @param   mixed  $value  The value to compare to
+	 * @param   mixed $value The value to compare to
 	 *
 	 * @return  string  The SQL where clause for this search
 	 */
@@ -137,7 +144,7 @@ abstract class Field
 
 		if (is_array($value))
 		{
-			$db    = F0FPlatform::getInstance()->getDbo();
+			$db = FOFPlatform::getInstance()->getDbo();
 			$value = array_map(array($db, 'quote'), $value);
 
 			return '(' . $this->getFieldName() . ' IN (' . implode(',', $value) . '))';
@@ -151,7 +158,7 @@ abstract class Field
 	/**
 	 * Perform a partial match (usually: search in string)
 	 *
-	 * @param   mixed  $value  The value to compare to
+	 * @param   mixed $value The value to compare to
 	 *
 	 * @return  string  The SQL where clause for this search
 	 */
@@ -165,9 +172,9 @@ abstract class Field
 	 * When $include is false the condition tested is:
 	 * $from < VALUE < $to
 	 *
-	 * @param   mixed    $from     The lowest value to compare to
-	 * @param   mixed    $to       The higherst value to compare to
-	 * @param   boolean  $include  Should we include the boundaries in the search?
+	 * @param   mixed   $from    The lowest value to compare to
+	 * @param   mixed   $to      The higherst value to compare to
+	 * @param   boolean $include Should we include the boundaries in the search?
 	 *
 	 * @return  string  The SQL where clause for this search
 	 */
@@ -181,9 +188,9 @@ abstract class Field
 	 * When $include is false the condition tested is:
 	 * (VALUE < $from) || (VALUE > $to)
 	 *
-	 * @param   mixed    $from     The lowest value of the excluded range
-	 * @param   mixed    $to       The higherst value of the excluded range
-	 * @param   boolean  $include  Should we include the boundaries in the search?
+	 * @param   mixed   $from    The lowest value of the excluded range
+	 * @param   mixed   $to      The higherst value of the excluded range
+	 * @param   boolean $include Should we include the boundaries in the search?
 	 *
 	 * @return  string  The SQL where clause for this search
 	 */
@@ -192,8 +199,8 @@ abstract class Field
 	/**
 	 * Perform an interval search (usually: a date interval check)
 	 *
-	 * @param   string               $from      The value to search
-	 * @param   string|array|object  $interval  The interval
+	 * @param   string              $from     The value to search
+	 * @param   string|array|object $interval The interval
 	 *
 	 * @return  string  The SQL where clause for this search
 	 */
@@ -202,8 +209,8 @@ abstract class Field
 	/**
 	 * Return the SQL where clause for a search
 	 *
-	 * @param   mixed   $value     The value to search for
-	 * @param   string  $operator  The operator to use
+	 * @param   mixed  $value    The value to search for
+	 * @param   string $operator The operator to use
 	 *
 	 * @return  string  The SQL where clause for this search
 	 */
@@ -220,7 +227,7 @@ abstract class Field
 	/**
 	 * Get the field name with the given table alias
 	 *
-	 * @return  string 	The field name
+	 * @return  string    The field name
 	 */
 	public function getFieldName()
 	{
@@ -237,10 +244,10 @@ abstract class Field
 	/**
 	 * Creates a field Object based on the field column type
 	 *
-	 * @param   object  $field   The field informations
-	 * @param   array   $config  The field configuration (like the db object to use)
+	 * @param   object $field  The field informations
+	 * @param   array  $config The field configuration (like the db object to use)
 	 *
-	 * @return  F0FModelField  The Field object
+	 * @return  self  The Field object
 	 */
 	public static function getField($field, $config = array())
 	{
@@ -248,7 +255,7 @@ abstract class Field
 
 		$classType = self::getFieldType($type);
 
-		$className = 'F0FModelField' . $classType;
+		$className = '\\FOF30\\Model\\Field\\' . $classType;
 
 		if (class_exists($className))
 		{
@@ -258,7 +265,7 @@ abstract class Field
 			}
 			else
 			{
-				$db = F0FPlatform::getInstance()->getDbo();
+				$db = FOFPlatform::getInstance()->getDbo();
 			}
 
 			if (isset($config['table_alias']))
@@ -281,7 +288,7 @@ abstract class Field
 	/**
 	 * Get the classname based on the field Type
 	 *
-	 * @param   string  $type  The type of the field
+	 * @param   string $type The type of the field
 	 *
 	 * @return  string  the class suffix
 	 */
