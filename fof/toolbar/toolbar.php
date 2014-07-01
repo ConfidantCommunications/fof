@@ -8,8 +8,17 @@
 
 namespace FOF30\Toolbar;
 
+use FOF30\Platform\Platform as F0FPlatform;
+use FOF30\Input\Input as F0FInput;
+use FOF30\Inflector\Inflector as F0FInflector;
+use FOF30\Config\Provider as F0FConfigProvider;
+use FOF30\Utils\ArrayUtils\ArrayUtils as F0FUtilsArray;
+use FOF30\String\Utils as F0FStringUtils;
+
+use InvalidArgumentException;
+
 // Joomla! class inclusion
-use JText;
+use JText, JHtml, JToolBarHelper;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -47,7 +56,7 @@ class Toolbar
 	 * @param   string  $option  The name of the component
 	 * @param   array   $config  The configuration array for the component
 	 *
-	 * @return  F0FToolbar  The toolbar instance for the component
+	 * @return  self  The toolbar instance for the component
 	 */
 	public static function &getAnInstance($option = null, $config = array())
 	{
@@ -119,7 +128,7 @@ class Toolbar
 
 			if (!class_exists($className))
 			{
-				$className = 'F0FToolbar';
+				$className = '\\FOF30\\Toolbar\\Toolbar';
 			}
 
 			$instance = new $className($config);
@@ -283,7 +292,9 @@ class Toolbar
 		// If we have a toolbar config specified
 		if (!empty($toolbar))
 		{
-			return $this->renderFromConfig($toolbar);
+			$this->renderFromConfig($toolbar);
+
+			return;
 		}
 
 		// Check for an onViewTask method
@@ -291,7 +302,9 @@ class Toolbar
 
 		if (method_exists($this, $methodName))
 		{
-			return $this->$methodName();
+			$this->$methodName();
+
+			return;
 		}
 
 		// Check for an onView method
@@ -299,7 +312,9 @@ class Toolbar
 
 		if (method_exists($this, $methodName))
 		{
-			return $this->$methodName();
+			$this->$methodName();
+
+			return;
 		}
 
 		// Check for an onTask method
@@ -307,7 +322,9 @@ class Toolbar
 
 		if (method_exists($this, $methodName))
 		{
-			return $this->$methodName();
+			$this->$methodName();
+
+			return;
 		}
 
 		if (!empty($input))
@@ -658,7 +675,6 @@ class Toolbar
 	 */
 	protected function getMyViews()
 	{
-		$views      = array();
 		$t_views    = array();
 		$using_meta = false;
 

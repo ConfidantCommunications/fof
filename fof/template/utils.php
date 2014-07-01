@@ -8,8 +8,13 @@
 
 namespace FOF30\Template;
 
+use FOF30\Platform\Platform as F0FPlatform;
+use FOF30\Utils\Object\Object as F0FUtilsObject;
+
+use Exception;
+
 // Joomla! class inclusion
-use JText;
+use JText, JDocument, JHtml, JModuleHelper, JUri, JRoute;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
