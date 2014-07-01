@@ -8,6 +8,8 @@
 
 namespace FOF30\Utils\Observable;
 
+use FOF30\Utils\Object\Object as FOFUtilsObject;
+
 defined('FOF30_INCLUDED') or die;
 
 /**
@@ -15,7 +17,7 @@ defined('FOF30_INCLUDED') or die;
  *
  * This class is based on JEvent as found in Joomla! 3.2.0
  */
-abstract class Event extends F0FUtilsObject
+abstract class Event extends FOFUtilsObject
 {
     /**
      * Event object to observe.

@@ -8,8 +8,13 @@
 
 namespace FOF30\Utils\Installscript;
 
+use FOF30\Database\Installer as FOFDatabaseInstaller;
+use FOF30\Platform\Platform as FOFPlatform;
+
+use stdClass, Exception;
+
 // Joomla! class inclusion
-use JText;
+use JText, JLoader, JInstaller, JLog, JError, JFile, JFactory, JObject, JFolder, JDate;
 
 defined('FOF30_INCLUDED') or die;
 
@@ -302,7 +307,7 @@ abstract class Installscript
 	public function postflight($type, $parent)
 	{
 		// Install or update database
-		$dbInstaller = new F0FDatabaseInstaller(array(
+		$dbInstaller = new FOFDatabaseInstaller(array(
 			'dbinstaller_directory' =>
 				($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
 				$this->schemaXmlPath
@@ -374,11 +379,11 @@ abstract class Installscript
 		$this->renderPostInstallation($status, $fofInstallationStatus, $strapperInstallationStatus, $parent);
 
 		// Clear the FOF cache
-		$platform = F0FPlatform::getInstance();
+		$platform = FOFPlatform::getInstance();
 
 		if (method_exists($platform, 'clearCache'))
 		{
-			F0FPlatform::getInstance()->clearCache();
+			FOFPlatform::getInstance()->clearCache();
 		}
 	}
 
@@ -390,7 +395,7 @@ abstract class Installscript
 	public function uninstall($parent)
 	{
 		// Uninstall database
-		$dbInstaller = new F0FDatabaseInstaller(array(
+		$dbInstaller = new FOFDatabaseInstaller(array(
 			'dbinstaller_directory' =>
 				($this->schemaXmlPathRelative ? JPATH_ADMINISTRATOR . '/components/' . $this->componentName : '') . '/' .
 				$this->schemaXmlPath
@@ -1239,11 +1244,11 @@ abstract class Installscript
 		// Get the target path
 		if (!defined('JPATH_LIBRARIES'))
 		{
-			$target = JPATH_ROOT . '/libraries/f0f';
+			$target = JPATH_ROOT . '/libraries/fof';
 		}
 		else
 		{
-			$target = JPATH_LIBRARIES . '/f0f';
+			$target = JPATH_LIBRARIES . '/fof';
 		}
 
 		// Do I have to install FOF?
@@ -1259,9 +1264,9 @@ abstract class Installscript
 			// FOF is already installed; check the version
 			$fofVersion = array();
 
-			if (JFile::exists($target . '/version.txt'))
+			if (JFile::exists($target . '/fof30/version.txt'))
 			{
-				$rawData = JFile::read($target . '/version.txt');
+				$rawData = JFile::read($target . '/fof30/version.txt');
 				$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 				$info = explode("\n", $rawData);
 				$fofVersion['installed'] = array(
@@ -1277,7 +1282,7 @@ abstract class Installscript
 				);
 			}
 
-			$rawData = @file_get_contents($source . '/version.txt');
+			$rawData = @file_get_contents($source . '/fof30/version.txt');
 			$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 			$info = explode("\n", $rawData);
 
@@ -1306,9 +1311,9 @@ abstract class Installscript
 		{
 			$fofVersion = array();
 
-			if (JFile::exists($target . '/version.txt'))
+			if (JFile::exists($target . '/fof30/version.txt'))
 			{
-				$rawData = @file_get_contents($source . '/version.txt');
+				$rawData = @file_get_contents($source . '/fof30/version.txt');
 				$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 				$info = explode("\n", $rawData);
 				$fofVersion['installed'] = array(
@@ -1324,7 +1329,7 @@ abstract class Installscript
 				);
 			}
 
-			$rawData = @file_get_contents($source . '/version.txt');
+			$rawData = @file_get_contents($source . '/fof30/version.txt');
 			$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 			$info = explode("\n", $rawData);
 
@@ -1383,9 +1388,9 @@ abstract class Installscript
 		{
 			$strapperVersion = array();
 
-			if (JFile::exists($target . '/version.txt'))
+			if (JFile::exists($target . '/fof30/version.txt'))
 			{
-				$rawData = JFile::read($target . '/version.txt');
+				$rawData = JFile::read($target . '/fof30/version.txt');
 				$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 				$info = explode("\n", $rawData);
 				$strapperVersion['installed'] = array(
@@ -1401,7 +1406,7 @@ abstract class Installscript
 				);
 			}
 
-			$rawData = JFile::read($source . '/version.txt');
+			$rawData = JFile::read($source . '/fof30/version.txt');
 			$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 			$info = explode("\n", $rawData);
 			$strapperVersion['package'] = array(
@@ -1429,9 +1434,9 @@ abstract class Installscript
 		{
 			$strapperVersion = array();
 
-			if (JFile::exists($target . '/version.txt'))
+			if (JFile::exists($target . '/fof30/version.txt'))
 			{
-				$rawData = JFile::read($target . '/version.txt');
+				$rawData = JFile::read($target . '/fof30/version.txt');
 				$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 				$info = explode("\n", $rawData);
 				$strapperVersion['installed'] = array(
@@ -1447,7 +1452,7 @@ abstract class Installscript
 				);
 			}
 
-			$rawData = JFile::read($source . '/version.txt');
+			$rawData = JFile::read($source . '/fof30/version.txt');
 			$rawData = ($rawData === false) ? "0.0.0\n2011-01-01\n" : $rawData;
 			$info = explode("\n", $rawData);
 

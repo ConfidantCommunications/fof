@@ -8,12 +8,14 @@
 
 namespace FOF30\Utils\Object;
 
+use Exception;
+
 defined('FOF30_INCLUDED') or die;
 
 /**
  * Temporary class for backwards compatibility. You should not be using this
  * in your code. It is currently present to handle the validation error stack
- * for F0FTable::check() and will be removed in an upcoming version.
+ * for FOFTable::check() and will be removed in an upcoming version.
  *
  * This class is based on JObject as found in Joomla! 3.2.1
  *

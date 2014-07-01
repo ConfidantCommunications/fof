@@ -8,8 +8,8 @@
 
 namespace FOF30\Template;
 
-use FOF30\Platform\Platform as F0FPlatform;
-use FOF30\Utils\Object\Object as F0FUtilsObject;
+use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Utils\Object\Object as FOFUtilsObject;
 
 use Exception;
 
@@ -32,13 +32,13 @@ class Utils
 	 *
 	 * @param   string  $path  A fancy path definition understood by parsePath
 	 *
-	 * @see F0FTemplateUtils::parsePath
+	 * @see FOFTemplateUtils::parsePath
 	 *
 	 * @return  void
 	 */
 	public static function addCSS($path)
 	{
-		$document = F0FPlatform::getInstance()->getDocument();
+		$document = FOFPlatform::getInstance()->getDocument();
 
 		if ($document instanceof JDocument)
 		{
@@ -70,13 +70,13 @@ class Utils
 	 *                           will be executed while the resto of the page
 	 *                           continues parsing.
 	 *
-	 * @see F0FTemplateUtils::parsePath
+	 * @see FOFTemplateUtils::parsePath
 	 *
 	 * @return  void
 	 */
 	public static function addJS($path, $defer = false, $async = false)
 	{
-		$document = F0FPlatform::getInstance()->getDocument();
+		$document = FOFPlatform::getInstance()->getDocument();
 
 		if ($document instanceof JDocument)
 		{
@@ -95,7 +95,7 @@ class Utils
 	 *
 	 * @param   string          $text   Header text
 	 * @param   string          $field  Field used for sorting
-	 * @param   F0FUtilsObject  $list   Object holding the direction and the ordering field
+	 * @param   FOFUtilsObject  $list   Object holding the direction and the ordering field
 	 *
 	 * @return  string  HTML code for sorting
 	 */
@@ -126,7 +126,7 @@ class Utils
 	 */
 	public static function parsePath($path, $localFile = false)
 	{
-        $platformDirs = F0FPlatform::getInstance()->getPlatformBaseDirs();
+        $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
 
 		if ($localFile)
 		{
@@ -134,7 +134,7 @@ class Utils
 		}
 		else
 		{
-			$url = F0FPlatform::getInstance()->URIroot();
+			$url = FOFPlatform::getInstance()->URIroot();
 		}
 
 		$altPaths = self::getAltPaths($path);
@@ -203,7 +203,7 @@ class Utils
 
 				$ret = array(
 					'normal'	 => 'media/' . $pathAndParams[0],
-					'alternate'	 => F0FPlatform::getInstance()->getTemplateOverridePath('media:/' . $pathAndParams[0], false),
+					'alternate'	 => FOFPlatform::getInstance()->getTemplateOverridePath('media:/' . $pathAndParams[0], false),
 				);
 				break;
 
@@ -222,7 +222,7 @@ class Utils
 		}
 
 		// For CSS and JS files, add a debug path if the supplied file is compressed
-		$filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+		$filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 		$ext        = $filesystem->getExt($ret['normal']);
 
 		if (in_array($ext, array('css', 'js')))
@@ -268,7 +268,7 @@ class Utils
 	 */
 	public static function loadPosition($position, $style = -2)
 	{
-		$document = F0FPlatform::getInstance()->getDocument();
+		$document = FOFPlatform::getInstance()->getDocument();
 
 		if (!($document instanceof JDocument))
 		{
@@ -317,7 +317,7 @@ class Utils
 	 * http://fobar.com/index.php?option=com_foo&view=cpanel
 	 *
 	 * <code>
-	 * <?php echo F0FTemplateutils::route('view=categories&layout=tree'); ?>
+	 * <?php echo FOFTemplateutils::route('view=categories&layout=tree'); ?>
 	 * </code>
 	 *
 	 * Result:

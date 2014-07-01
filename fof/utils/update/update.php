@@ -8,13 +8,17 @@
 
 namespace FOF30\Utils\Update;
 
+use FOF30\Model\Model as FOFModel;
+
+use JUpdater, JComponentHelper;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
 /**
  * A helper Model to interact with Joomla!'s extensions update feature
  */
-class Update extends F0FModel
+class Update extends FOFModel
 {
 	/** @var JUpdater The Joomla! updater object */
 	protected $updater = null;

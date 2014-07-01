@@ -323,7 +323,7 @@ abstract class ArrayUtils
 	 *     'New' => array('1000', '1500', '1750'),
 	 *     'Used' => array('3000', '4000', '5000', '6000')
 	 * );
-	 * $output = F0FUtilsArray::invert($input);
+	 * $output = FOFUtilsArray::invert($input);
 	 *
 	 * Output would be equal to:
 	 * $output = array(
@@ -500,7 +500,7 @@ abstract class ArrayUtils
 	 *
 	 * @return  integer  Comparison status
 	 *
-	 * @see     F0FUtilsArray::sortObjects()
+	 * @see     FOFUtilsArray::sortObjects()
 	 */
 	protected static function _sortObjects(&$a, &$b)
 	{
