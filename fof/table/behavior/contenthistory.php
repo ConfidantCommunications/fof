@@ -8,6 +8,11 @@
 
 namespace FOF30\Table\Behavior;
 
+use FOF30\Table\Behavior as FOFTableBehavior;
+use FOF30\Table\Table as FOFTable;
+
+use JTable, JComponentHelper, JHelperContenthistory;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -17,12 +22,12 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.2.0
  */
-class Contenthistory extends F0FTableBehavior
+class Contenthistory extends FOFTableBehavior
 {
 	/**
 	 * The event which runs after storing (saving) data to the database
 	 *
-	 * @param   F0FTable  &$table  The table which calls this event
+	 * @param   FOFTable  &$table  The table which calls this event
 	 *
 	 * @return  boolean  True to allow saving without an error
 	 */
@@ -43,7 +48,7 @@ class Contenthistory extends F0FTableBehavior
 	/**
 	 * The event which runs before deleting a record
 	 *
-	 * @param   F0FTable &$table  The table which calls this event
+	 * @param   FOFTable &$table  The table which calls this event
 	 * @param   integer  $oid  The PK value of the record to delete
 	 *
 	 * @return  boolean  True to allow the deletion

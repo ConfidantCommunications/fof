@@ -8,6 +8,11 @@
 
 namespace FOF30\Table\Behavior;
 
+use FOF30\Table\Behavior as FOFTableBehavior;
+use FOF30\Table\Table as FOFTable;
+
+use JTable, JHelperTags;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -17,12 +22,12 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Tags extends F0FTableBehavior
+class Tags extends FOFTableBehavior
 {
 	/**
 	 * The event which runs after binding data to the table
 	 *
-	 * @param   F0FTable  		&$table  	The table which calls this event
+	 * @param   FOFTable  		&$table  	The table which calls this event
 	 * @param   object|array  	&$src  		The data to bind
 	 * @param  	array 			$options 	The options of the table
 	 *
@@ -47,8 +52,8 @@ class Tags extends F0FTableBehavior
 			$tagsHelper->typeAlias = $table->getContentType();
 
 			// TODO: This little guy here fails because JHelperTags
-			// need a JTable object to work, while our is F0FTable
-			// Need probably to write our own F0FHelperTags
+			// need a JTable object to work, while our is FOFTable
+			// Need probably to write our own FOFHelperTags
 			// Thank you com_tags
 			if (!$tagsHelper->postStoreProcess($tagsTable))
 			{
@@ -63,7 +68,7 @@ class Tags extends F0FTableBehavior
 	/**
 	 * The event which runs before storing (saving) data to the database
 	 *
-	 * @param   F0FTable  &$table  The table which calls this event
+	 * @param   FOFTable  &$table  The table which calls this event
 	 * @param   boolean  $updateNulls  Should nulls be saved as nulls (true) or just skipped over (false)?
 	 *
 	 * @return  boolean  True to allow saving
@@ -88,7 +93,7 @@ class Tags extends F0FTableBehavior
 	/**
 	 * The event which runs after deleting a record
 	 *
-	 * @param   F0FTable &$table  The table which calls this event
+	 * @param   FOFTable &$table  The table which calls this event
 	 * @param   integer  $oid  The PK value of the record which was deleted
 	 *
 	 * @return  boolean  True to allow the deletion without errors

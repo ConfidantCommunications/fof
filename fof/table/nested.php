@@ -8,6 +8,12 @@
 
 namespace FOF30\Table;
 
+use FOF30\Database\DatabaseIterator as FOFDatabaseIterator;
+
+use Exception, RuntimeException;
+
+use JDatabaseDriver, JDatabaseQuery;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -25,10 +31,10 @@ class Nested extends Table
 	/** @var int The level (depth) of this node in the tree */
 	protected $treeDepth = null;
 
-	/** @var F0FTableNested The root node in the tree */
+	/** @var Nested The root node in the tree */
 	protected $treeRoot = null;
 
-	/** @var F0FTableNested The parent node of ourselves */
+	/** @var Nested The parent node of ourselves */
 	protected $treeParent = null;
 
 	/** @var bool Should I perform a nested get (used to query ascendants/descendants) */
@@ -54,7 +60,7 @@ class Nested extends Table
 
 		if (!$this->hasField('lft') || !$this->hasField('rgt'))
 		{
-			throw new \RuntimeException("Table " . $this->getTableName() . " is not compatible with F0FTableNested: it does not have lft/rgt columns");
+			throw new \RuntimeException("Table " . $this->getTableName() . " is not compatible with Nested: it does not have lft/rgt columns");
 		}
 	}
 
@@ -68,7 +74,7 @@ class Nested extends Table
 		// Create a slug if there is a title and an empty slug
 		if ($this->hasField('title') && $this->hasField('slug') && empty($this->slug))
 		{
-			$this->slug = F0FStringUtils::toSlug($this->title);
+			$this->slug = FOFStringUtils::toSlug($this->title);
 		}
 
 		// Create the SHA-1 hash of the slug for faster searching (make sure the hash column is CHAR(64) to take
@@ -128,7 +134,7 @@ class Nested extends Table
 			// Delete all subnodes (goes through the model to trigger the observers)
 			if (!empty($subNodes))
 			{
-				/** @var F0FTableNested $item */
+				/** @var Nested $item */
 				foreach ($subNodes as $item)
 				{
 					$item->delete(null, false);
@@ -150,7 +156,7 @@ class Nested extends Table
 	 */
 	public function reorder($where = '')
 	{
-		throw new RuntimeException('reorder() is not supported by F0FTableNested');
+		throw new RuntimeException('reorder() is not supported by Nested');
 	}
 
 	/**
@@ -165,7 +171,7 @@ class Nested extends Table
 	 */
 	public function move($delta, $where = '')
 	{
-		throw new RuntimeException('move() is not supported by F0FTableNested');
+		throw new RuntimeException('move() is not supported by Nested');
 	}
 
 	/**
@@ -258,14 +264,14 @@ class Nested extends Table
 	 *
 	 * WARNING: If it's an existing node it will be COPIED, not moved.
 	 *
-	 * @param F0FTableNested $parentNode The node which will become our parent
+	 * @param Nested $parentNode The node which will become our parent
 	 *
 	 * @return $this for chaining
 	 *
 	 * @throws Exception
 	 * @throws RuntimeException
 	 */
-	public function insertAsFirstChildOf(F0FTableNested &$parentNode)
+	public function insertAsFirstChildOf(Nested &$parentNode)
 	{
         if($parentNode->lft >= $parentNode->rgt)
         {
@@ -333,14 +339,14 @@ class Nested extends Table
 	 *
 	 * WARNING: If it's an existing node it will be COPIED, not moved.
 	 *
-	 * @param F0FTableNested $parentNode The node which will become our parent
+	 * @param Nested $parentNode The node which will become our parent
 	 *
 	 * @return $this for chaining
 	 *
 	 * @throws Exception
 	 * @throws RuntimeException
 	 */
-	public function insertAsLastChildOf(F0FTableNested &$parentNode)
+	public function insertAsLastChildOf(Nested &$parentNode)
 	{
         if($parentNode->lft >= $parentNode->rgt)
         {
@@ -407,13 +413,13 @@ class Nested extends Table
 	 * Alias for insertAsLastchildOf
 	 *
      * @codeCoverageIgnore
-	 * @param F0FTableNested $parentNode
+	 * @param Nested $parentNode
 	 *
 	 * @return $this for chaining
 	 *
 	 * @throws Exception
 	 */
-	public function insertAsChildOf(F0FTableNested &$parentNode)
+	public function insertAsChildOf(Nested &$parentNode)
 	{
 		return $this->insertAsLastChildOf($parentNode);
 	}
@@ -423,14 +429,14 @@ class Nested extends Table
 	 *
 	 * WARNING: If it's an existing node it will be COPIED, not moved.
 	 *
-	 * @param F0FTableNested $siblingNode We will be inserted before this node
+	 * @param Nested $siblingNode We will be inserted before this node
 	 *
 	 * @return $this for chaining
 	 *
 	 * @throws Exception
 	 * @throws RuntimeException
 	 */
-	public function insertLeftOf(F0FTableNested &$siblingNode)
+	public function insertLeftOf(Nested &$siblingNode)
 	{
         if($siblingNode->lft >= $siblingNode->rgt)
         {
@@ -497,13 +503,13 @@ class Nested extends Table
 	 *
 	 * WARNING: If it's an existing node it will be COPIED, not moved.
 	 *
-	 * @param F0FTableNested $siblingNode We will be inserted after this node
+	 * @param Nested $siblingNode We will be inserted after this node
 	 *
 	 * @return $this for chaining
 	 * @throws Exception
 	 * @throws RuntimeException
 	 */
-	public function insertRightOf(F0FTableNested &$siblingNode)
+	public function insertRightOf(Nested &$siblingNode)
 	{
         if($siblingNode->lft >= $siblingNode->rgt)
         {
@@ -565,11 +571,11 @@ class Nested extends Table
 	 * Alias for insertRightOf
 	 *
      * @codeCoverageIgnore
-	 * @param F0FTableNested $siblingNode
+	 * @param Nested $siblingNode
 	 *
 	 * @return $this for chaining
 	 */
-	public function insertAsSiblingOf(F0FTableNested &$siblingNode)
+	public function insertAsSiblingOf(Nested &$siblingNode)
 	{
 		return $this->insertRightOf($siblingNode);
 	}
@@ -659,14 +665,14 @@ class Nested extends Table
 	 * Moves the current node (and its subtree) to the left of another node. The other node can be in a different
 	 * position in the tree or even under a different root.
 	 *
-	 * @param F0FTableNested $siblingNode
+	 * @param Nested $siblingNode
 	 *
 	 * @return $this for chaining
 	 *
 	 * @throws Exception
 	 * @throws RuntimeException
 	 */
-	public function moveToLeftOf(F0FTableNested $siblingNode)
+	public function moveToLeftOf(Nested $siblingNode)
 	{
         // Sanity checks on current and sibling node position
         if($this->lft >= $this->rgt)
@@ -764,14 +770,14 @@ class Nested extends Table
 	 * Moves the current node (and its subtree) to the right of another node. The other node can be in a different
 	 * position in the tree or even under a different root.
 	 *
-	 * @param F0FTableNested $siblingNode
+	 * @param Nested $siblingNode
 	 *
 	 * @return $this for chaining
 	 *
 	 * @throws Exception
 	 * @throws RuntimeException
 	 */
-	public function moveToRightOf(F0FTableNested $siblingNode)
+	public function moveToRightOf(Nested $siblingNode)
 	{
         // Sanity checks on current and sibling node position
         if($this->lft >= $this->rgt)
@@ -869,11 +875,11 @@ class Nested extends Table
 	 * Alias for moveToRightOf
 	 *
      * @codeCoverageIgnore
-	 * @param F0FTableNested $siblingNode
+	 * @param Nested $siblingNode
 	 *
 	 * @return $this for chaining
 	 */
-	public function makeNextSiblingOf(F0FTableNested $siblingNode)
+	public function makeNextSiblingOf(Nested $siblingNode)
 	{
 		return $this->moveToRightOf($siblingNode);
 	}
@@ -882,11 +888,11 @@ class Nested extends Table
 	 * Alias for makeNextSiblingOf
 	 *
      * @codeCoverageIgnore
-	 * @param F0FTableNested $siblingNode
+	 * @param Nested $siblingNode
 	 *
 	 * @return $this for chaining
 	 */
-	public function makeSiblingOf(F0FTableNested $siblingNode)
+	public function makeSiblingOf(Nested $siblingNode)
 	{
 		return $this->makeNextSiblingOf($siblingNode);
 	}
@@ -895,11 +901,11 @@ class Nested extends Table
 	 * Alias for moveToLeftOf
 	 *
      * @codeCoverageIgnore
-	 * @param F0FTableNested $siblingNode
+	 * @param Nested $siblingNode
 	 *
 	 * @return $this for chaining
 	 */
-	public function makePreviousSiblingOf(F0FTableNested $siblingNode)
+	public function makePreviousSiblingOf(Nested $siblingNode)
 	{
 		return $this->moveToLeftOf($siblingNode);
 	}
@@ -907,13 +913,13 @@ class Nested extends Table
 	/**
 	 * Moves a node and its subtree as a the first (leftmost) child of $parentNode
 	 *
-	 * @param F0FTableNested $parentNode
+	 * @param Nested $parentNode
 	 *
 	 * @return $this for chaining
 	 *
 	 * @throws Exception
 	 */
-	public function makeFirstChildOf(F0FTableNested $parentNode)
+	public function makeFirstChildOf(Nested $parentNode)
 	{
         // Sanity checks on current and sibling node position
         if($this->lft >= $this->rgt)
@@ -1010,14 +1016,14 @@ class Nested extends Table
 	/**
 	 * Moves a node and its subtree as a the last (rightmost) child of $parentNode
 	 *
-	 * @param F0FTableNested $parentNode
+	 * @param Nested $parentNode
 	 *
 	 * @return $this for chaining
 	 *
 	 * @throws Exception
 	 * @throws RuntimeException
 	 */
-	public function makeLastChildOf(F0FTableNested $parentNode)
+	public function makeLastChildOf(Nested $parentNode)
 	{
         // Sanity checks on current and sibling node position
         if($this->lft >= $this->rgt)
@@ -1115,11 +1121,11 @@ class Nested extends Table
 	 * Alias for makeLastChildOf
 	 *
      * @codeCoverageIgnore
-	 * @param F0FTableNested $parentNode
+	 * @param Nested $parentNode
 	 *
 	 * @return $this for chaining
 	 */
-	public function makeChildOf(F0FTableNested $parentNode)
+	public function makeChildOf(Nested $parentNode)
 	{
 		return $this->makeLastChildOf($parentNode);
 	}
@@ -1197,7 +1203,7 @@ class Nested extends Table
 	 *
      * @throws RuntimeException
      *
-	 * @return F0FTableNested
+	 * @return Nested
 	 */
 	public function getParent()
 	{
@@ -1212,7 +1218,7 @@ class Nested extends Table
 			return $this;
 		}
 
-		if (empty($this->treeParent) || !is_object($this->treeParent) || !($this->treeParent instanceof F0FTableNested))
+		if (empty($this->treeParent) || !is_object($this->treeParent) || !($this->treeParent instanceof Nested))
 		{
 			$db = $this->getDbo();
 
@@ -1289,13 +1295,13 @@ class Nested extends Table
 	/**
 	 * Returns true if we are a descendant of $otherNode
 	 *
-	 * @param F0FTableNested $otherNode
+	 * @param Nested $otherNode
 	 *
      * @throws  RuntimeException
      *
 	 * @return bool
 	 */
-	public function isDescendantOf(F0FTableNested $otherNode)
+	public function isDescendantOf(Nested $otherNode)
 	{
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
@@ -1314,13 +1320,13 @@ class Nested extends Table
 	/**
 	 * Returns true if $otherNode is ourselves or if we are a descendant of $otherNode
 	 *
-	 * @param F0FTableNested $otherNode
+	 * @param Nested $otherNode
 	 *
      * @throws  RuntimeException
      *
 	 * @return bool
 	 */
-	public function isSelfOrDescendantOf(F0FTableNested $otherNode)
+	public function isSelfOrDescendantOf(Nested $otherNode)
 	{
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
@@ -1340,11 +1346,11 @@ class Nested extends Table
 	 * Returns true if we are an ancestor of $otherNode
 	 *
      * @codeCoverageIgnore
-	 * @param F0FTableNested $otherNode
+	 * @param Nested $otherNode
 	 *
 	 * @return bool
 	 */
-	public function isAncestorOf(F0FTableNested $otherNode)
+	public function isAncestorOf(Nested $otherNode)
 	{
 		return $otherNode->isDescendantOf($this);
 	}
@@ -1353,11 +1359,11 @@ class Nested extends Table
 	 * Returns true if $otherNode is ourselves or we are an ancestor of $otherNode
 	 *
      * @codeCoverageIgnore
-	 * @param F0FTableNested $otherNode
+	 * @param Nested $otherNode
 	 *
 	 * @return bool
 	 */
-	public function isSelfOrAncestorOf(F0FTableNested $otherNode)
+	public function isSelfOrAncestorOf(Nested $otherNode)
 	{
 		return $otherNode->isSelfOrDescendantOf($this);
 	}
@@ -1365,13 +1371,13 @@ class Nested extends Table
 	/**
 	 * Is $node this very node?
 	 *
-	 * @param F0FTableNested $node
+	 * @param Nested $node
 	 *
      * @throws  RuntimeException
      *
 	 * @return bool
 	 */
-	public function equals(F0FTableNested &$node)
+	public function equals(Nested &$node)
 	{
         // Sanity checks on current node position
         if($this->lft >= $this->rgt)
@@ -1395,11 +1401,11 @@ class Nested extends Table
 	 * Alias for isDescendantOf
 	 *
      * @codeCoverageIgnore
-	 * @param F0FTableNested $otherNode
+	 * @param Nested $otherNode
      *
 	 * @return bool
 	 */
-	public function insideSubtree(F0FTableNested $otherNode)
+	public function insideSubtree(Nested $otherNode)
 	{
 		return $this->isDescendantOf($otherNode);
 	}
@@ -1407,11 +1413,11 @@ class Nested extends Table
 	/**
 	 * Returns true if both this node and $otherNode are root, leaf or child (same tree scope)
 	 *
-	 * @param F0FTableNested $otherNode
+	 * @param Nested $otherNode
 	 *
 	 * @return bool
 	 */
-	public function inSameScope(F0FTableNested $otherNode)
+	public function inSameScope(Nested $otherNode)
 	{
 		if ($this->isLeaf())
 		{
@@ -1623,11 +1629,11 @@ class Nested extends Table
 	/**
 	 * get() will not return the selected node if it's part of the query results
 	 *
-	 * @param F0FTableNested $node The node to exclude from the results
+	 * @param Nested $node The node to exclude from the results
 	 *
 	 * @return void
 	 */
-	public function withoutNode(F0FTableNested $node)
+	public function withoutNode(Nested $node)
 	{
 		$db = $this->getDbo();
 
@@ -1682,7 +1688,7 @@ class Nested extends Table
 			return $this;
 		}
 
-		if (empty($this->treeRoot) || !is_object($this->treeRoot) || !($this->treeRoot instanceof F0FTableNested))
+		if (empty($this->treeRoot) || !is_object($this->treeRoot) || !($this->treeRoot instanceof Nested))
 		{
 			$this->treeRoot = null;
 
@@ -1767,7 +1773,7 @@ class Nested extends Table
 	 *
      * @codeCoverageIgnore
      *
-	 * @return F0FDatabaseIterator
+	 * @return FOFDatabaseIterator
 	 */
 	public function getAncestorsAndSelf()
 	{
@@ -1781,7 +1787,7 @@ class Nested extends Table
 	 *
      * @codeCoverageIgnore
      *
-	 * @return F0FDatabaseIterator
+	 * @return FOFDatabaseIterator
 	 */
 	public function getAncestorsAndSelfWithoutRoot()
 	{
@@ -1797,7 +1803,7 @@ class Nested extends Table
 	 *
      * @codeCoverageIgnore
      *
-	 * @return F0FDatabaseIterator
+	 * @return FOFDatabaseIterator
 	 */
 	public function getAncestors()
 	{
@@ -1812,7 +1818,7 @@ class Nested extends Table
 	 *
      * @codeCoverageIgnore
      *
-	 * @return F0FDatabaseIterator
+	 * @return FOFDatabaseIterator
 	 */
 	public function getAncestorsWithoutRoot()
 	{
@@ -1827,7 +1833,7 @@ class Nested extends Table
 	 *
      * @codeCoverageIgnore
      *
-	 * @return F0FDatabaseIterator
+	 * @return FOFDatabaseIterator
 	 */
 	public function getSiblingsAndSelf()
 	{
@@ -1841,7 +1847,7 @@ class Nested extends Table
 	 *
      * @codeCoverageIgnore
      *
-	 * @return F0FDatabaseIterator
+	 * @return FOFDatabaseIterator
 	 */
 	public function getSiblings()
 	{
@@ -1856,7 +1862,7 @@ class Nested extends Table
 	 *
      * @codeCoverageIgnore
      *
-	 * @return F0FDatabaseIterator
+	 * @return FOFDatabaseIterator
 	 */
 	public function getLeaves()
 	{
@@ -1872,7 +1878,7 @@ class Nested extends Table
 	 *
      * @codeCoverageIgnore
      *
-	 * @return F0FDatabaseIterator
+	 * @return FOFDatabaseIterator
 	 */
 	public function getDescendantsAndSelf()
 	{
@@ -1888,7 +1894,7 @@ class Nested extends Table
 	 *
      * @codeCoverageIgnore
      *
-	 * @return F0FDatabaseIterator
+	 * @return FOFDatabaseIterator
 	 */
 	public function getDescendants()
 	{
@@ -1903,7 +1909,7 @@ class Nested extends Table
 	 *
      * @codeCoverageIgnore
      *
-	 * @return F0FDatabaseIterator
+	 * @return FOFDatabaseIterator
 	 */
 	public function getImmediateDescendants()
 	{
@@ -1970,35 +1976,6 @@ class Nested extends Table
 		}
 
 		return $ret;
-	}
-
-	/**
-	 * Locate a node from a given path, e.g. "/some/other/leaf"
-	 *
-	 * Notes:
-	 * - This will only work when you have a "slug" and a "hash" field in your table.
-	 * - If the path starts with "/" we will use the root with lft=1. Otherwise the first component of the path is
-	 *   supposed to be the slug of the root node.
-	 * - If the root node is not found you'll get null as the return value
-	 * - You will also get null if any component of the path is not found
-	 *
-	 * @param string $path The path to locate
-	 *
-	 * @return F0FTableNested|null The found node or null if nothing is found
-	 */
-	public function findByPath($path)
-	{
-		// @todo
-	}
-
-	public function isValid()
-	{
-		// @todo
-	}
-
-	public function rebuild()
-	{
-		// @todo
 	}
 
 	/**
@@ -2070,7 +2047,7 @@ class Nested extends Table
 	 * @param   integer $limitstart How many items to skip from the start, only when $overrideLimits = true
 	 * @param   integer $limit      How many items to return, only when $overrideLimits = true
 	 *
-	 * @return  F0FDatabaseIterator  The data collection
+	 * @return  FOFDatabaseIterator  The data collection
 	 */
 	public function get($limitstart = 0, $limit = 0)
 	{
@@ -2082,7 +2059,7 @@ class Nested extends Table
 		$db->setQuery($query, $limitstart, $limit);
 		$cursor = $db->execute();
 
-		$dataCollection = F0FDatabaseIterator::getIterator($db->name, $cursor, null, $this->config['_table_class']);
+		$dataCollection = FOFDatabaseIterator::getIterator($db->name, $cursor, null, $this->config['_table_class']);
 
 		return $dataCollection;
 	}
