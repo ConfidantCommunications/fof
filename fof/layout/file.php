@@ -8,6 +8,10 @@
 
 namespace FOF30\Layout;
 
+use FOF30\Platform\Platform as FOFPlatform;
+
+use JLayoutFile, JFactory;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -33,7 +37,7 @@ class File extends JLayoutFile
 	 */
 	protected function getPath()
 	{
-		$filesystem = F0FPlatform::getInstance()->getIntegrationObject('filesystem');
+		$filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
 
 		if (is_null($this->fullPath) && !empty($this->layoutId))
 		{
@@ -41,7 +45,7 @@ class File extends JLayoutFile
 			$file  = array_pop($parts);
 
 			$filePath = implode('/', $parts);
-			$suffixes = F0FPlatform::getInstance()->getTemplateSuffixes();
+			$suffixes = FOFPlatform::getInstance()->getTemplateSuffixes();
 
 			foreach ($suffixes as $suffix)
 			{
@@ -50,8 +54,8 @@ class File extends JLayoutFile
 
 			$files[] = $file . '.php';
 
-            $platformDirs = F0FPlatform::getInstance()->getPlatformBaseDirs();
-            $prefix       = F0FPlatform::getInstance()->isBackend() ? $platformDirs['admin'] : $platformDirs['root'];
+            $platformDirs = FOFPlatform::getInstance()->getPlatformBaseDirs();
+            $prefix       = FOFPlatform::getInstance()->isBackend() ? $platformDirs['admin'] : $platformDirs['root'];
 
 			$possiblePaths = array(
 				$prefix . '/templates/' . JFactory::getApplication()->getTemplate() . '/html/layouts/' . $filePath,

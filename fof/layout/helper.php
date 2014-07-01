@@ -8,11 +8,15 @@
 
 namespace FOF30\Layout;
 
+use FOF30\Layout\File as FOFLayoutFile;
+
+use JLayoutHelper;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
 /**
- * Helper to render a F0FLayout object, storing a base path
+ * Helper to render a FOFLayout object, storing a base path
  *
  * @package  FrameworkOnFramework
  * @since    x.y
@@ -32,9 +36,9 @@ class Helper extends JLayoutHelper
 	{
 		$basePath = empty($basePath) ? self::$defaultBasePath : $basePath;
 
-		// Make sure we send null to F0FLayoutFile if no path set
+		// Make sure we send null to FOFLayoutFile if no path set
 		$basePath = empty($basePath) ? null : $basePath;
-		$layout = new F0FLayoutFile($layoutFile, $basePath);
+		$layout = new FOFLayoutFile($layoutFile, $basePath);
 		$renderedLayout = $layout->render($displayData);
 
 		return $renderedLayout;

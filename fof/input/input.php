@@ -8,6 +8,10 @@
 
 namespace FOF30\Input;
 
+use FOF30\Platform\Platform as FOFPlatform;
+
+use JInput, JRequest, JFilterInput, Exception;
+
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
@@ -135,7 +139,7 @@ class Input extends JInput
 	 */
 	public static function __callStatic($name, $arguments)
 	{
-		F0FPlatform::getInstance()->logDeprecated('F0FInput: static getXXX() methods are deprecated. Use the input object\'s methods instead.');
+		FOFPlatform::getInstance()->logDeprecated('FOFInput: static getXXX() methods are deprecated. Use the input object\'s methods instead.');
 
 		if (substr($name, 0, 3) == 'get')
 		{
@@ -164,9 +168,9 @@ class Input extends JInput
 				$mask = 0;
 			}
 
-			if (!($input instanceof F0FInput) && !($input instanceof JInput))
+			if (!($input instanceof Input) && !($input instanceof JInput))
 			{
-				$input = new F0FInput($input);
+				$input = new Input($input);
 			}
 
 			return $input->get($key, $default, $type, $mask);
@@ -211,7 +215,7 @@ class Input extends JInput
 	 *
 	 * @param   string   $name       The name of the variable to set
 	 * @param   mixed    $value      The value to set it to
-	 * @param   array    &$input     The input array or F0FInput object
+	 * @param   array    &$input     The input array or FOFInput object
 	 * @param   boolean  $overwrite  Should I overwrite existing values (default: true)
 	 *
 	 * @return  string   Previous value
@@ -220,7 +224,7 @@ class Input extends JInput
 	 */
 	public static function setVar($name, $value = null, &$input = array(), $overwrite = true)
 	{
-		F0FPlatform::getInstance()->logDeprecated('F0FInput::setVar() is deprecated. Use set() instead.');
+		FOFPlatform::getInstance()->logDeprecated('FOFInput::setVar() is deprecated. Use set() instead.');
 
 		if (empty($input))
 		{
@@ -243,7 +247,7 @@ class Input extends JInput
 			{
 				$input[$name] = $value;
 			}
-			elseif ($input instanceof F0FInput)
+			elseif ($input instanceof Input)
 			{
 				$input->set($name, $value);
 			}
@@ -286,7 +290,6 @@ class Input extends JInput
 		if ($mask & 2)
 		{
 			// If the allow raw flag is set, do not modify the variable
-			$var = $var;
 		}
 		elseif ($mask & 4)
 		{
