@@ -46,8 +46,8 @@ class F0FViewJsonTest extends FtestCaseDatabase
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 
 		// Replace the F0FPlatform with our fake one
-		$this->saveF0FPlatform();
-		$this->replaceF0FPlatform();
+		$this->saveFOFPlatform();
+		$this->replaceFOFPlatform();
 
 		$this->view = $this->getView();
 	}
@@ -343,7 +343,7 @@ class F0FViewJsonTest extends FtestCaseDatabase
 	 *
 	 * @return  void
 	 */
-	protected function saveF0FPlatform()
+	protected function saveFOFPlatform()
 	{
 		$this->_stashedF0FPlatform = clone F0FPlatform::getInstance();
 	}
@@ -353,7 +353,7 @@ class F0FViewJsonTest extends FtestCaseDatabase
 	 *
 	 * @return  void
 	 */
-	protected function restoreF0FPlatform()
+	protected function restoreFOFPlatform()
 	{
 		F0FPlatform::forceInstance($this->_stashedF0FPlatform);
 	}
@@ -362,7 +362,7 @@ class F0FViewJsonTest extends FtestCaseDatabase
 	 * Replace the F0FPlatform object with a slightly customised one which
 	 * allows us to fake front-end, back-end and CLI execution at will.
 	 */
-	protected function replaceF0FPlatform()
+	protected function replaceFOFPlatform()
 	{
 		$platform = new FtestPlatformJoomla();
 		F0FPlatform::forceInstance($platform);
@@ -374,7 +374,7 @@ class F0FViewJsonTest extends FtestCaseDatabase
 		$this->restoreFactoryState();
 
 		// Restore the F0FPlatform object instance
-		$this->restoreF0FPlatform();
+		$this->restoreFOFPlatform();
 
 		// Restore the $_SERVER global
 		global $_SERVER;

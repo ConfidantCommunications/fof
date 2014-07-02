@@ -7,8 +7,6 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-use FOF30\Platform\Platform as FOFPlatform;
-
 abstract class FtestCase extends PHPUnit_Framework_TestCase
 {
 	/**
@@ -17,7 +15,7 @@ abstract class FtestCase extends PHPUnit_Framework_TestCase
 	protected $savedFactoryState = array();
 
 	/**
-	 * @var			FOFPlatform   The stashed FOFPlatform instance
+	 * @var			FOF30\Platform\Platform   The stashed FOF30\Platform\Platform instance
 	 */
 	protected $_stashedFOFPlatform = null;
 
@@ -278,13 +276,13 @@ abstract class FtestCase extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Save the current FOFPlatform object
+	 * Save the current FOF30\Platform\Platform object
 	 *
 	 * @return  void
 	 */
 	protected function saveFOFPlatform()
 	{
-		$this->_stashedFOFPlatform = clone FOFPlatform::getInstance();
+		$this->_stashedFOFPlatform = clone FOF30\Platform\Platform::getInstance();
 	}
 
 	/**
@@ -294,7 +292,7 @@ abstract class FtestCase extends PHPUnit_Framework_TestCase
 	 */
 	protected function restoreFOFPlatform()
 	{
-		FOFPlatform::forceInstance($this->_stashedFOFPlatform);
+		FOF30\Platform\Platform::forceInstance($this->_stashedFOFPlatform);
 	}
 
 	/**
@@ -304,7 +302,7 @@ abstract class FtestCase extends PHPUnit_Framework_TestCase
 	protected function replaceFOFPlatform()
 	{
 		$platform = new FtestPlatformJoomla();
-		FOFPlatform::forceInstance($platform);
+		FOF30\Platform\Platform::forceInstance($platform);
 	}
 
 

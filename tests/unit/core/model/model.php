@@ -1,8 +1,6 @@
 <?php
 
-use FOF30\Model\Model as FOFModel;
-
-class FtestModel extends FOFModel {
+class FtestModel extends FOF30\Model\Model {
 
 	public function getFoo()
 	{

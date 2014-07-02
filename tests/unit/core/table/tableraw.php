@@ -1,8 +1,6 @@
 <?php
 
-use FOF30\Table\Table as FOFTable;
-
-class TableFtest extends FOFTable {
+class TableFtest extends FOF30\Table\Table {
 
 	public function __construct($table, $key, &$db, $config = array())
 	{

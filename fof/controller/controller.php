@@ -412,7 +412,7 @@ class Controller extends FOFUtilsObject
 		if (!class_exists($className))
 		{
 			// If no specialised class is found, instantiate the generic FOFController
-			$className = 'FOFController';
+			$className = '\\FOF30\\Controller\\Controller';
 		}
 
 		$instance = new $className($config);
@@ -480,7 +480,7 @@ class Controller extends FOFUtilsObject
 		$this->configProvider = new FOFConfigProvider;
 
 		// Determine the methods to exclude from the base class.
-		$xMethods = get_class_methods('FOFController');
+		$xMethods = get_class_methods('\\FOF30\\Controller\\Controller');
 
 		// Some methods must always be considered valid tasks
 		$iMethods = array('accesspublic', 'accessregistered', 'accessspecial',

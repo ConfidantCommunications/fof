@@ -3,15 +3,31 @@
 require_once 'PHPUnit/Extensions/Database/TestCase.php';
 require_once 'PHPUnit/Extensions/Database/DataSet/XmlDataSet.php';
 
-use FOF30\Platform\Platform as FOFPlatform;
-
 abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 {
 	public static   $database;
 	public static   $dbo;
 
+	/**
+	 * Is the dataset loaded?
+	 *
+	 * @var bool
+	 */
 	protected       $loadDataset  = true;
+
+	/**
+	 * Saved factory state
+	 *
+	 * @var array
+	 */
 	protected       $savedFactoryState = array ();
+
+	/**
+	 * Stashed FOF platform object
+	 *
+	 * @var FOF30\Platform\Platform
+	 */
+	protected $stashedFOFPlatform = null;
 
 	public static function tearDownAfterClass()
 	{
@@ -241,13 +257,13 @@ abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 	}
 
 	/**
-	 * Save the current FOFPlatform object
+	 * Save the current FOF30\Platform\Platform object
 	 *
 	 * @return  void
 	 */
 	protected function saveFOFPlatform()
 	{
-		$this->_stashedFOFPlatform = clone FOFPlatform::getInstance();
+		$this->_stashedFOFPlatform = clone FOF30\Platform\Platform::getInstance();
 	}
 
 	/**
@@ -257,16 +273,16 @@ abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 	 */
 	protected function restoreFOFPlatform()
 	{
-		FOFPlatform::forceInstance($this->_stashedFOFPlatform);
+		FOF30\Platform\Platform::forceInstance($this->_stashedFOFPlatform);
 	}
 
 	/**
-	 * Replace the FOFPlatform object with a slightly customised one which
+	 * Replace the FOF30\Platform\Platform object with a slightly customised one which
 	 * allows us to fake front-end, back-end and CLI execution at will.
 	 */
 	protected function replaceFOFPlatform()
 	{
 		$platform = new FtestPlatformJoomla();
-		FOFPlatform::forceInstance($platform);
+		FOF30\Platform\Platform::forceInstance($platform);
 	}
 }
