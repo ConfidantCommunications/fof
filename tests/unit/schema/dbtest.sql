@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobars` (
   `locked_by` int(11) NOT NULL,
   `locked_on` datetime NOT NULL,
   PRIMARY KEY (`foftest_foobar_id`)
-);
+) ENGINE = MEMORY DEFAULT CHARSET=utf8;
 
 -- Table used for testing aliases
 DROP TABLE IF EXISTS `jos_foftest_foobaraliases`;
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobaraliases` (
   `fo_locked_by` int(11) NOT NULL,
   `fo_locked_on` datetime NOT NULL,
   PRIMARY KEY (`id_foobar_aliases`)
-);
+) ENGINE = MEMORY DEFAULT CHARSET=utf8;
 
 -- === THIS TABLE IS USED FOR TESTING THE OLD METHOD OF JOINS (ie no ORM) ===
 -- Table used to test joins
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_foobarjoins` (
   `fj_dummy` varchar(50) NOT NULL,
   `title` varchar(50) NOT NULL,
   PRIMARY KEY (`foftest_id_foobarjoin`)
-);
+) ENGINE = MEMORY DEFAULT CHARSET=utf8;
 
 -- === ACTUAL TABLES USED FOR TESTING THE NEW ORM FEATURE ===
 -- Table for Joomla ORM
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_joomlachildren`(
   `dummy` VARCHAR (50) NOT NULL ,
   `user_id` INT NOT NULL ,
   PRIMARY KEY (`foftest_joomlachild_id`)
-);
+) ENGINE = MEMORY DEFAULT CHARSET=utf8;
 
 -- Parent table 1:n - 1:1 relation
 DROP TABLE IF EXISTS `jos_foftest_parents`;
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_parents` (
   `foftest_parent_id` INT NOT NULL AUTO_INCREMENT,
   `dummy` varchar (50) NOT NULL ,
   PRIMARY KEY (`foftest_parent_id`)
-);
+) ENGINE = MEMORY DEFAULT CHARSET=utf8;
 
 -- Children table 1:n - 1:1 relation
 DROP TABLE IF EXISTS `jos_foftest_children`;
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_children` (
   `dummy` varchar (50) NOT NULL ,
   `foftest_parent_id` INT NOT NULL ,
   PRIMARY KEY (`foftest_child_id`)
-);
+) ENGINE = MEMORY DEFAULT CHARSET=utf8;
 
 -- ORM table A
 DROP TABLE IF EXISTS `jos_foftest_parts`;
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_parts`(
   `foftest_part_id` INT NOT NULL AUTO_INCREMENT ,
   `dummy` varchar (50) NOT NULL ,
   PRIMARY KEY (`foftest_part_id`)
-);
+) ENGINE = MEMORY DEFAULT CHARSET=utf8;
 
 -- ORM table B
 DROP TABLE IF EXISTS `jos_foftest_groups`;
@@ -98,14 +98,14 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_groups`(
   `foftest_group_id` INT NOT NULL AUTO_INCREMENT ,
   `dummy` varchar (50) NOT NULL ,
   PRIMARY KEY (`foftest_group_id`)
-);
+) ENGINE = MEMORY DEFAULT CHARSET=utf8;
 
 -- ORM glue table
 DROP TABLE IF EXISTS `jos_foftest_parts_groups`;
 CREATE TABLE IF NOT EXISTS `jos_foftest_parts_groups`(
   `foftest_group_id` INT NOT NULL ,
   `foftest_part_id` INT NOT NULL
-);
+) ENGINE = MEMORY DEFAULT CHARSET=utf8;
 
 -- Table without any "special" column (ordering, hits etc etc)
 DROP TABLE IF EXISTS `jos_foftest_bares`;
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS `jos_foftest_bares` (
   `foftest_bare_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
   PRIMARY KEY (`foftest_bare_id`)
-);
+) ENGINE = MEMORY DEFAULT CHARSET=utf8;
 
 -- Table for nested sets
 DROP TABLE IF EXISTS `jos_foftest_nestedsets`;
@@ -129,7 +129,7 @@ CREATE TABLE `jos_foftest_nestedsets` (
   KEY `rgt` (`rgt`),
   KEY `lft_2` (`lft`,`rgt`),
   KEY `char` (`hash`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `jos_foftest_nestedbares`;
 CREATE TABLE `jos_foftest_nestedbares` (
@@ -141,4 +141,4 @@ CREATE TABLE `jos_foftest_nestedbares` (
   KEY `lft` (`lft`),
   KEY `rgt` (`rgt`),
   KEY `lft_2` (`lft`,`rgt`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
