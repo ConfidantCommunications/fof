@@ -1,9 +1,9 @@
 <?php
 
-use FOF30\View\View as F0FView;
+use FOF30\View\View as FOFView;
 
-class FtestView extends F0FView {
+class FtestView extends FOFView {
 }
 
-class FtestFake extends F0FView {
+class FtestFake extends FOFView {
 }

@@ -1357,7 +1357,7 @@ class F0FTableNestedTest extends FtestCaseDatabase
             // That's "funny": since we are cloning the table object, mockery will reset the invocation counter
             // This means that I have to manually track down the invocations and act accordingly
             $table->shouldReceive('get')->andReturn(
-                new F0FClosure(array(
+                new FOFClosure(array(
                     'current' => function() use($table, &$counter){
                         if(!$counter)
                         {

@@ -1,8 +1,8 @@
 <?php
 
-use FOF30\Table\Relations as F0FTableRelations;
+use FOF30\Table\Relations as FOFTableRelations;
 
-class FtestTableRelations extends F0FTableRelations
+class FtestTableRelations extends FOFTableRelations
 {
     public function normaliseParameters($pivot = false, &$itemName, &$tableClass, &$localKey, &$remoteKey, &$ourPivotKey, &$theirPivotKey, &$pivotTable)
     {

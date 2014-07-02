@@ -1,8 +1,8 @@
 <?php
 
-use FOF30\Table\Nested as F0FTableNested;
+use FOF30\Table\Nested as FOFTableNested;
 
-class FoftestTableNestedset extends F0FTableNested
+class FoftestTableNestedset extends FOFTableNested
 {
 
 }

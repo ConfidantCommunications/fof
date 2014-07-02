@@ -4,14 +4,14 @@
  * We can use instances of this class in order to create "on-the-fly" methods, so we can inject our code
  * inside a function with the name the System Under Test is expecting, for example:
  *
- * $object = new F0FClosure();
+ * $object = new FOFClosure();
  * $object->foo = function(){ return "Hello World!"};
  *
  * $object->foo() // Returns "Hello World!"
  *
  * See: http://stackoverflow.com/a/2938020/485241
  */
-class F0FClosure
+class FOFClosure
 {
     /**
      * Assigns callback functions to the class, the $methods array should be an associative one, where
