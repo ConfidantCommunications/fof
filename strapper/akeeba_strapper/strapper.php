@@ -5,7 +5,7 @@
  * Bootstrapper for use with Akeeba components.
  *
  * @copyright (c) 2012-2014 Akeeba Ltd
- * @license GNU General Public License version 2 or later
+ * @license       GNU General Public License version 2 or later
  */
 
 // Protect from unauthorized access
@@ -13,10 +13,10 @@ defined('_JEXEC') or die();
 
 if (!defined('F0F_INCLUDED'))
 {
-    include_once JPATH_LIBRARIES . '/f0f/include.php';
+	include_once JPATH_LIBRARIES . '/fof/fof30/include.php';
 }
 
-if (!@include_once(JPATH_SITE . '/media/akeeba_strapper/version.php') && !defined('AKEEBASTRAPPER_VERSION'))
+if (!@include_once (JPATH_SITE . '/media/akeeba_strapper/version.php') && !defined('AKEEBASTRAPPER_VERSION'))
 {
 	define('AKEEBASTRAPPER_VERSION', 'dev');
 	define('AKEEBASTRAPPER_DATE', gmdate('Y-m-d'));
@@ -26,35 +26,35 @@ if (!@include_once(JPATH_SITE . '/media/akeeba_strapper/version.php') && !define
 class AkeebaStrapper
 {
 
-    /** @var bool True when jQuery is already included */
-    public static $_includedJQuery = false;
+	/** @var bool True when jQuery is already included */
+	public static $_includedJQuery = false;
 
-    /** @var bool True when jQuery UI is already included */
-    public static $_includedJQueryUI = false;
+	/** @var bool True when jQuery UI is already included */
+	public static $_includedJQueryUI = false;
 
-    /** @var bool True when Bootstrap is already included */
-    public static $_includedBootstrap = false;
+	/** @var bool True when Bootstrap is already included */
+	public static $_includedBootstrap = false;
 
-    /** @var array List of URLs to Javascript files */
-    public static $scriptURLs = array();
+	/** @var array List of URLs to Javascript files */
+	public static $scriptURLs = array();
 
-    /** @var array List of script definitions to include in the head */
-    public static $scriptDefs = array();
+	/** @var array List of script definitions to include in the head */
+	public static $scriptDefs = array();
 
-    /** @var array List of URLs to CSS files */
-    public static $cssURLs = array();
+	/** @var array List of URLs to CSS files */
+	public static $cssURLs = array();
 
-    /** @var array List of URLs to LESS files */
-    public static $lessURLs = array();
+	/** @var array List of URLs to LESS files */
+	public static $lessURLs = array();
 
-    /** @var array List of CSS definitions to include in the head */
-    public static $cssDefs = array();
+	/** @var array List of CSS definitions to include in the head */
+	public static $cssDefs = array();
 
-    /** @var string The jQuery UI theme to use, default is 'smoothness' */
-    protected static $jqUItheme = 'smoothness';
+	/** @var string The jQuery UI theme to use, default is 'smoothness' */
+	protected static $jqUItheme = 'smoothness';
 
-    /** @var string A query tag to append to CSS and JS files for versioning purposes */
-    public static $tag = null;
+	/** @var string A query tag to append to CSS and JS files for versioning purposes */
+	public static $tag = null;
 
 	/**
 	 * Gets the query tag.
@@ -62,11 +62,11 @@ class AkeebaStrapper
 	 * Uses AkeebaStrapper::$tag as the default tag for the extension's mediatag. If
 	 * $overrideTag is set then that tag is used in stead.
 	 *
-	 * @param	string	$overrideTag	If defined this tag is used in stead of
-	 * 									AkeebaStrapper::$tag
+	 * @param    string $overrideTag      If defined this tag is used in stead of
+	 *                                    AkeebaStrapper::$tag
 	 *
-	 * @return 	string	The extension's query tag (e.g. ?23f742d04111881faa36ea8bc6d31a59)
-	 * 					or an empty string if it's not set
+	 * @return    string    The extension's query tag (e.g. ?23f742d04111881faa36ea8bc6d31a59)
+	 *                    or an empty string if it's not set
 	 */
 	public static function getTag($overrideTag = null)
 	{
@@ -91,42 +91,43 @@ class AkeebaStrapper
 		return $tag;
 	}
 
-    /**
-     * Is this something running under the CLI mode?
-     * @staticvar bool|null $isCli
-     * @return null
-     */
-    public static function isCli()
-    {
-        static $isCli = null;
+	/**
+	 * Is this something running under the CLI mode?
+	 *
+	 * @staticvar bool|null $isCli
+	 * @return null
+	 */
+	public static function isCli()
+	{
+		static $isCli = null;
 
-        if (is_null($isCli))
-        {
-            try
-            {
-                if (is_null(JFactory::$application))
-                {
-                    $isCli = true;
-                }
-                else
-                {
-                    $isCli = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
-                }
-            }
-            catch (Exception $e)
-            {
-                $isCli = true;
-            }
-        }
+		if (is_null($isCli))
+		{
+			try
+			{
+				if (is_null(JFactory::$application))
+				{
+					$isCli = true;
+				}
+				else
+				{
+					$isCli = version_compare(JVERSION, '1.6.0', 'ge') ? (JFactory::getApplication() instanceof JException) : false;
+				}
+			}
+			catch (Exception $e)
+			{
+				$isCli = true;
+			}
+		}
 
-        return $isCli;
-    }
+		return $isCli;
+	}
 
 	public static function getPreference($key, $default = null)
 	{
 		static $config = null;
 
-		if(is_null($config))
+		if (is_null($config))
 		{
 			// Load a configuration INI file which controls which files should be skipped
 			$iniFile = F0FTemplateUtils::parsePath('media://akeeba_strapper/strapper.ini', true);
@@ -142,14 +143,14 @@ class AkeebaStrapper
 		return $config[$key];
 	}
 
-    /**
-     * Loads our namespaced jQuery, accessible through akeeba.jQuery
-     */
-    public static function jQuery()
-    {
-        if (self::isCli())
+	/**
+	 * Loads our namespaced jQuery, accessible through akeeba.jQuery
+	 */
+	public static function jQuery()
+	{
+		if (self::isCli())
 		{
-            return;
+			return;
 		}
 
 		// Load jQuery only once
@@ -165,7 +166,7 @@ class AkeebaStrapper
 			$jQueryLoad = 'auto';
 		}
 
-        self::$_includedJQuery = true;
+		self::$_includedJQuery = true;
 
 		if ($jQueryLoad == 'none')
 		{
@@ -173,52 +174,50 @@ class AkeebaStrapper
 		}
 		elseif ($jQueryLoad == 'auto')
 		{
-			if (version_compare(JVERSION, '3.0', 'gt'))
-			{
-				$jQueryLoad = 'namespace';
-				JHtml::_('jquery.framework');
-			}
-			else
-			{
-				$jQueryLoad = 'full';
-			}
+			// By default, "auto" means "load the full jQuery stack". You might wonder why we do that in Joomla! 3.
+			// After all Joomla! 3 comes with jQuery built-in, right? Well, not quite. Some morons pretending to
+			// be developers write plugins which REPLACE Joomla!'s jQuery with ancient versions (jQuery 1.2 anyone?)
+			// Even worse, they tend to use versions which used to be stored in CDNs when the dinosaurs roamed the
+			// Earth. Not any more, so they end up NOT LOADING jQuery at all, causing our properly written code to
+			// not work. Therefore we force load our own copy of jQuery unless we are specifically instructed not to.
+			$jQueryLoad = 'full';
 		}
 
-        if ($jQueryLoad == 'full')
-        {
-            self::addJSfile('media://akeeba_strapper/js/akeebajq.js', AKEEBASTRAPPER_MEDIATAG);
-            self::addJSfile('media://akeeba_strapper/js/akjqmigrate.js', AKEEBASTRAPPER_MEDIATAG);
-        }
-        else
-        {
-            self::addJSfile('media://akeeba_strapper/js/namespace.js', AKEEBASTRAPPER_MEDIATAG);
-        }
-    }
-
-    /**
-     * Sets the jQuery UI theme to use. It must be the name of a subdirectory of
-     * media/akeeba_strapper/css or templates/<yourtemplate>/media/akeeba_strapper/css
-     *
-     * @param $theme string The name of the subdirectory holding the theme
-     */
-    public static function setjQueryUItheme($theme)
-    {
-        if (self::isCli())
+		if ($jQueryLoad == 'full')
 		{
-            return;
+			self::addJSfile('media://akeeba_strapper/js/akeebajq.js', AKEEBASTRAPPER_MEDIATAG);
+			self::addJSfile('media://akeeba_strapper/js/akjqmigrate.js', AKEEBASTRAPPER_MEDIATAG);
+		}
+		else
+		{
+			self::addJSfile('media://akeeba_strapper/js/namespace.js', AKEEBASTRAPPER_MEDIATAG);
+		}
+	}
+
+	/**
+	 * Sets the jQuery UI theme to use. It must be the name of a subdirectory of
+	 * media/akeeba_strapper/css or templates/<yourtemplate>/media/akeeba_strapper/css
+	 *
+	 * @param $theme string The name of the subdirectory holding the theme
+	 */
+	public static function setjQueryUItheme($theme)
+	{
+		if (self::isCli())
+		{
+			return;
 		}
 
-        self::$jqUItheme = $theme;
-    }
+		self::$jqUItheme = $theme;
+	}
 
-    /**
-     * Loads our namespaced jQuery UI and its stylesheet
-     */
-    public static function jQueryUI()
-    {
-        if (self::isCli())
+	/**
+	 * Loads our namespaced jQuery UI and its stylesheet
+	 */
+	public static function jQueryUI()
+	{
+		if (self::isCli())
 		{
-            return;
+			return;
 		}
 
 		// Load only once
@@ -229,7 +228,7 @@ class AkeebaStrapper
 
 		self::jQuery();
 
-        self::$_includedJQueryUI = true;
+		self::$_includedJQueryUI = true;
 
 		$jQueryUILoad = self::getPreference('jqueryui_load', 1);
 
@@ -242,17 +241,17 @@ class AkeebaStrapper
 
 		self::addJSfile('media://akeeba_strapper/js/akeebajqui.js', AKEEBASTRAPPER_MEDIATAG);
 		self::addCSSfile("media://akeeba_strapper/css/$theme/theme.min.css", AKEEBASTRAPPER_MEDIATAG);
-    }
+	}
 
-    /**
-     * Loads our namespaced Twitter Bootstrap. You have to wrap the output you want style
-     * with an element having the class akeeba-bootstrap added to it.
-     */
-    public static function bootstrap()
-    {
-        if (self::isCli())
+	/**
+	 * Loads our namespaced Twitter Bootstrap. You have to wrap the output you want style
+	 * with an element having the class akeeba-bootstrap added to it.
+	 */
+	public static function bootstrap()
+	{
+		if (self::isCli())
 		{
-            return;
+			return;
 		}
 
 		// Load Bootstrap only once
@@ -291,7 +290,7 @@ class AkeebaStrapper
 				$loadBootstrap = 'full';
 			}
 		}
-		elseif (!in_array($loadBootstrap, array('full','lite','none')))
+		elseif (!in_array($loadBootstrap, array('full', 'lite', 'none')))
 		{
 			if ($key == 'joomla3')
 			{
@@ -313,10 +312,10 @@ class AkeebaStrapper
 			JHtml::_('bootstrap.framework');
 		}
 
-        if (!self::$_includedJQuery)
-        {
-            self::jQuery();
-        }
+		if (!self::$_includedJQuery)
+		{
+			self::jQuery();
+		}
 
 		if ($loadBootstrap == 'none')
 		{
@@ -326,16 +325,16 @@ class AkeebaStrapper
 		self::$_includedBootstrap = true;
 
 		$source = self::getPreference('bootstrap_source', 'css');
-		if (!in_array($source, array('css','less')))
+		if (!in_array($source, array('css', 'less')))
 		{
 			$source = 'css';
 		}
 
-        $altCss = array('media://akeeba_strapper/css/strapper.min.css');
+		$altCss = array('media://akeeba_strapper/css/strapper.min.css');
 
-        if ($loadBootstrap == 'full')
-        {
-            array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
+		if ($loadBootstrap == 'full')
+		{
+			array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap.min.css');
 
 			$filename = F0FTemplateUtils::parsePath('media://akeeba_strapper/js/bootstrap.min.js', true);
 			if (@filesize($filename) > 5)
@@ -347,9 +346,9 @@ class AkeebaStrapper
 			{
 				self::addLESSfile('media://akeeba_strapper/less/bootstrap.j25.less', $altCss, AKEEBASTRAPPER_MEDIATAG);
 			}
-        }
-        else
-        {
+		}
+		else
+		{
 			switch ($key)
 			{
 				case 'joomla3':
@@ -365,106 +364,106 @@ class AkeebaStrapper
 					break;
 			}
 
-            array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap' . $qualifier . '.min.css');
+			array_unshift($altCss, 'media://akeeba_strapper/css/bootstrap' . $qualifier . '.min.css');
 			if ($source == 'less')
 			{
 				self::addLESSfile('media://akeeba_strapper/less/bootstrap' . $qualifier . '.less', $altCss, AKEEBASTRAPPER_MEDIATAG);
 			}
-        }
+		}
 
 		if ($source == 'css')
 		{
-			foreach($altCss as $css)
+			foreach ($altCss as $css)
 			{
 				self::addCSSfile($css, AKEEBASTRAPPER_MEDIATAG);
 			}
 		}
-    }
+	}
 
-    /**
-     * Adds an arbitrary Javascript file.
-     *
-     * @param $path 		string 	The path to the file, in the format media://path/to/file
-	 * @param $overrideTag	string	If defined this version tag overrides AkeebaStrapper::$tag
+	/**
+	 * Adds an arbitrary Javascript file.
+	 *
+	 * @param $path           string    The path to the file, in the format media://path/to/file
+	 * @param $overrideTag    string    If defined this version tag overrides AkeebaStrapper::$tag
 	 */
-    public static function addJSfile($path, $overrideTag = null)
-    {
+	public static function addJSfile($path, $overrideTag = null)
+	{
 		if (self::isCli())
 		{
-            return;
+			return;
 		}
 
 		$tag = self::getTag($overrideTag);
 
-        self::$scriptURLs[] = array(F0FTemplateUtils::parsePath($path), $tag);
-    }
+		self::$scriptURLs[] = array(F0FTemplateUtils::parsePath($path), $tag);
+	}
 
-    /**
-     * Add inline Javascript
-     *
-     * @param $script string Raw inline Javascript
-     */
-    public static function addJSdef($script)
-    {
+	/**
+	 * Add inline Javascript
+	 *
+	 * @param $script string Raw inline Javascript
+	 */
+	public static function addJSdef($script)
+	{
 		if (self::isCli())
 		{
-            return;
+			return;
 		}
 
-        self::$scriptDefs[] = $script;
-    }
+		self::$scriptDefs[] = $script;
+	}
 
-    /**
-     * Adds an arbitrary CSS file.
-     *
-     * @param $path 		string 	The path to the file, in the format media://path/to/file
-	 * @param $overrideTag	string	If defined this version tag overrides AkeebaStrapper::$tag
-     */
-    public static function addCSSfile($path, $overrideTag = null)
-    {
+	/**
+	 * Adds an arbitrary CSS file.
+	 *
+	 * @param $path           string    The path to the file, in the format media://path/to/file
+	 * @param $overrideTag    string    If defined this version tag overrides AkeebaStrapper::$tag
+	 */
+	public static function addCSSfile($path, $overrideTag = null)
+	{
 		if (self::isCli())
 		{
-            return;
+			return;
 		}
 
 		$tag = self::getTag($overrideTag);
 
 		self::$cssURLs[] = array(F0FTemplateUtils::parsePath($path), $tag);
-    }
+	}
 
-    /**
-     * Adds an arbitraty LESS file.
-     *
-     * @param $path string The path to the file, in the format media://path/to/file
-     * @param $altPaths string|array The path to the alternate CSS files, in the format media://path/to/file
-	 * @param $overrideTag	string	If defined this version tag overrides AkeebaStrapper::$tag
+	/**
+	 * Adds an arbitraty LESS file.
+	 *
+	 * @param $path           string The path to the file, in the format media://path/to/file
+	 * @param $altPaths       string|array The path to the alternate CSS files, in the format media://path/to/file
+	 * @param $overrideTag    string    If defined this version tag overrides AkeebaStrapper::$tag
 	 */
-    public static function addLESSfile($path, $altPaths = null, $overrideTag = null)
-    {
+	public static function addLESSfile($path, $altPaths = null, $overrideTag = null)
+	{
 		if (self::isCli())
 		{
-            return;
+			return;
 		}
 
 		$tag = self::getTag($overrideTag);
 
 		self::$lessURLs[] = array($path, $altPaths, $tag);
-    }
+	}
 
-    /**
-     * Add inline CSS
-     *
-     * @param $style string Raw inline CSS
-     */
-    public static function addCSSdef($style)
-    {
+	/**
+	 * Add inline CSS
+	 *
+	 * @param $style string Raw inline CSS
+	 */
+	public static function addCSSdef($style)
+	{
 		if (self::isCli())
 		{
-            return;
+			return;
 		}
 
-        self::$cssDefs[] = $style;
-    }
+		self::$cssDefs[] = $style;
+	}
 
 	/**
 	 * Do we need to preload?
@@ -483,7 +482,7 @@ class AkeebaStrapper
 		// namespace in Joomla! 3+). Else only the namespacing for the jQuery library will be loaded,
 		// without a jQuery library being loaded on forehand, which results in jQuery error(s).
 		$jQueryLoad = self::getPreference('jquery_load', 'auto');
-		if(in_array($jQueryLoad, array('auto', 'namespace')))
+		if (in_array($jQueryLoad, array('auto', 'namespace')))
 		{
 			$preloadJ3 = false;
 		}
@@ -507,19 +506,19 @@ class AkeebaStrapper
  */
 function AkeebaStrapperLoader()
 {
-    // If there are no script defs, just go to sleep
-    if (
-        empty(AkeebaStrapper::$scriptURLs) &&
-        empty(AkeebaStrapper::$scriptDefs) &&
-        empty(AkeebaStrapper::$cssDefs) &&
-        empty(AkeebaStrapper::$cssURLs) &&
-        empty(AkeebaStrapper::$lessURLs)
-    )
-    {
-        return;
-    }
+	// If there are no script defs, just go to sleep
+	if (
+		empty(AkeebaStrapper::$scriptURLs) &&
+		empty(AkeebaStrapper::$scriptDefs) &&
+		empty(AkeebaStrapper::$cssDefs) &&
+		empty(AkeebaStrapper::$cssURLs) &&
+		empty(AkeebaStrapper::$lessURLs)
+	)
+	{
+		return;
+	}
 
-    $myscripts = '';
+	$myscripts = '';
 
 	$preload = AkeebaStrapper::needPreload();
 
@@ -532,143 +531,147 @@ function AkeebaStrapperLoader()
 		$buffer = JResponse::getBody();
 	}
 
-    // Include Javascript files
-    if (!empty(AkeebaStrapper::$scriptURLs))
-        foreach (AkeebaStrapper::$scriptURLs as $entry)
+	// Include Javascript files
+	if (!empty(AkeebaStrapper::$scriptURLs))
 	{
-		list($url, $tag) = $entry;
-
-		if ($preload)
+		foreach (AkeebaStrapper::$scriptURLs as $entry)
 		{
-			$myscripts .= '<script type="text/javascript" src="' . $url . $tag . '"></script>' . "\n";
-		}
-		else
-		{
-			JFactory::getDocument()->addScript($url . $tag);
-		}
-	}
-
-    // Include Javscript snippets
-    if (!empty(AkeebaStrapper::$scriptDefs))
-    {
-		if ($preload)
-        {
-            $myscripts .= '<script type="text/javascript" language="javascript">' . "\n";
-        }
-        else
-        {
-            $myscripts = '';
-        }
-        foreach (AkeebaStrapper::$scriptDefs as $def)
-        {
-            $myscripts .= $def . "\n";
-        }
-		if ($preload)
-        {
-            $myscripts .= '</script>' . "\n";
-        }
-        else
-        {
-            JFactory::getDocument()->addScriptDeclaration($myscripts);
-        }
-    }
-
-    // Include LESS files
-    if (!empty(AkeebaStrapper::$lessURLs))
-    {
-        foreach (AkeebaStrapper::$lessURLs as $entry)
-        {
-            list($lessFile, $altFiles, $tag) = $entry;
-
-            $url = F0FTemplateUtils::addLESS($lessFile, $altFiles, true);
-
-			if ($preload)
-            {
-                if (empty($url))
-                {
-                    if (!is_array($altFiles) && empty($altFiles))
-                    {
-                        $altFiles = array($altFiles);
-                    }
-                    if (!empty($altFiles))
-                    {
-                        foreach ($altFiles as $altFile)
-                        {
-                            $url = F0FTemplateUtils::parsePath($altFile);
-                            $myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . $tag . '" />' . "\n";
-                        }
-                    }
-                }
-                else
-                {
-                    $myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . $tag . '" />' . "\n";
-                }
-            }
-            else
-            {
-                if (empty($url))
-                {
-                    if (!is_array($altFiles) && empty($altFiles))
-                    {
-                        $altFiles = array($altFiles);
-                    }
-                    if (!empty($altFiles))
-                    {
-                        foreach ($altFiles as $altFile)
-                        {
-                            $url = F0FTemplateUtils::parsePath($altFile);
-                            JFactory::getDocument()->addStyleSheet($url . $tag);
-                        }
-                    }
-                }
-                else
-                {
-                    JFactory::getDocument()->addStyleSheet($url . $tag);
-                }
-            }
-        }
-    }
-
-    // Include CSS files
-    if (!empty(AkeebaStrapper::$cssURLs))
-        foreach (AkeebaStrapper::$cssURLs as $entry)
-        {
 			list($url, $tag) = $entry;
 
 			if ($preload)
-            {
-                $myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . $tag . '" />' . "\n";
-            }
-            else
-            {
-                JFactory::getDocument()->addStyleSheet($url . $tag);
-            }
-        }
+			{
+				$myscripts .= '<script type="text/javascript" src="' . $url . $tag . '"></script>' . "\n";
+			}
+			else
+			{
+				JFactory::getDocument()->addScript($url . $tag);
+			}
+		}
+	}
 
-    // Include style definitions
-    if (!empty(AkeebaStrapper::$cssDefs))
-    {
-        $myscripts .= '<style type="text/css">' . "\n";
-        foreach (AkeebaStrapper::$cssDefs as $def)
-        {
+	// Include Javscript snippets
+	if (!empty(AkeebaStrapper::$scriptDefs))
+	{
+		if ($preload)
+		{
+			$myscripts .= '<script type="text/javascript" language="javascript">' . "\n";
+		}
+		else
+		{
+			$myscripts = '';
+		}
+		foreach (AkeebaStrapper::$scriptDefs as $def)
+		{
+			$myscripts .= $def . "\n";
+		}
+		if ($preload)
+		{
+			$myscripts .= '</script>' . "\n";
+		}
+		else
+		{
+			JFactory::getDocument()->addScriptDeclaration($myscripts);
+		}
+	}
+
+	// Include LESS files
+	if (!empty(AkeebaStrapper::$lessURLs))
+	{
+		foreach (AkeebaStrapper::$lessURLs as $entry)
+		{
+			list($lessFile, $altFiles, $tag) = $entry;
+
+			$url = F0FTemplateUtils::addLESS($lessFile, $altFiles, true);
+
 			if ($preload)
-            {
-                $myscripts .= $def . "\n";
-            }
-            else
-            {
-                JFactory::getDocument()->addScriptDeclaration($def . "\n");
-            }
-        }
-        $myscripts .= '</style>' . "\n";
-    }
+			{
+				if (empty($url))
+				{
+					if (!is_array($altFiles) && empty($altFiles))
+					{
+						$altFiles = array($altFiles);
+					}
+					if (!empty($altFiles))
+					{
+						foreach ($altFiles as $altFile)
+						{
+							$url = F0FTemplateUtils::parsePath($altFile);
+							$myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . $tag . '" />' . "\n";
+						}
+					}
+				}
+				else
+				{
+					$myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . $tag . '" />' . "\n";
+				}
+			}
+			else
+			{
+				if (empty($url))
+				{
+					if (!is_array($altFiles) && empty($altFiles))
+					{
+						$altFiles = array($altFiles);
+					}
+					if (!empty($altFiles))
+					{
+						foreach ($altFiles as $altFile)
+						{
+							$url = F0FTemplateUtils::parsePath($altFile);
+							JFactory::getDocument()->addStyleSheet($url . $tag);
+						}
+					}
+				}
+				else
+				{
+					JFactory::getDocument()->addStyleSheet($url . $tag);
+				}
+			}
+		}
+	}
+
+	// Include CSS files
+	if (!empty(AkeebaStrapper::$cssURLs))
+	{
+		foreach (AkeebaStrapper::$cssURLs as $entry)
+		{
+			list($url, $tag) = $entry;
+
+			if ($preload)
+			{
+				$myscripts .= '<link type="text/css" rel="stylesheet" href="' . $url . $tag . '" />' . "\n";
+			}
+			else
+			{
+				JFactory::getDocument()->addStyleSheet($url . $tag);
+			}
+		}
+	}
+
+	// Include style definitions
+	if (!empty(AkeebaStrapper::$cssDefs))
+	{
+		$myscripts .= '<style type="text/css">' . "\n";
+		foreach (AkeebaStrapper::$cssDefs as $def)
+		{
+			if ($preload)
+			{
+				$myscripts .= $def . "\n";
+			}
+			else
+			{
+				JFactory::getDocument()->addScriptDeclaration($def . "\n");
+			}
+		}
+		$myscripts .= '</style>' . "\n";
+	}
 
 	if ($preload)
-    {
-        $pos = strpos($buffer, "<head>");
-        if ($pos > 0)
-        {
-            $buffer = substr($buffer, 0, $pos + 6) . $myscripts . substr($buffer, $pos + 6);
+	{
+		$pos = strpos($buffer, "<head>");
+		if ($pos > 0)
+		{
+			$buffer = substr($buffer, 0, $pos + 6) . $myscripts . substr($buffer, $pos + 6);
 
 			if (version_compare(JVERSION, '3.2', 'ge'))
 			{
@@ -678,8 +681,8 @@ function AkeebaStrapperLoader()
 			{
 				JResponse::setBody($buffer);
 			}
-        }
-    }
+		}
+	}
 }
 
 /**
