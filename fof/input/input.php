@@ -139,7 +139,7 @@ class Input extends JInput
 	 */
 	public static function __callStatic($name, $arguments)
 	{
-		FOFPlatform::getInstance()->logDeprecated('FOFInput: static getXXX() methods are deprecated. Use the input object\'s methods instead.');
+		FOFPlatform::getInstance()->logDeprecated('\\FOF30\\Input\\Input: static getXXX() methods are deprecated. Use the input object\'s methods instead.');
 
 		if (substr($name, 0, 3) == 'get')
 		{
@@ -224,7 +224,7 @@ class Input extends JInput
 	 */
 	public static function setVar($name, $value = null, &$input = array(), $overwrite = true)
 	{
-		FOFPlatform::getInstance()->logDeprecated('FOFInput::setVar() is deprecated. Use set() instead.');
+		FOFPlatform::getInstance()->logDeprecated('\\FOF30\\Input\\Input::setVar() is deprecated. Use set() instead.');
 
 		if (empty($input))
 		{
