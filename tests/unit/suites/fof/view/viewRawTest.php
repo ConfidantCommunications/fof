@@ -50,8 +50,8 @@ class F0FViewRawTest extends FtestCase
 		$_SERVER['REQUEST_METHOD'] = 'GET';
 
 		// Replace the F0FPlatform with our fake one
-		$this->saveF0FPlatform();
-		$this->replaceF0FPlatform();
+		$this->saveFOFPlatform();
+		$this->replaceFOFPlatform();
 
 		$this->view = $this->getView();
 	}
@@ -62,7 +62,7 @@ class F0FViewRawTest extends FtestCase
 		$this->restoreFactoryState();
 
 		// Restore the F0FPlatform object instance
-		$this->restoreF0FPlatform();
+		$this->restoreFOFPlatform();
 
 		// Restore the $_SERVER global
 		global $_SERVER;

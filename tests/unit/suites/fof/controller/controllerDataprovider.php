@@ -1,5 +1,8 @@
 <?php
 
+use FOF30\Table\Table as FOFTable;
+use FOF30\Input\Input as FOFInput;
+
 class ControllerDataprovider
 {
     public static function getTestCreateFilename()
@@ -114,7 +117,7 @@ class ControllerDataprovider
 
     public static function getTestRead()
     {
-        $item = F0FTable::getAnInstance('Foobar', 'FoftestTable');
+        $item = FOFTable::getAnInstance('Foobar', 'FoftestTable');
         $data[] = array(
             array(
                 'cache'  => array('browse', 'read'),
@@ -195,7 +198,7 @@ class ControllerDataprovider
 
     public static function getTestAdd()
     {
-        $item = F0FTable::getAnInstance('Foobar', 'FoftestTable');
+        $item = FOFTable::getAnInstance('Foobar', 'FoftestTable');
         $data[] = array(
             array(
                 'cache'  => array('browse', 'read'),
@@ -253,7 +256,7 @@ class ControllerDataprovider
 
     public static function getTestEdit()
     {
-        $item = F0FTable::getAnInstance('Foobar', 'FoftestTable');
+        $item = FOFTable::getAnInstance('Foobar', 'FoftestTable');
         $data[] = array(
             array(
                 'cache'     => array('browse', 'read'),
@@ -774,7 +777,7 @@ class ControllerDataprovider
 
 	public static function getTestSetAccess()
 	{
-		$item = F0FTable::getAnInstance('Foobar', 'FoftestTable');
+		$item = FOFTable::getAnInstance('Foobar', 'FoftestTable');
 		$data[] = array(
 			array(
 				'save'      => true,
@@ -910,13 +913,13 @@ class ControllerDataprovider
             array(
                 'name'   => 'Foobar',
                 'prefix' => 'DummyModel',
-                'config' => array('input' => new F0FInput(array('test' => 'test'))),
+                'config' => array('input' => new FOFInput(array('test' => 'test'))),
                 'model'  => true
             ),
             array(
                 'name'   => 'Foobar',
                 'prefix' => 'DummyModel',
-                'config' => array('input' => new F0FInput(array('test' => 'test'))),
+                'config' => array('input' => new FOFInput(array('test' => 'test'))),
                 'return' => true
             )
         );
@@ -947,7 +950,7 @@ class ControllerDataprovider
                 'component' => ''
             ),
             array(
-                'name' => 'f0f'
+                'name' => 'fof30\\controller\\'
             )
         );
 

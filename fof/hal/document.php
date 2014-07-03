@@ -216,7 +216,7 @@ class Document
 	 */
 	public function render($format = 'json')
 	{
-		$class_name = 'FOFHalRender' . ucfirst($format);
+		$class_name = '\\FOF30\\Hal\\Render\\' . ucfirst($format);
 
 		if (!class_exists($class_name, true))
 		{

@@ -7,9 +7,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-use FOF30\Integration\Joomla\Platform as F0FIntegrationJoomlaPlatform;
-
-class FtestPlatformJoomla extends F0FIntegrationJoomlaPlatform
+class FtestPlatformJoomla extends FOF30\Integration\Joomla\Platform
 {
 	/**
 	 * @var		boolean   Should this platform instance report running under CLI mode?

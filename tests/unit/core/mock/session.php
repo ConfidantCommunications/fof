@@ -75,7 +75,7 @@ class FtestMockSession
 			'getToken',
 			'has',
 			'hasToken',
-			'getPrefix',
+			//'getPrefix',
 			'isNew',
 			'restart',
 			'set',

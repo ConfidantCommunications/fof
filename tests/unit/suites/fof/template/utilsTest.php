@@ -42,8 +42,8 @@ class F0FTemplateUtilsTest extends FtestCase
 		$attribute->setValue($application, $template);
 
 		// Replace the F0FPlatform with our fake one
-		$this->saveF0FPlatform();
-		$this->replaceF0FPlatform();
+		$this->saveFOFPlatform();
+		$this->replaceFOFPlatform();
 	}
 
 	protected function tearDown()
@@ -52,7 +52,7 @@ class F0FTemplateUtilsTest extends FtestCase
 		$this->restoreFactoryState();
 
 		// Restore the F0FPlatform object instance
-		$this->restoreF0FPlatform();
+		$this->restoreFOFPlatform();
 
 		// Restore the $_SERVER global
 		global $_SERVER;

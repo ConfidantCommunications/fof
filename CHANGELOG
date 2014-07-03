@@ -1,5 +1,7 @@
 FOF 3.0.0
 ================================================================================
+~ Strapper: Force load our namespaced jQuery on Joomla! 3. See the comments in strapper.php for the gory details behind this decision.
+~ Installation script: work around Joomla! not creating menu entries under Components on some sites (mostly those upgraded with jUpgrade)
 
 Backwards compatibility notes:
 ----------------------------------------
