@@ -121,7 +121,6 @@ class_alias('\\FOF30\\Model\\Field\\Number', 'F0FModelFieldNumber');
 class_alias('\\FOF30\\Model\\Field\\Text', 'F0FModelFieldText');
 class_alias('\\FOF30\\Platform\\Platform', 'F0FPlatform');
 class_alias('\\FOF30\\Platform\\Filesystem\\Filesystem', 'F0FPlatformFilesystem');
-class_alias('\\FOF30\\Platform\\Filesystem\\FilesystemInterface', 'F0FPlatformFilesystemInterface');
 class_alias('\\FOF30\\Render\\RenderAbstract', 'F0FRenderAbstract');
 class_alias('\\FOF30\\Render\\Joomla', 'F0FRenderJoomla');
 class_alias('\\FOF30\\Render\\Joomla3', 'F0FRenderJoomla3');

@@ -9,14 +9,13 @@
 namespace FOF30\Integration\Joomla\Filesystem;
 
 use FOF30\Platform\Filesystem\Filesystem as FOFPlatformFilesystem;
-use FOF30\Platform\Filesystem\FilesystemInterface as FOFPlatformFilesystemInterface;
 
 use JLoader, JFile, JFolder, JPath;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
-class Filesystem extends FOFPlatformFilesystem implements FOFPlatformFilesystemInterface
+class Filesystem extends FOFPlatformFilesystem
 {
 	public function __construct()
 	{

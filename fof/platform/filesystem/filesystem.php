@@ -11,7 +11,7 @@ namespace FOF30\Platform\Filesystem;
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
 
-abstract class Filesystem implements FilesystemInterface
+class Filesystem
 {
     /**
      * The list of paths where platform class files will be looked for
