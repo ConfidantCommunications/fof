@@ -22,8 +22,8 @@ class FOFDatabaseIteratorTest extends FtestCaseDatabase
 
         parent::setUp($loadDataset);
 
-        F0FPlatform::forceInstance(null);
-        F0FTable::forceInstance(null);
+        \FOF30\Platform\Platform::forceInstance(null);
+		\FOF30\Table\Table::forceInstance(null);
     }
 
     /**
@@ -35,8 +35,8 @@ class FOFDatabaseIteratorTest extends FtestCaseDatabase
     {
         $db = JFactory::getDbo();
 
-        $iterator = F0FDatabaseIterator::getIterator('Mysql', $db, null, 'FoftestTableFoobar');
-        $this->assertInstanceOf('F0FDatabaseIteratorMysql', $iterator, 'F0FDatabaseIterator loaded the wrong class');
+        $iterator = \FOF30\Database\DatabaseIterator::getIterator('Mysql', $db, null, 'FoftestTableFoobar');
+        $this->assertInstanceOf('\\FOF30\\Database\\Iterator\\Mysql', $iterator, 'F0FDatabaseIterator loaded the wrong class');
     }
 
     /**
@@ -48,7 +48,7 @@ class FOFDatabaseIteratorTest extends FtestCaseDatabase
     public function test__constructException()
     {
         $db = JFactory::getDbo();
-        $iterator = F0FDatabaseIterator::getIterator('Mysql', $db, null, 'WrongTable');
+        $iterator = \FOF30\Database\DatabaseIterator::getIterator('Mysql', $db, null, 'WrongTable');
     }
 
     /**
@@ -72,7 +72,7 @@ class FOFDatabaseIteratorTest extends FtestCaseDatabase
         $newDb->setQuery($query);
         $cursor = $newDb->execute();
 
-        $iterator = F0FDatabaseIterator::getIterator('Mysql', $cursor, null, 'FoftestTableFoobar');
+        $iterator = \FOF30\Database\DatabaseIterator::getIterator('Mysql', $cursor, null, 'FoftestTableFoobar');
 
         $items = array();
 

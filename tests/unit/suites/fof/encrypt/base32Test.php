@@ -13,7 +13,7 @@
  * @package  FrameworkOnFramework.UnitTest
  * @since    x.y
  */
-class F0FEncryptBase32Test extends PHPUnit_Framework_TestCase
+class FOFEncryptBase32Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * [setUp description]
@@ -23,7 +23,7 @@ class F0FEncryptBase32Test extends PHPUnit_Framework_TestCase
 	protected function setUp()
 	{
 
-		$this->theThing = new F0FEncryptBase32;
+		$this->theThing = new \FOF30\Encrypt\Base32();
 	}
 
 	/**

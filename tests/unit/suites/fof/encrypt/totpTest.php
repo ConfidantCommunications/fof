@@ -13,7 +13,7 @@
  * @package  FrameworkOnFramework.UnitTest
  * @since    x.y
  */
-class F0FEncryptTotpTest extends PHPUnit_Framework_TestCase
+class FOFEncryptTotpTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * [setUp description]
@@ -28,7 +28,7 @@ class F0FEncryptTotpTest extends PHPUnit_Framework_TestCase
 		$secretLength 			= 10;
 		$this->secretLength 	= $secretLength;
 
-		$this->theThing = new F0FEncryptTotp($timeStep, $passCodeLength, $secretLength);
+		$this->theThing = new \FOF30\Encrypt\Totp($timeStep, $passCodeLength, $secretLength);
 	}
 
 	/**

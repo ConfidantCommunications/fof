@@ -13,7 +13,7 @@
  * @package  FrameworkOnFramework.UnitTest
  * @since    x.y
  */
-class F0FEncryptAesTest extends PHPUnit_Framework_TestCase
+class FOFEncryptAesTest extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * [setUp description]
@@ -25,7 +25,7 @@ class F0FEncryptAesTest extends PHPUnit_Framework_TestCase
 		// Check if PHP has mcrypt installed
 		if (function_exists('mcrypt_module_open'))
 		{
-			$this->theThing = new F0FEncryptAes('x123456789012345678901234567890x');
+			$this->theThing = new \FOF30\Encrypt\Aes('x123456789012345678901234567890x');
 		}
 	}
 

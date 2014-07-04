@@ -9,39 +9,39 @@
 
 require_once 'dispatcherDataprovider.php';
 
-class F0FDispatcherTest extends FtestCase
+class FOFDispatcherTest extends FtestCase
 {
     public function setUp()
     {
         parent::setUp();
 
-        F0FPlatform::forceInstance(null);
+		\FOF30\Platform\Platform::forceInstance(null);
     }
 
     /**
      * @group           F0FDispatcher
      * @group           dispatcherDispatch
-     * @covers          F0FDispatcher::dispatch
+     * @covers          \FOF30\Dispatcher\Dispatcher::dispatch
      * @dataProvider    getTestDispatch
      */
     public function testDispatch($test, $check)
     {
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isCli', 'raiseError', 'authorizeAdmin', 'setHeader'));
+        $platform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('isCli', 'raiseError', 'authorizeAdmin', 'setHeader'));
         $platform->expects($this->any())->method('isCli')->will($this->returnValue($test['isCli']));
         $platform->expects($this->any())->method('authorizeAdmin')->will($this->returnValue($test['auth']));
 
         $matcher = $check['result'] ? $this->never() : $this->once();
         $platform->expects($matcher)->method('raiseError');
 
-        F0FPlatform::forceInstance($platform);
+        \FOF30\Platform\Platform::forceInstance($platform);
 
         $input = array_merge(array('option' => 'com_foftest'), $test['input']);
 
         $config = array(
-            'input' => new F0FInput($input)
+            'input' => new \FOF30\Input\Input($input)
         );
 
-        $dispatcher = $this->getMock('F0FDispatcher', array('onBeforeDispatch', 'onBeforeDispatchCLI', 'onAfterDispatch'), array($config));
+        $dispatcher = $this->getMock('\\FOF30\\Dispatcher\\Dispatcher', array('onBeforeDispatch', 'onBeforeDispatchCLI', 'onAfterDispatch'), array($config));
         $dispatcher->expects($this->any())->method('onBeforeDispatch')->will($this->returnValue($test['before']));
         $dispatcher->expects($this->any())->method('onBeforeDispatchCLI')->will($this->returnValue($test['beforeCli']));
         $dispatcher->expects($this->any())->method('onAfterDispatch')->will($this->returnValue($test['after']));
@@ -49,30 +49,30 @@ class F0FDispatcherTest extends FtestCase
         // I will ask to phpUnit to create a mock with a fixed name, in this way F0FController::getTmpInstance
         // will find the object and initialize it, using the mocked one
         // The only downside is that we can't controll it (eg stubbing and mocking)
-        $view = F0FInflector::pluralize($input['view']);
-        $this->getMock('F0FController', array('execute'), array(), 'FoftestController'.ucfirst($view));
+        $view = \FOF30\Inflector\Inflector::pluralize($input['view']);
+        $this->getMock('\\FOF30\\Controller\\Controller', array('execute'), array(), 'FoftestController'.ucfirst($view));
 
         $dispatcher->dispatch();
     }
 
     /**
      * @group           F0FDispatcher
-     * @covers          F0FDispatcher::onBeforeDispatch
+     * @covers          \FOF30\Dispatcher\Dispatcher::onBeforeDispatch
      */
 	public function testOnBeforeDispatch()
 	{
-		$dispatcher = F0FDispatcher::getTmpInstance();
+		$dispatcher = \FOF30\Dispatcher\Dispatcher::getTmpInstance();
 
 		$this->assertTrue($dispatcher->onBeforeDispatch(), 'onBeforeDispatch should return TRUE');
 	}
 
     /**
      * @group           F0FDispatcher
-     * @covers          F0FDispatcher::onBeforeDispatchCLI
+     * @covers          \FOF30\Dispatcher\Dispatcher::onBeforeDispatchCLI
      */
 	public function testOnBeforeDispatchCli()
 	{
-		$dispatcher = F0FDispatcher::getTmpInstance();
+		$dispatcher = \FOF30\Dispatcher\Dispatcher::getTmpInstance();
 
 		$this->assertTrue($dispatcher->onBeforeDispatchCLI(), 'onBeforeDispatchCLI should return TRUE');
 	}
@@ -80,20 +80,20 @@ class F0FDispatcherTest extends FtestCase
 	/**
      * @group           F0FDispatcher
      * @group           dispatcherGetTak
-     * @covers          F0FDispatcher::getTask
+     * @covers          \FOF30\Dispatcher\Dispatcher::getTask
 	 * @dataProvider    getTestGetTask
 	 */
 	public function testGetTask($input, $view, $frontend, $method, $expected, $message)
 	{
-		$mockPlatform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isFrontend'));
+		$mockPlatform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('isFrontend'));
 		$mockPlatform->expects($this->any())
 					 ->method('isFrontend')
 					 ->will($this->returnValue($frontend));
 
-		F0FPlatform::forceInstance($mockPlatform);
+		\FOF30\Platform\Platform::forceInstance($mockPlatform);
 
 		$_SERVER['REQUEST_METHOD'] = $method;
-		$dispatcher = F0FDispatcher::getTmpInstance();
+		$dispatcher = \FOF30\Dispatcher\Dispatcher::getTmpInstance();
 		$reflection = new ReflectionClass($dispatcher);
 
 		$property = $reflection->getProperty('input');
@@ -110,12 +110,12 @@ class F0FDispatcherTest extends FtestCase
     /**
      * @group           F0FDispatcher
      * @group           dispatcherTransparentAuthentication
-     * @covers          F0FDispatcher::transparentAuthentication
+     * @covers          \FOF30\Dispatcher\Dispatcher::transparentAuthentication
      * @dataProvider    getTestTransparentAuthentication
      */
     public function testTransparentAuthentication($test, $check)
     {
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('getUser', 'loginUser'));
+        $platform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('getUser', 'loginUser'));
         $platform->expects($this->any())->method('getUser')->will($this->returnValue((object) array('guest' => $test['guest'])));
 
         if($check['login'])
@@ -127,7 +127,7 @@ class F0FDispatcherTest extends FtestCase
             $platform->expects($this->never())->method('loginUser');
         }
 
-        F0FPlatform::forceInstance($platform);
+        \FOF30\Platform\Platform::forceInstance($platform);
 
         if(isset($test['server']))
         {
@@ -142,10 +142,10 @@ class F0FDispatcherTest extends FtestCase
         }
 
         $config = array(
-            'input' => new F0FInput($input)
+            'input' => new \FOF30\Input\Input($input)
         );
 
-        $dispatcher = new F0FDispatcher($config);
+        $dispatcher = new \FOF30\Dispatcher\Dispatcher($config);
 
         if(isset($test['authKey']))
         {
