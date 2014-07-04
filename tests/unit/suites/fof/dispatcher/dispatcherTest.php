@@ -26,7 +26,7 @@ class FOFDispatcherTest extends FtestCase
      */
     public function testDispatch($test, $check)
     {
-        $platform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('isCli', 'raiseError', 'authorizeAdmin', 'setHeader'));
+        $platform = $this->getMock('\\FOF30\\Platform\\Platform', array('isCli', 'raiseError', 'authorizeAdmin', 'setHeader'));
         $platform->expects($this->any())->method('isCli')->will($this->returnValue($test['isCli']));
         $platform->expects($this->any())->method('authorizeAdmin')->will($this->returnValue($test['auth']));
 
@@ -85,7 +85,7 @@ class FOFDispatcherTest extends FtestCase
 	 */
 	public function testGetTask($input, $view, $frontend, $method, $expected, $message)
 	{
-		$mockPlatform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('isFrontend'));
+		$mockPlatform = $this->getMock('\\FOF30\\Platform\\Platform', array('isFrontend'));
 		$mockPlatform->expects($this->any())
 					 ->method('isFrontend')
 					 ->will($this->returnValue($frontend));
@@ -115,7 +115,7 @@ class FOFDispatcherTest extends FtestCase
      */
     public function testTransparentAuthentication($test, $check)
     {
-        $platform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('getUser', 'loginUser'));
+        $platform = $this->getMock('\\FOF30\\Platform\\Platform', array('getUser', 'loginUser'));
         $platform->expects($this->any())->method('getUser')->will($this->returnValue((object) array('guest' => $test['guest'])));
 
         if($check['login'])

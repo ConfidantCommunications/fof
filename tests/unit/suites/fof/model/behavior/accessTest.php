@@ -43,7 +43,7 @@ class F0FModelBehaviorAccessTest extends FtestCaseDatabase
 
         $model = $this->getMock('F0FModel', array('applyAccessFiltering', 'getTable'), array($config));
 
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isFrontend'));
+        $platform = $this->getMock('F0FPlatform', array('isFrontend'));
         $platform->expects($this->any())->method('isFrontend')->will($this->returnValue($test['frontend']));
 
         F0FPlatform::forceInstance($platform);
@@ -108,7 +108,7 @@ class F0FModelBehaviorAccessTest extends FtestCaseDatabase
         $user = $this->getMock('JUser', array('getAuthorisedViewLevels'));
         $user->expects($this->any())->method('getAuthorisedViewLevels')->will($this->returnValue($test['views']));
 
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('getUser'));
+        $platform = $this->getMock('F0FPlatform', array('getUser'));
         $platform->expects($this->any())->method('getUser')->will($this->returnValue($user));
 
         F0FPlatform::forceInstance($platform);

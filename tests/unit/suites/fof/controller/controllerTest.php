@@ -515,7 +515,7 @@ class FOFControllerTest extends FtestCaseDatabase
 				))
 		);
 
-		$platform = $this->getMock('FOF30\Integration\Joomla\Platform', array('isBackend'));
+		$platform = $this->getMock('FOF30\\Platform\\Platform', array('isBackend'));
 		$platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['backend']));
 
 		\FOF30\Platform\Platform::forceInstance($platform);

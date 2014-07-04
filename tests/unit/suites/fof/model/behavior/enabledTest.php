@@ -43,7 +43,7 @@ class F0FModelBehaviorEnabledTest extends FtestCaseDatabase
 
         $model = $this->getMock('F0FModel', array('getTable'), array($config));
 
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isFrontend'));
+        $platform = $this->getMock('F0FPlatform', array('isFrontend'));
         $platform->expects($this->any())->method('isFrontend')->will($this->returnValue($test['frontend']));
 
         F0FPlatform::forceInstance($platform);

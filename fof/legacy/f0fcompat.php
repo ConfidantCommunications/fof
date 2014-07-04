@@ -103,7 +103,6 @@ class_alias('\\FOF30\\Hal\\Render\\Json', 'F0FHalRenderJson');
 class_alias('\\FOF30\\Inflector\\Inflector', 'F0FInflector');
 class_alias('\\FOF30\\Input\\Input', 'F0FInput');
 class_alias('\\FOF30\\Integration\\Joomla\\Filesystem\\Filesystem', 'F0FIntegrationJoomlaFilesystem');
-class_alias('\\FOF30\\Integration\\Joomla\\Platform', 'F0FIntegrationJoomlaPlatform');
 class_alias('\\FOF30\\Layout\\File', 'F0FLayoutFile');
 class_alias('\\FOF30\\Layout\\Helper', 'F0FLayoutHelper');
 class_alias('\\FOF30\\Model\\Model', 'F0FModel');

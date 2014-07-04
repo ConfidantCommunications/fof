@@ -83,7 +83,7 @@ class F0FToolbarTest extends FtestCase
      */
     public function testOnCpanelsBrowse($test, $check)
     {
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isBackend'));
+        $platform = $this->getMock('F0FPlatform', array('isBackend'));
         $platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['isBackend']));
 
         F0FPlatform::forceInstance($platform);
@@ -121,7 +121,7 @@ class F0FToolbarTest extends FtestCase
      */
     public function testOnBrowse($test, $check)
     {
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isBackend'));
+        $platform = $this->getMock('F0FPlatform', array('isBackend'));
         $platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['isBackend']));
 
         F0FPlatform::forceInstance($platform);
@@ -161,7 +161,7 @@ class F0FToolbarTest extends FtestCase
      */
     public function testOnRead($test, $check)
     {
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isBackend'));
+        $platform = $this->getMock('F0FPlatform', array('isBackend'));
         $platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['isBackend']));
 
         F0FPlatform::forceInstance($platform);
@@ -199,7 +199,7 @@ class F0FToolbarTest extends FtestCase
      */
     public function testOnAdd($test, $check)
     {
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isBackend'));
+        $platform = $this->getMock('F0FPlatform', array('isBackend'));
         $platform->expects($this->any())->method('isBackend')->will($this->returnValue($test['isBackend']));
 
         F0FPlatform::forceInstance($platform);
@@ -331,7 +331,7 @@ class F0FToolbarTest extends FtestCase
 			    }
 		    }));
 
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('getComponentBaseDirs'));
+        $platform = $this->getMock('F0FPlatform', array('getComponentBaseDirs'));
 
         // Then I have to trick the platform, providing a template path
         $platform->expects($this->any())

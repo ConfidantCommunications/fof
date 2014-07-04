@@ -8,9 +8,11 @@
 
 namespace FOF30\Platform;
 
+use FOF30\Inflector\Inflector;
 use FOF30\Input\Input as FOFInput;
 
-use JDate, JDocument, JUser, JDatabaseDriver, JLanguage, JError;
+use JFactory, JLoader, JUri, JRegistry, JError, JException, JApplicationCli, JUser, JDocument, JPluginHelper, JLanguage;
+use JEventDispatcher, JDispatcher, JAuthentication, JUserHelper, JLog, JResponse, JVersion, JDate, JDatabaseDriver;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -31,49 +33,11 @@ defined('FOF30_INCLUDED') or die;
 class Platform
 {
 	/**
-	 * The ordering for this platform class. The lower this number is, the more
-	 * important this class becomes. Most important enabled class ends up being
-	 * used.
+	 * The table and table field cache object, used to speed up database access
 	 *
-	 * @var  integer
+	 * @var  JRegistry|null
 	 */
-	public $ordering = 100;
-
-	/**
-	 * The internal name of this platform implementation. It must match the
-	 * last part of the platform class name and be in all lowercase letters,
-	 * e.g. "foobar" for FOF30\Platform\Foobar
-	 *
-	 * @var  string
-	 *
-	 * @since  2.1.2
-	 */
-	public $name = '';
-
-	/**
-	 * The human readable platform name
-	 *
-	 * @var  string
-	 *
-	 * @since  2.1.2
-	 */
-	public $humanReadableName = 'Unknown Platform';
-
-	/**
-	 * The platform version string
-	 *
-	 * @var  string
-	 *
-	 * @since  2.1.2
-	 */
-	public $version = '';
-
-	/**
-	 * Caches the enabled status of this platform class.
-	 *
-	 * @var  boolean
-	 */
-	protected $isEnabled = null;
+	protected $_cache = null;
 
 	/**
 	 * Cached filesystem abstraction object
@@ -103,44 +67,9 @@ class Platform
 	// ========================================================================
 
 	/**
-	 * Register a path where platform files will be looked for. These take
-	 * precedence over the built-in platform files.
-	 *
-	 * @param   string  $path  The path to add
-	 *
-	 * @return  void
-	 */
-	public static function registerPlatformPath($path)
-	{
-		if (!in_array($path, self::$paths))
-		{
-			self::$paths[] = $path;
-			self::$instance = null;
-		}
-	}
-
-	/**
-	 * Unregister a path where platform files will be looked for.
-	 *
-	 * @param   string  $path  The path to remove
-	 *
-	 * @return  void
-	 */
-	public static function unregisterPlatformPath($path)
-	{
-		$pos = array_search($path, self::$paths);
-
-		if ($pos !== false)
-		{
-			unset(self::$paths[$pos]);
-			self::$instance = null;
-		}
-	}
-
-	/**
 	 * Force a specific platform object to be used. If null, nukes the cache
 	 *
-	 * @param   Platform|null  $instance  The Platform object to be used
+	 * @param   Platform|null $instance The Platform object to be used
 	 *
 	 * @return  void
 	 */
@@ -161,139 +90,10 @@ class Platform
 	{
 		if (!is_object(self::$instance))
 		{
-			// Where to look for platform integrations
-			$paths = array(__DIR__ . '/../integration');
-
-			if (is_array(self::$paths))
-			{
-				$paths = array_merge($paths, self::$paths);
-			}
-
-			// Get a list of folders inside this directory
-			$integrations = array();
-
-			foreach ($paths as $path)
-			{
-				if (!is_dir($path))
-				{
-					continue;
-				}
-
-				$di = new \DirectoryIterator($path);
-				$temp = array();
-
-				/** @var \DirectoryIterator $fileSpec */
-				foreach ($di as $fileSpec)
-				{
-					if (!$fileSpec->isDir())
-					{
-						continue;
-					}
-
-					$fileName = $fileSpec->getFilename();
-
-					if (substr($fileName, 0, 1) == '.')
-					{
-						continue;
-					}
-
-					$platformFilename = $path . '/' . $fileName . '/platform.php';
-
-					if (!file_exists($platformFilename))
-					{
-						continue;
-					}
-
-					$temp[] = array(
-						'classname'		=> '\\FOF30\\Integration\\' . ucfirst($fileName) . '\\Platform',
-						'fullpath'		=> $path . '/' . $fileName . '/platform.php',
-					);
-				}
-
-				$integrations = array_merge($integrations, $temp);
-			}
-
-			// Loop all paths
-			foreach ($integrations as $integration)
-			{
-				// Get the class name for this platform class
-				$class_name = $integration['classname'];
-
-				// Load the file if the class doesn't exist
-				if (!class_exists($class_name, false))
-				{
-					@include_once $integration['fullpath'];
-				}
-
-				// If the class still doesn't exist this file didn't
-				// actually contain a platform class; skip it
-				if (!class_exists($class_name, false))
-				{
-					continue;
-				}
-
-				// Get an object of this platform
-				/** @var Platform $o */
-				$o = new $class_name;
-
-				// If it's not enabled, skip it
-				if (!$o->isEnabled())
-				{
-					continue;
-				}
-
-				if (is_object(self::$instance))
-				{
-					// Replace self::$instance if this object has a
-					// lower order number
-					$current_order = self::$instance->getOrdering();
-					$new_order = $o->getOrdering();
-
-					if ($new_order < $current_order)
-					{
-						self::$instance = null;
-						self::$instance = $o;
-					}
-				}
-				else
-				{
-					// There is no self::$instance already, so use the
-					// object we just created.
-					self::$instance = $o;
-				}
-			}
+			self::$instance = new self();
 		}
 
 		return self::$instance;
-	}
-
-	/**
-	 * Returns the ordering of the platform class. Files with a lower ordering
-	 * number will be loaded first.
-	 *
-	 * @return  integer
-	 */
-	public function getOrdering()
-	{
-		return $this->ordering;
-	}
-
-	/**
-	 * Is this platform enabled? This is used for automatic platform detection.
-	 * If the environment we're currently running in doesn't seem to be your
-	 * platform return false. If many classes return true, the one with the
-	 * lowest order will be picked by FOF Platform.
-	 *
-	 * @return  boolean
-	 */
-	public function isEnabled()
-	{
-		if (is_null($this->isEnabled))
-		{
-			$this->isEnabled = false;
-		}
-
-		return $this->isEnabled;
 	}
 
 	/**
@@ -316,7 +116,7 @@ class Platform
 	/**
 	 * Forces a filesystem integration object instance
 	 *
-	 * @param   object  $object  The object to force for this key
+	 * @param   object $object The object to force for this key
 	 *
 	 * @return  void
 	 *
@@ -330,11 +130,11 @@ class Platform
 	/**
 	 * Returns a platform integration object
 	 *
-	 * @param   string  $key  The key name of the platform integration object, e.g. 'filesystem'
+	 * @param   string $key The key name of the platform integration object, e.g. 'filesystem'
 	 *
 	 * @return  object
 	 *
-	 * @since  2.1.2
+	 * @since      2.1.2
 	 *
 	 * @deprecated since 3.0.0, use getFilesystemObject instead
 	 *
@@ -355,12 +155,12 @@ class Platform
 	/**
 	 * Forces a platform integration object instance
 	 *
-	 * @param   string  $key     The key name of the platform integration object, e.g. 'filesystem'
-	 * @param   object  $object  The object to force for this key
+	 * @param   string $key    The key name of the platform integration object, e.g. 'filesystem'
+	 * @param   object $object The object to force for this key
 	 *
 	 * @return  object
 	 *
-	 * @since  2.1.2
+	 * @since      2.1.2
 	 *
 	 * @deprecated since 3.0.0, use setFilesystemObject instead
 	 *
@@ -379,24 +179,79 @@ class Platform
 	}
 
 	// ========================================================================
-	// Default implementation
+	// Platform Implementation
 	// ========================================================================
+
+	/**
+	 * Checks if the current script is run inside a valid CMS execution
+	 *
+	 * @return bool
+	 */
+	public function checkExecution()
+	{
+		return defined('_JEXEC');
+	}
+
+	/**
+	 * Throw an error in a platform-friendly manner
+	 *
+	 * @param int    $code    The error code
+	 * @param string $message The error message
+	 *
+	 * @return JError on Joomla! 2.5 (exception thrown on Joomla! 3+)
+	 *
+	 * @throws \Exception
+	 */
+	public function raiseError($code, $message)
+	{
+		if (version_compare(JVERSION, '3.0', 'ge'))
+		{
+			throw new \Exception($message, $code);
+		}
+		else
+		{
+			return JError::raiseError($code, $message);
+		}
+	}
 
 	/**
 	 * Set the error Handling, if possible
 	 *
-	 * @param   integer  $level      PHP error level (E_ALL)
-	 * @param   string   $log_level  What to do with the error (ignore, callback)
-	 * @param   array    $options    Options for the error handler
+	 * @param   integer $level     PHP error level (E_ALL)
+	 * @param   string  $log_level What to do with the error (ignore, callback)
+	 * @param   array   $options   Options for the error handler
 	 *
 	 * @return  void
 	 */
 	public function setErrorHandling($level, $log_level, $options = array())
 	{
-		if (version_compare(JVERSION, '3.0', 'lt') )
+		if (version_compare(JVERSION, '3.0', 'lt'))
 		{
 			JError::setErrorHandling($level, $log_level, $options);
 		}
+	}
+
+	/**
+	 * Returns absolute path to directories used by the CMS.
+	 *
+	 * The keys returned are:
+	 * root        The root of the installation
+	 * public    Location of public site (frontend)
+	 * admin    Location of administrator site (backend)
+	 * tmp        Temporary directory
+	 * log        Logs directory
+	 *
+	 * @return  array  A hash array with keys root, public, admin, tmp and log.
+	 */
+	public function getPlatformBaseDirs()
+	{
+		return array(
+			'root'   => JPATH_ROOT,
+			'public' => JPATH_SITE,
+			'admin'  => JPATH_ADMINISTRATOR,
+			'tmp'    => JFactory::getConfig()->get('tmp_dir'),
+			'log'    => JFactory::getConfig()->get('log_dir')
+		);
 	}
 
 	/**
@@ -406,15 +261,15 @@ class Platform
 	 * is running inside our main application (CMS).
 	 *
 	 * The return is a table with the following keys:
-	 * * main	The normal location of component files. For a back-end Joomla!
+	 * * main    The normal location of component files. For a back-end Joomla!
 	 *          component this is the administrator/components/com_example
 	 *          directory.
-	 * * alt	The alternate location of component files. For a back-end
+	 * * alt    The alternate location of component files. For a back-end
 	 *          Joomla! component this is the front-end directory, e.g.
 	 *          components/com_example
-	 * * site	The location of the component files serving the public part of
+	 * * site    The location of the component files serving the public part of
 	 *          the application.
-	 * * admin	The location of the component files serving the administrative
+	 * * admin    The location of the component files serving the administrative
 	 *          part of the application.
 	 *
 	 * All paths MUST be absolute. All four paths MAY be the same if the
@@ -422,18 +277,29 @@ class Platform
 	 * or when the component does not provide both a public and private part.
 	 * All of the directories MUST be defined and non-empty.
 	 *
-	 * @param   string  $component  The name of the component. For Joomla! this
+	 * @param   string $component   The name of the component. For Joomla! this
 	 *                              is something like "com_example"
 	 *
 	 * @return  array  A hash array with keys main, alt, site and admin.
 	 */
 	public function getComponentBaseDirs($component)
 	{
+		if ($this->isFrontend())
+		{
+			$mainPath = JPATH_SITE . '/components/' . $component;
+			$altPath = JPATH_ADMINISTRATOR . '/components/' . $component;
+		}
+		else
+		{
+			$mainPath = JPATH_ADMINISTRATOR . '/components/' . $component;
+			$altPath = JPATH_SITE . '/components/' . $component;
+		}
+
 		return array(
-			'main'	=> '',
-			'alt'	=> '',
-			'site'	=> '',
-			'admin'	=> '',
+			'main'  => $mainPath,
+			'alt'   => $altPath,
+			'site'  => JPATH_SITE . '/components/' . $component,
+			'admin' => JPATH_ADMINISTRATOR . '/components/' . $component,
 		);
 	}
 
@@ -445,13 +311,13 @@ class Platform
 	 * The list of paths returned is a prioritised list. If a file is
 	 * found in the first path the other paths will not be scanned.
 	 *
-	 * @param   string   $component  The name of the component. For Joomla! this
+	 * @param   string  $component   The name of the component. For Joomla! this
 	 *                               is something like "com_example"
-	 * @param   string   $view       The name of the view you're looking a
+	 * @param   string  $view        The name of the view you're looking a
 	 *                               template for
-	 * @param   string   $layout     The layout name to load, e.g. 'default'
-	 * @param   string   $tpl        The sub-template name to load (null by default)
-	 * @param   boolean  $strict     If true, only the specified layout will be
+	 * @param   string  $layout      The layout name to load, e.g. 'default'
+	 * @param   string  $tpl         The sub-template name to load (null by default)
+	 * @param   boolean $strict      If true, only the specified layout will be
 	 *                               searched for. Otherwise we'll fall back to
 	 *                               the 'default' layout if the specified layout
 	 *                               is not found.
@@ -460,7 +326,37 @@ class Platform
 	 */
 	public function getViewTemplatePaths($component, $view, $layout = 'default', $tpl = null, $strict = false)
 	{
-		return array();
+		$isAdmin = $this->isBackend();
+
+		$basePath = $isAdmin ? 'admin:' : 'site:';
+		$basePath .= $component . '/';
+		$altBasePath = $basePath;
+		$basePath .= $view . '/';
+		$altBasePath .= (Inflector::isSingular($view) ? Inflector::pluralize($view) : Inflector::singularize($view)) . '/';
+
+		if ($strict)
+		{
+			$paths = array(
+				$basePath . $layout . ($tpl ? "_$tpl" : ''),
+				$altBasePath . $layout . ($tpl ? "_$tpl" : ''),
+			);
+		}
+		else
+		{
+			$paths = array(
+				$basePath . $layout . ($tpl ? "_$tpl" : ''),
+				$basePath . $layout,
+				$basePath . 'default' . ($tpl ? "_$tpl" : ''),
+				$basePath . 'default',
+				$altBasePath . $layout . ($tpl ? "_$tpl" : ''),
+				$altBasePath . $layout,
+				$altBasePath . 'default' . ($tpl ? "_$tpl" : ''),
+				$altBasePath . 'default',
+			);
+			$paths = array_unique($paths);
+		}
+
+		return $paths;
 	}
 
 	/**
@@ -471,7 +367,15 @@ class Platform
 	 */
 	public function getTemplateSuffixes()
 	{
-		return array();
+		$jversion = new JVersion;
+		$versionParts = explode('.', $jversion->RELEASE);
+		$majorVersion = array_shift($versionParts);
+		$suffixes = array(
+			'.j' . str_replace('.', '', $jversion->getHelpVersion()),
+			'.j' . $majorVersion,
+		);
+
+		return $suffixes;
 	}
 
 	/**
@@ -480,14 +384,44 @@ class Platform
 	 * files instead of the regular component directorues. If the application
 	 * does not have such a thing as template overrides return an empty string.
 	 *
-	 * @param   string   $component  The name of the component for which to fetch the overrides
-	 * @param   boolean  $absolute   Should I return an absolute or relative path?
+	 * @param   string  $component The name of the component for which to fetch the overrides
+	 * @param   boolean $absolute  Should I return an absolute or relative path?
 	 *
 	 * @return  string  The path to the template overrides directory
 	 */
 	public function getTemplateOverridePath($component, $absolute = true)
 	{
-		return '';
+		list($isCli, $isAdmin) = $this->isCliAdmin();
+
+		if (!$isCli)
+		{
+			if ($absolute)
+			{
+				$path = JPATH_THEMES . '/';
+			}
+			else
+			{
+				$path = $isAdmin ? 'administrator/templates/' : 'templates/';
+			}
+
+			if (substr($component, 0, 7) == 'media:/')
+			{
+				$directory = 'media/' . substr($component, 7);
+			}
+			else
+			{
+				$directory = 'html/' . $component;
+			}
+
+			$path .= JFactory::getApplication()->getTemplate() .
+				'/' . $directory;
+		}
+		else
+		{
+			$path = '';
+		}
+
+		return $path;
 	}
 
 	/**
@@ -496,14 +430,27 @@ class Platform
 	 * "plugin" in WordPress and "module" in Drupal, i.e. an application which
 	 * is running inside our main application (CMS).
 	 *
-	 * @param   string  $component  The name of the component. For Joomla! this
+	 * @param   string $component   The name of the component. For Joomla! this
 	 *                              is something like "com_example"
 	 *
 	 * @return  void
 	 */
 	public function loadTranslations($component)
 	{
-		return null;
+		if ($this->isBackend())
+		{
+			$paths = array(JPATH_ROOT, JPATH_ADMINISTRATOR);
+		}
+		else
+		{
+			$paths = array(JPATH_ADMINISTRATOR, JPATH_ROOT);
+		}
+
+		$jlang = JFactory::getLanguage();
+		$jlang->load($component, $paths[0], 'en-GB', true);
+		$jlang->load($component, $paths[0], null, true);
+		$jlang->load($component, $paths[1], 'en-GB', true);
+		$jlang->load($component, $paths[1], null, true);
 	}
 
 	/**
@@ -513,26 +460,39 @@ class Platform
 	 * Dispatcher. This method MUST implement this authorisation check. If you
 	 * do not need this in your platform, please always return true.
 	 *
-	 * @param   string  $component  The name of the component.
+	 * @param   string $component The name of the component.
 	 *
 	 * @return  boolean  True to allow loading the component, false to halt loading
 	 */
 	public function authorizeAdmin($component)
 	{
+		if ($this->isBackend())
+		{
+			// Master access check for the back-end, Joomla! 1.6 style.
+			$user = JFactory::getUser();
+
+			if (!$user->authorise('core.manage', $component)
+				&& !$user->authorise('core.admin', $component)
+			)
+			{
+				return false;
+			}
+		}
+
 		return true;
 	}
 
 	/**
 	 * Returns a user object.
 	 *
-	 * @param   integer  $id  The user ID to load. Skip or use null to retrieve
+	 * @param   integer $id   The user ID to load. Skip or use null to retrieve
 	 *                        the object for the currently logged in user.
 	 *
 	 * @return  JUser  The JUser object for the specified user
 	 */
 	public function getUser($id = null)
 	{
-		return null;
+		return JFactory::getUser($id);
 	}
 
 	/**
@@ -546,7 +506,62 @@ class Platform
 	 */
 	public function getDocument()
 	{
-		return null;
+		$document = null;
+
+		if (!$this->isCli())
+		{
+			try
+			{
+				$document = JFactory::getDocument();
+			}
+			catch (\Exception $exc)
+			{
+				$document = null;
+			}
+		}
+
+		return $document;
+	}
+
+	/**
+	 * Returns an object to handle dates
+	 *
+	 * @param   mixed $time     The initial time
+	 * @param   null  $tzOffest The timezone offset
+	 * @param   bool  $locale   Should I try to load a specific class for current language?
+	 *
+	 * @return  JDate object
+	 */
+	public function getDate($time = 'now', $tzOffest = null, $locale = true)
+	{
+		if ($locale)
+		{
+			return JFactory::getDate($time, $tzOffest);
+		}
+		else
+		{
+			return new JDate($time, $tzOffest);
+		}
+	}
+
+	/**
+	 * Returns Joomla!'s language object
+	 *
+	 * @return JLanguage
+	 */
+	public function getLanguage()
+	{
+		return JFactory::getLanguage();
+	}
+
+	/**
+	 * Returns Joomla!'s database driver object
+	 *
+	 * @return JDatabaseDriver
+	 */
+	public function getDbo()
+	{
+		return JFactory::getDbo();
 	}
 
 	/**
@@ -556,44 +571,107 @@ class Platform
 	 * value will be used. If $setUserState is set to true, the retrieved
 	 * variable will be stored in the user session.
 	 *
-	 * @param   string    $key           The user state key for the variable
-	 * @param   string    $request       The request variable name for the variable
-	 * @param   FOFInput  $input         The FOFInput object with the request (input) data
-	 * @param   mixed     $default       The default value. Default: null
-	 * @param   string    $type          The filter type for the variable data. Default: none (no filtering)
-	 * @param   boolean   $setUserState  Should I set the user state with the fetched value?
+	 * @param   string   $key          The user state key for the variable
+	 * @param   string   $request      The request variable name for the variable
+	 * @param   FOFInput $input        The FOFInput object with the request (input) data
+	 * @param   mixed    $default      The default value. Default: null
+	 * @param   string   $type         The filter type for the variable data. Default: none (no filtering)
+	 * @param   boolean  $setUserState Should I set the user state with the fetched value?
 	 *
 	 * @return  mixed  The value of the variable
 	 */
 	public function getUserStateFromRequest($key, $request, $input, $default = null, $type = 'none', $setUserState = true)
 	{
-		return $input->get($request, $default, $type);
+		list($isCLI, $isAdmin) = $this->isCliAdmin();
+
+		if ($isCLI)
+		{
+			return $input->get($request, $default, $type);
+		}
+
+		$app = JFactory::getApplication();
+
+		if (method_exists($app, 'getUserState'))
+		{
+			$old_state = $app->getUserState($key, $default);
+		}
+		else
+		{
+			$old_state = null;
+		}
+
+		$cur_state = (!is_null($old_state)) ? $old_state : $default;
+		$new_state = $input->get($request, null, $type);
+
+		// Save the new value only if it was set in this request
+		if ($setUserState)
+		{
+			if ($new_state !== null)
+			{
+				$app->setUserState($key, $new_state);
+			}
+			else
+			{
+				$new_state = $cur_state;
+			}
+		}
+		elseif (is_null($new_state))
+		{
+			$new_state = $cur_state;
+		}
+
+		return $new_state;
 	}
 
 	/**
 	 * Load plugins of a specific type. Obviously this seems to only be required
 	 * in the Joomla! CMS.
 	 *
-	 * @param   string  $type  The type of the plugins to be loaded
+	 * @param   string   $type       The type of the plugins to be loaded
+	 * @param   bool     $loadInCli  Should I also try to load plugins in CLI mode (default: false)
 	 *
 	 * @return void
 	 */
-	public function importPlugin($type)
+	public function importPlugin($type, $loadInCli = false)
 	{
+		if ($loadInCli || !$this->isCli())
+		{
+			JLoader::import('joomla.plugin.helper');
+			JPluginHelper::importPlugin($type);
+		}
 	}
 
 	/**
 	 * Execute plugins (system-level triggers) and fetch back an array with
 	 * their return values.
 	 *
-	 * @param   string  $event  The event (trigger) name, e.g. onBeforeScratchMyEar
-	 * @param   array   $data   A hash array of data sent to the plugins as part of the trigger
+	 * @param   string $event      The event (trigger) name, e.g. onBeforeScratchMyEar
+	 * @param   array  $data       A hash array of data sent to the plugins as part of the trigger
+	 * @param   bool   $loadInCli  Should I also try to run plugins in CLI mode (default: false)
 	 *
 	 * @return  array  A simple array containing the resutls of the plugins triggered
 	 */
-	public function runPlugins($event, $data)
+	public function runPlugins($event, $data, $loadInCli = false)
 	{
-		return array();
+		if ($loadInCli || !$this->isCli())
+		{
+			// IMPORTANT: DO NOT REPLACE THIS INSTANCE OF JDispatcher WITH ANYTHING ELSE. WE NEED JOOMLA!'S PLUGIN EVENT
+			// DISPATCHER HERE, NOT OUR GENERIC EVENTS DISPATCHER
+			if (version_compare(JVERSION, '3.0', 'ge'))
+			{
+				$dispatcher = JEventDispatcher::getInstance();
+			}
+			else
+			{
+				$dispatcher = JDispatcher::getInstance();
+			}
+
+			return $dispatcher->trigger($event, $data);
+		}
+		else
+		{
+			return array();
+		}
 	}
 
 	/**
@@ -602,14 +680,61 @@ class Platform
 	 * If your platform uses different conventions you'll have to override the
 	 * FOF defaults using fof.xml or by specialising the controller.
 	 *
-	 * @param   string  $action     The ACL privilege to check, e.g. core.edit
-	 * @param   string  $assetname  The asset name to check, typically the component's name
+	 * @param   string $action    The ACL privilege to check, e.g. core.edit
+	 * @param   string $assetname The asset name to check, typically the component's name
 	 *
 	 * @return  boolean  True if the user is allowed this action
 	 */
 	public function authorise($action, $assetname)
 	{
-		return true;
+		if ($this->isCli())
+		{
+			return true;
+		}
+
+		return JFactory::getUser()->authorise($action, $assetname);
+	}
+
+	/**
+	 * Main function to detect if we're running in a CLI environment and we're admin
+	 *
+	 * @return  array  isCLI and isAdmin. It's not an associative array, so we can use list.
+	 */
+	protected function isCliAdmin()
+	{
+		static $isCLI = null;
+		static $isAdmin = null;
+
+		if (is_null($isCLI) && is_null($isAdmin))
+		{
+			try
+			{
+				if (is_null(JFactory::$application))
+				{
+					$isCLI = true;
+				}
+				else
+				{
+					$app = JFactory::getApplication();
+					$isCLI = $app instanceof JException || $app instanceof JApplicationCli;
+				}
+			}
+			catch (\Exception $e)
+			{
+				$isCLI = true;
+			}
+
+			if ($isCLI)
+			{
+				$isAdmin = false;
+			}
+			else
+			{
+				$isAdmin = !JFactory::$application ? false : JFactory::getApplication()->isAdmin();
+			}
+		}
+
+		return array($isCLI, $isAdmin);
 	}
 
 	/**
@@ -619,7 +744,9 @@ class Platform
 	 */
 	public function isBackend()
 	{
-		return true;
+		list ($isCli, $isAdmin) = $this->isCliAdmin();
+
+		return $isAdmin && !$isCli;
 	}
 
 	/**
@@ -629,7 +756,9 @@ class Platform
 	 */
 	public function isFrontend()
 	{
-		return true;
+		list ($isCli, $isAdmin) = $this->isCliAdmin();
+
+		return !$isAdmin && !$isCli;
 	}
 
 	/**
@@ -639,7 +768,9 @@ class Platform
 	 */
 	public function isCli()
 	{
-		return true;
+		list ($isCli, $isAdmin) = $this->isCliAdmin();
+
+		return !$isAdmin && $isCli;
 	}
 
 	/**
@@ -650,16 +781,26 @@ class Platform
 	 */
 	public function supportsAjaxOrdering()
 	{
-		return true;
+		return version_compare(JVERSION, '3.0', 'ge');
+	}
+
+	/**
+	 * Is the global FOF cache enabled?
+	 *
+	 * @return  boolean
+	 */
+	public function isGlobalFOFCacheEnabled()
+	{
+		return !(defined('JDEBUG') && JDEBUG);
 	}
 
 	/**
 	 * Performs a check between two versions. Use this function instead of PHP version_compare
 	 * so we can mock it while testing
 	 *
-	 * @param   string  $version1  First version number
-	 * @param   string  $version2  Second version number
-	 * @param   string  $operator  Operator (see version_compare for valid operators)
+	 * @param   string $version1 First version number
+	 * @param   string $version2 Second version number
+	 * @param   string $operator Operator (see version_compare for valid operators)
 	 *
 	 * @deprecated Use PHP's version_compare against JVERSION in your code. This method is scheduled for removal in FOF 3.0
 	 *
@@ -674,38 +815,105 @@ class Platform
 	 * Saves something to the cache. This is supposed to be used for system-wide
 	 * FOF data, not application data.
 	 *
-	 * @param   string  $key      The key of the data to save
-	 * @param   string  $content  The actual data to save
+	 * @param   string $key     The key of the data to save
+	 * @param   string $content The actual data to save
 	 *
 	 * @return  boolean  True on success
 	 */
 	public function setCache($key, $content)
 	{
-		return false;
+		$registry = $this->getCacheObject();
+
+		$registry->set($key, $content);
+
+		return $this->saveCache();
 	}
 
 	/**
 	 * Retrieves data from the cache. This is supposed to be used for system-side
 	 * FOF data, not application data.
 	 *
-	 * @param   string  $key      The key of the data to retrieve
-	 * @param   string  $default  The default value to return if the key is not found or the cache is not populated
+	 * @param   string $key     The key of the data to retrieve
+	 * @param   string $default The default value to return if the key is not found or the cache is not populated
 	 *
 	 * @return  string  The cached value
 	 */
 	public function getCache($key, $default = null)
 	{
-		return false;
+		$registry = $this->getCacheObject();
+
+		return $registry->get($key, $default);
 	}
 
 	/**
-	 * Is the global FOF cache enabled?
+	 * Gets a reference to the cache object, loading it from the disk if
+	 * needed.
 	 *
-	 * @return  boolean
+	 * @param   boolean  $force  Should I forcibly reload the registry?
+	 *
+	 * @return  JRegistry
 	 */
-	public function isGlobalFOFCacheEnabled()
+	protected function &getCacheObject($force = false)
 	{
-		return true;
+		// Check if we have to load the cache file or we are forced to do that
+		if (is_null($this->_cache) || $force)
+		{
+			// Create a new JRegistry object
+			JLoader::import('joomla.registry.registry');
+			$this->_cache = new JRegistry;
+
+			// Try to get data from Joomla!'s cache
+			$cache = JFactory::getCache('fof', '');
+			$data = $cache->get('cache', 'fof');
+
+			// If data is not found, fall back to the legacy (FOF 2.1.rc3 and earlier) method
+			if ($data === false)
+			{
+				// Find the path to the file
+				$cachePath  = JPATH_CACHE . '/fof';
+				$filename   = $cachePath . '/cache.php';
+				$filesystem = $this->getFilesystemObject();
+
+				// Load the cache file if it exists. JRegistryFormatPHP fails
+				// miserably, so I have to work around it.
+				if ($filesystem->fileExists($filename))
+				{
+					@include_once $filename;
+
+					$filesystem->fileDelete($filename);
+
+					$className = 'FOFCacheStorage';
+
+					if (class_exists($className))
+					{
+						$object = new $className;
+						$this->_cache->loadObject($object);
+
+						$cache->store($this->_cache, 'cache', 'fof');
+					}
+				}
+			}
+			else
+			{
+				$this->_cache = $data;
+			}
+		}
+
+		return $this->_cache;
+	}
+
+	/**
+	 * Save the cache object back to disk
+	 *
+	 * @return  boolean  True on success
+	 */
+	private function saveCache()
+	{
+		// Get the JRegistry object of our cached data
+		$registry = $this->getCacheObject();
+
+		$cache = JFactory::getCache('fof', '');
+		return $cache->store($registry, 'cache', 'fof');
 	}
 
 	/**
@@ -719,19 +927,91 @@ class Platform
 	 */
 	public function clearCache()
 	{
-		return false;
+		$false = false;
+		$cache = JFactory::getCache('fof', '');
+		$cache->store($false, 'cache', 'fof');
+	}
+
+	/**
+	 * Returns the Joomla! global configuration object
+	 *
+	 * @return JRegistry
+	 */
+	public function getConfig()
+	{
+		return JFactory::getConfig();
 	}
 
 	/**
 	 * Logs in a user
 	 *
-	 * @param   array  $authInfo  authentification information
+	 * @param   array $authInfo authentification information
 	 *
 	 * @return  boolean  True on success
 	 */
 	public function loginUser($authInfo)
 	{
-		return true;
+		JLoader::import('joomla.user.authentication');
+		$options = array('remember'		 => false);
+		$authenticate = JAuthentication::getInstance();
+		$response = $authenticate->authenticate($authInfo, $options);
+
+		// User failed to authenticate: maybe he enabled two factor authentication?
+		// Let's try again "manually", skipping the check vs two factor auth
+		// Due the big mess with encryption algorithms and libraries, we are doing this extra check only
+		// if we're in Joomla 2.5.18+ or 3.2.1+
+		if($response->status != JAuthentication::STATUS_SUCCESS && method_exists('JUserHelper', 'verifyPassword'))
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select('id, password')
+				->from('#__users')
+				->where('username=' . $db->quote($authInfo['username']));
+			$result = $db->setQuery($query)->loadObject();
+
+			if ($result)
+			{
+
+				$match = JUserHelper::verifyPassword($authInfo['password'], $result->password, $result->id);
+
+				if ($match === true)
+				{
+					// Bring this in line with the rest of the system
+					$user = JUser::getInstance($result->id);
+					$response->email = $user->email;
+					$response->fullname = $user->name;
+
+					if (JFactory::getApplication()->isAdmin())
+					{
+						$response->language = $user->getParam('admin_language');
+					}
+					else
+					{
+						$response->language = $user->getParam('language');
+					}
+
+					$response->status = JAuthentication::STATUS_SUCCESS;
+					$response->error_message = '';
+				}
+			}
+		}
+
+		if ($response->status == JAuthentication::STATUS_SUCCESS)
+		{
+			$this->importPlugin('user');
+			$results = $this->runPlugins('onLoginUser', array((array) $response, $options));
+
+			JLoader::import('joomla.user.helper');
+			$userid = JUserHelper::getUserId($response->username);
+			$user = $this->getUser($userid);
+
+			$session = JFactory::getSession();
+			$session->set('user', $user);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -741,61 +1021,112 @@ class Platform
 	 */
 	public function logoutUser()
 	{
-		return true;
+		JLoader::import('joomla.user.authentication');
+		$app = JFactory::getApplication();
+		$options = array('remember'	 => false);
+		$parameters = array('username'	 => $this->getUser()->username);
+
+		return $app->triggerEvent('onLogoutUser', array($parameters, $options));
+	}
+
+	/**
+	 * Adds a log file for FOF
+	 *
+	 * @param string $file The name of the file to add
+	 */
+	public function logAddLogger($file)
+	{
+		JLog::addLogger(array('text_file' => $file), JLog::ALL, array('fof'));
 	}
 
 	/**
 	 * Logs a deprecated practice. In Joomla! this results in the $message being output in the
 	 * deprecated log file, found in your site's log directory.
 	 *
-	 * @param   string $message  The deprecated practice log message
+	 * @param   string $message The deprecated practice log message
 	 *
 	 * @return  void
 	 */
 	public function logDeprecated($message)
 	{
-		// The default implementation does nothing. Override this in your platform classes.
+		JLog::add($message, JLog::WARNING, 'deprecated');
 	}
 
 	/**
-	 * Returns the (internal) name of the platform implementation, e.g.
-	 * "joomla", "foobar123" etc. This MUST be the last part of the platform
-	 * class name. For example, if you have a plaform implementation class
-	 * FOF30\Platform\Foobar you MUST return "foobar" (all lowercase).
+	 * Logs a debug message for FOF
 	 *
-	 * @return  string
-	 *
-	 * @since  2.1.2
+	 * @param string $message The message to log
 	 */
-	public function getPlatformName()
+	public function logDebug($message)
 	{
-		return $this->name;
+		JLog::add($message, JLog::DEBUG, 'fof');
 	}
 
 	/**
-	 * Returns the version number string of the platform, e.g. "4.5.6". If
-	 * implementation integrates with a CMS or a versioned foundation (e.g.
-	 * a framework) it is advisable to return that version.
+	 * Returns the root URI for the request.
 	 *
-	 * @return  string
+	 * @param   boolean  $pathonly  If false, prepend the scheme, host and port information. Default is false.
+	 * @param   string   $path      The path
 	 *
-	 * @since  2.1.2
+	 * @return  string  The root URI string.
 	 */
-	public function getPlatformVersion()
+	public function URIroot($pathonly = false, $path = null)
 	{
-		return $this->version;
+		JLoader::import('joomla.environment.uri');
+
+		return JUri::root($pathonly, $path);
 	}
 
 	/**
-	 * Returns the human readable platform name, e.g. "Joomla!", "Joomla!
-	 * Framework", "Something Something Something Framework" etc.
+	 * Returns the base URI for the request.
 	 *
-	 * @return  string
-	 *
-	 * @since  2.1.2
+	 * @param   boolean  $pathonly  If false, prepend the scheme, host and port information. Default is false.
+	 * |
+	 * @return  string  The base URI string
 	 */
-	public function getPlatformHumanName()
+	public function URIbase($pathonly = false)
 	{
-		return $this->humanReadableName;
+		JLoader::import('joomla.environment.uri');
+
+		return JUri::base($pathonly);
+	}
+
+	/**
+	 * Method to set a response header.  If the replace flag is set then all headers
+	 * with the given name will be replaced by the new one (only if the current platform supports header caching)
+	 *
+	 * @param   string   $name     The name of the header to set.
+	 * @param   string   $value    The value of the header to set.
+	 * @param   boolean  $replace  True to replace any headers with the same name.
+	 *
+	 * @return  void
+	 */
+	public function setHeader($name, $value, $replace = false)
+	{
+		if (version_compare(JVERSION, '3.2', 'ge'))
+		{
+			JFactory::getApplication()->setHeader($name, $value, $replace);
+		}
+		else
+		{
+			JResponse::setHeader($name, $value, $replace);
+		}
+	}
+
+	/**
+	 * Outputs all headers immediately
+	 *
+	 * @throws \Exception
+	 */
+	public function sendHeaders()
+	{
+		if (version_compare(JVERSION, '3.2', 'ge'))
+		{
+			JFactory::getApplication()->sendHeaders();
+		}
+		else
+		{
+			JResponse::sendHeaders();
+		}
 	}
 }

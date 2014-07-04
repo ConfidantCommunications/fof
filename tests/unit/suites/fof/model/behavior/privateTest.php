@@ -44,7 +44,7 @@ class F0FModelBehaviorPrivateTest extends FtestCaseDatabase
         $model = $this->getMock('F0FModel', array('getTable'), array($config));
 
         $user = (object) array('id' => $test['user']);
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('isFrontend', 'getUser'));
+        $platform = $this->getMock('F0FPlatform', array('isFrontend', 'getUser'));
         $platform->expects($this->any())->method('isFrontend')->will($this->returnValue($test['frontend']));
         $platform->expects($this->any())->method('getUser')->will($this->returnValue($user));
 
@@ -94,7 +94,7 @@ class F0FModelBehaviorPrivateTest extends FtestCaseDatabase
         }
 
         $user = (object) array('id' => $test['user']);
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('getUser'));
+        $platform = $this->getMock('F0FPlatform', array('getUser'));
         $platform->expects($this->any())->method('getUser')->will($this->returnValue($user));
 
         F0FPlatform::forceInstance($platform);

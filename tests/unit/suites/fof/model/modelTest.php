@@ -679,7 +679,7 @@ class F0FModelTest extends FtestCaseDatabase
             $event = $property->getValue($model);
 
             // Let's create a mock for the platform and check that plugins are run
-            $platform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('runPlugins'));
+            $platform = $this->getMock('\\FOF30\\Platform\\Platform', array('runPlugins'));
             $platform->expects($this->any())->method('runPlugins')->with(
                 $event,
                 array('com_foftest.foobars', $test['id_list'], 1)
@@ -1369,7 +1369,7 @@ class F0FModelTest extends FtestCaseDatabase
         $model->setInput($config['input']);
 
         // First of all I stub the filesystem object, so it won't strip out the protocol part
-        $filesystem = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('fileExists'));
+        $filesystem = $this->getMock('\\FOF30\\Platform\\Platform', array('fileExists'));
         $filesystem->expects($this->any())
                    ->method('fileExists')
                    ->will($this->returnCallback(function($file){ return is_file($file);}));
@@ -1381,7 +1381,7 @@ class F0FModelTest extends FtestCaseDatabase
             $methods[] = 'getTemplateSuffixes';
         }
 
-        $platform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', $methods);
+        $platform = $this->getMock('\\FOF30\\Platform\\Platform', $methods);
 
         // Then I have to trick the platform, providing a template path
         $platform->expects($this->any())
@@ -1464,7 +1464,7 @@ class F0FModelTest extends FtestCaseDatabase
 
         $form = new F0FForm('dummy');
 
-        $platform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('importPlugin', 'runPlugins'));
+        $platform = $this->getMock('\\FOF30\\Platform\\Platform', array('importPlugin', 'runPlugins'));
         $platform->expects($this->any())->method('importPlugin')->with('content');
         $platform->expects($this->any())->method('runPlugins')
                  ->with('onContentPrepareForm', array($form, array()))
