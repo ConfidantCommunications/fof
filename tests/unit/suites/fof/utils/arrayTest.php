@@ -1574,6 +1574,8 @@ class F0FUtilsArrayTest extends FtestCase
 	 */
 	public function testToString($input, $inner, $outer, $keepKey, $expect, $message, $defaults)
 	{
+		setlocale(LC_ALL, 'en_GB@euro', 'en_GB', 'en');
+
 		if ($defaults)
 		{
 			$output = F0FUtilsArray::toString($input);

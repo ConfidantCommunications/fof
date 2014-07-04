@@ -331,7 +331,7 @@ class Select extends JFormFieldList implements FOFFormField
 			{
 				$source_file = FOFTemplateUtils::parsePath($source_file, true);
 
-				if (FOFPlatform::getInstance()->getIntegrationObject('filesystem')->fileExists($source_file))
+				if (FOFPlatform::getInstance()->getFilesystemObject()->fileExists($source_file))
 				{
 					include_once $source_file;
 				}

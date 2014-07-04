@@ -120,7 +120,7 @@ class Provider
 
 		// Get the folders of the component
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($component);
-        $filesystem     = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+        $filesystem     = FOFPlatform::getInstance()->getFilesystemObject();
 
 		// Check that the path exists
 		$path = $componentPaths['admin'];
@@ -189,7 +189,7 @@ class Provider
 
 		if (empty($domains))
 		{
-			$filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+			$filesystem = FOFPlatform::getInstance()->getFilesystemObject();
 
 			$files = $filesystem->folderFiles(__DIR__ . '/domain', '.php');
 

@@ -75,14 +75,14 @@ abstract class Platform implements PlatformInterface
 	 */
 	protected $isEnabled = null;
 
-    /**
-     * Filesystem integration objects cache
-     *
-     * @var  object
+	/**
+	 * Cached filesystem abstraction object
 	 *
-	 * @since  2.1.2
-     */
-    protected $objectCache = array();
+	 * @var \FOF30\Integration\Joomla\Filesystem\Filesystem
+	 *
+	 * @since 3.0.0
+	 */
+	protected $filesystemObject = null;
 
 	/**
 	 * The list of paths where platform class files will be looked for
@@ -155,7 +155,7 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Find and return the most relevant platform object
 	 *
-	 * @return  PlatformInterface
+	 * @return  Platform
 	 */
 	public static function getInstance()
 	{
@@ -303,6 +303,37 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
+	 * Returns the filesystem integration object
+	 *
+	 * @return \FOF30\Integration\Joomla\Filesystem\Filesystem
+	 *
+	 * @since 3.0.0
+	 */
+	public function getFilesystemObject()
+	{
+		if (empty($this->filesystemObject))
+		{
+			$this->filesystemObject = new \FOF30\Integration\Joomla\Filesystem\Filesystem();
+		}
+
+		return $this->filesystemObject;
+	}
+
+	/**
+	 * Forces a filesystem integration object instance
+	 *
+	 * @param   object  $object  The object to force for this key
+	 *
+	 * @return  void
+	 *
+	 * @since  3.0.0
+	 */
+	public function setFilesystemObject($object)
+	{
+		$this->filesystemObject = $object;
+	}
+
+	/**
 	 * Returns a platform integration object
 	 *
 	 * @param   string  $key  The key name of the platform integration object, e.g. 'filesystem'
@@ -310,27 +341,21 @@ abstract class Platform implements PlatformInterface
 	 * @return  object
 	 *
 	 * @since  2.1.2
+	 *
+	 * @deprecated since 3.0.0, use getFilesystemObject instead
+	 *
+	 * @throws \Exception When the key is not 'filesystem'
 	 */
 	public function getIntegrationObject($key)
 	{
-		$hasObject = false;
-
-		if (array_key_exists($key, $this->objectCache))
+		if ($key != 'filesystem')
 		{
-			if (is_object($this->objectCache[$key]))
-			{
-				$hasObject = true;
-			}
+			throw new \Exception("\\FOF30\\Platform\\Platform::getIntegrationObject can only return a filesystem object but $key object type requested.", 500);
 		}
 
-		if (!$hasObject)
-		{
-			// Instantiate a new platform integration object
-			$className = '\\FOF30\\Integration\\' . ucfirst($this->getPlatformName()) . '\\' . ucfirst($key) . '\\' . ucfirst($key);
-			$this->objectCache[$key] = new $className;
-		}
+		$this->logDeprecated('\FOF30\Platform\Platform::getIntegrationObject is deprecated. Use Platform::getFilesystemObject instead');
 
-		return $this->objectCache[$key];
+		return $this->getFilesystemObject();
 	}
 
 	/**
@@ -342,10 +367,21 @@ abstract class Platform implements PlatformInterface
 	 * @return  object
 	 *
 	 * @since  2.1.2
+	 *
+	 * @deprecated since 3.0.0, use setFilesystemObject instead
+	 *
+	 * @throws \Exception When the key is not 'filesystem'
 	 */
 	public function setIntegrationObject($key, $object)
 	{
-		$this->objectCache[$key] = $object;
+		if ($key != 'filesystem')
+		{
+			throw new \Exception("\\FOF30\\Platform\\Platform::getIntegrationObject can only return a filesystem object but $key object type requested.", 500);
+		}
+
+		$this->logDeprecated('\FOF30\Platform\Platform::getIntegrationObject is deprecated. Use Platform::getFilesystemObject instead');
+
+		$this->setFilesystemObject($object);
 	}
 
 	// ========================================================================

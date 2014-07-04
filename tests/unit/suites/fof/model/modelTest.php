@@ -1389,7 +1389,7 @@ class F0FModelTest extends FtestCaseDatabase
                  ->will($this->returnValue(JPATH_ROOT.'/administrator/templates/system'));
 
         // Finally, force the platform to return my mocked object
-        $platform->setIntegrationObject('filesystem', $filesystem);
+        $platform->setFilesystemObject($filesystem);
 
         // Do I want to mock the suffix returned, too?
         if(isset($test['suffix']))

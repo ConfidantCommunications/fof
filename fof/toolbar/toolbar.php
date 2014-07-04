@@ -114,7 +114,7 @@ class Toolbar
 					array_unshift($searchPaths, $config['searchpath']);
 				}
 
-                $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+                $filesystem = FOFPlatform::getInstance()->getFilesystemObject();
 
 				$path = $filesystem->pathFind(
 						$searchPaths, 'toolbar.php'

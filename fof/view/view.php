@@ -414,14 +414,14 @@ abstract class View extends FOFUtilsObject
 
 		// Look for a template override
 
-		if (isset($layoutTemplate) && $layoutTemplate != '_' && $layoutTemplate != $template)
+		if (isset($layoutTemplate) && $layoutTemplate != '_' && $layoutTemplate != $templatePath)
 		{
 			$apath = array_shift($paths);
-			array_unshift($paths, str_replace($template, $layoutTemplate, $apath));
+			array_unshift($paths, str_replace($templatePath, $layoutTemplate, $apath));
 		}
 
 		$filetofind = $templateParts['template'] . '.php';
-        $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+        $filesystem = FOFPlatform::getInstance()->getFilesystemObject();
 
 		$this->_tempFilePath = $filesystem->pathFind($paths, $filetofind);
 
@@ -954,7 +954,7 @@ abstract class View extends FOFUtilsObject
 	 */
 	protected function findRenderer()
 	{
-        $filesystem     = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+        $filesystem     = FOFPlatform::getInstance()->getFilesystemObject();
 
 		// Try loading the stock renderers shipped with FOF
 
@@ -1059,7 +1059,7 @@ abstract class View extends FOFUtilsObject
 		$file = preg_replace('/[^A-Z0-9_\.-]/i', '', $hlp);
 
 		// Load the template script using the default Joomla! features
-        $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+        $filesystem = FOFPlatform::getInstance()->getFilesystemObject();
 
 		$helper = $filesystem->pathFind($this->_path['helper'], $this->_createFileName('helper', array('name' => $file)));
 

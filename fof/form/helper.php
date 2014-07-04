@@ -193,7 +193,7 @@ class Helper extends JFormHelper
 
 		// Try to find the class file.
 		$type       = strtolower($type) . '.php';
-        $filesystem = FOFPlatform::getInstance()->getIntegrationObject('filesystem');
+        $filesystem = FOFPlatform::getInstance()->getFilesystemObject();
 
 		foreach ($paths as $path)
 		{

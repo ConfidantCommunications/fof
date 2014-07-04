@@ -342,7 +342,7 @@ class F0FToolbarTest extends FtestCase
 	        ));
 
         // Finally, force the platform to return my mocked object
-        $platform->setIntegrationObject('filesystem', $filesystem);
+        $platform->setFilesystemObject($filesystem);
 
         F0FPlatform::forceInstance($platform);
 
