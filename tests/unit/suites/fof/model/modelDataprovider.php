@@ -102,8 +102,6 @@ abstract class ModelDataprovider
 		$data[] = array('12');
 		$data[] = array(0);
 		$data[] = array('0');
-        $data[] = array(array(4));
-        $data[] = array(array(4, 7));
 
         return $data;
 	}

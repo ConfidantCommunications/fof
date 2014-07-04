@@ -7,10 +7,6 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-use FOF30\Table\Table as FOFTable;
-use FOF30\Input\Input as FOFInput;
-use FOF30\Controller\Controller as FOFController;
-
 require_once 'controllerDataprovider.php';
 
 class FOFControllerTest extends FtestCaseDatabase
@@ -60,7 +56,7 @@ class FOFControllerTest extends FtestCaseDatabase
 
         parent::setUp($loadDataset);
 
-        FOFTable::forceInstance(null);
+		FOF30\Table\Table::forceInstance(null);
     }
 
 	protected function tearDown()
@@ -82,7 +78,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerCreateFilename
-     * @covers          FOFController::createFilename
+     * @covers          FOF30\Controller\Controller::createFilename
      * @dataProvider    getTestCreateFilename
      *
      * @preventDataLoading
@@ -99,7 +95,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerBrowse
-     * @covers          FOFController::browse
+     * @covers          FOF30\Controller\Controller::browse
      * @dataProvider    getTestBrowse
      *
      * @preventDataLoading
@@ -130,7 +126,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerRead
-     * @covers          FOFController::read
+     * @covers          FOF30\Controller\Controller::read
      * @dataProvider    getTestRead
      */
     public function testRead($test, $check)
@@ -167,7 +163,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerAdd
-     * @covers          FOFController::add
+     * @covers          FOF30\Controller\Controller::add
      * @dataProvider    getTestAdd
      *
      * @preventDataLoading
@@ -200,13 +196,13 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerEdit
-     * @covers          FOFController::edit
+     * @covers          FOF30\Controller\Controller::edit
      * @dataProvider    getTestEdit
      */
     public function testEdit($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new FOF30\Input\Input(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
@@ -259,7 +255,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerCopy
-     * @covers          FOFController::copy
+     * @covers          FOF30\Controller\Controller::copy
      * @dataProvider    getTestCopy
      *
      * @preventDataLoading
@@ -267,7 +263,7 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testCopy($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new FOF30\Input\Input(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
@@ -306,7 +302,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerCancel
-     * @covers          FOFController::cancel
+     * @covers          FOF30\Controller\Controller::cancel
      * @dataProvider    getTestCancel
      *
      * @preventDataLoading
@@ -314,7 +310,7 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testCancel($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new FOF30\Input\Input(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
@@ -363,7 +359,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerOrderdown
-     * @covers          FOFController::orderdown
+     * @covers          FOF30\Controller\Controller::orderdown
      * @dataProvider    getTestOrderDown
      *
      * @preventDataLoading
@@ -371,7 +367,7 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testOrderdown($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new FOF30\Input\Input(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
@@ -410,7 +406,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerOrderup
-     * @covers          FOFController::orderup
+     * @covers          FOF30\Controller\Controller::orderup
      * @dataProvider    getTestOrderUp
      *
      * @preventDataLoading
@@ -418,7 +414,7 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testOrderup($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new FOF30\Input\Input(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
@@ -457,7 +453,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerRemove
-     * @covers          FOFController::remove
+     * @covers          FOF30\Controller\Controller::remove
      * @dataProvider    getTestRemove
      *
      * @preventDataLoading
@@ -465,7 +461,7 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testRemove($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new FOF30\Input\Input(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar',
                     'returnurl' => $test['returnurl']
@@ -504,7 +500,7 @@ class FOFControllerTest extends FtestCaseDatabase
 	/**
 	 * @group           FOFController
 	 * @group           controllerSetRedirect
-	 * @covers          FOFController::setRedirect
+	 * @covers          FOF30\Controller\Controller::setRedirect
 	 * @dataProvider    getTestSetRedirect
 	 *
 	 * @preventDataLoading
@@ -513,7 +509,7 @@ class FOFControllerTest extends FtestCaseDatabase
 	{
 		$config = array(
 			'autoRouting' => $test['route'],
-			'input' => new FOFInput(array(
+			'input' => new FOF30\Input\Input(array(
 					'option'    => 'com_foftest',
 					'view'      => 'foobar'
 				))
@@ -524,7 +520,7 @@ class FOFControllerTest extends FtestCaseDatabase
 
 		\FOF30\Platform\Platform::forceInstance($platform);
 
-		$controller = new FOFController($config);
+		$controller = new FOF30\Controller\Controller($config);
 
 		$type = new ReflectionProperty($controller, 'messageType');
 		$type->setAccessible(true);
@@ -536,7 +532,7 @@ class FOFControllerTest extends FtestCaseDatabase
 
 		$return = $controller->setRedirect($test['url'], $test['msg'], $test['type']);
 
-		$this->assertInstanceOf('FOF30\Controller\Controller', $return, 'FOF30\Controller\Controller::setRedirect should return an instance of FOFController');
+		$this->assertInstanceOf('FOF30\Controller\Controller', $return, 'FOF30\Controller\Controller::setRedirect should return an instance of FOF30\Controller\Controller');
 
 		$redirect = new ReflectionProperty($controller, 'redirect');
 		$redirect->setAccessible(true);
@@ -553,7 +549,7 @@ class FOFControllerTest extends FtestCaseDatabase
 	/**
 	 * @group           FOFController
 	 * @group           controllerSetstate
-	 * @covers          FOFController::setstate
+	 * @covers          FOF30\Controller\Controller::setstate
 	 * @dataProvider    getTestSetState
 	 *
 	 * @preventDataLoading
@@ -561,7 +557,7 @@ class FOFControllerTest extends FtestCaseDatabase
 	public function testSetstate($test, $check)
 	{
 		$config = array(
-			'input' => new FOFInput(array(
+			'input' => new FOF30\Input\Input(array(
 					'option'    => 'com_foftest',
 					'view'      => 'foobar',
 					'returnurl' => $test['returnurl']
@@ -602,13 +598,13 @@ class FOFControllerTest extends FtestCaseDatabase
 	/**
 	 * @group           FOFController
 	 * @group           controllerSetaccess
-	 * @covers          FOFController::setaccess
+	 * @covers          FOF30\Controller\Controller::setaccess
 	 * @dataProvider    getTestSetAccess
 	 */
 	public function testSetaccess($test, $check)
 	{
 		$config = array(
-			'input' => new FOFInput(array(
+			'input' => new FOF30\Input\Input(array(
 					'option'    => 'com_foftest',
 					'view'      => 'foobar',
 					'returnurl' => $test['returnurl']
@@ -657,7 +653,7 @@ class FOFControllerTest extends FtestCaseDatabase
 	/**
 	 * @group           FOFController
 	 * @group           controllerGetModel
-	 * @covers          FOFController::getModel
+	 * @covers          FOF30\Controller\Controller::getModel
 	 * @dataProvider    getTestGetModel
 	 *
 	 * @preventDataLoading
@@ -665,7 +661,7 @@ class FOFControllerTest extends FtestCaseDatabase
 	public function testGetModel($test, $check)
 	{
 		$config = array(
-			'input' => new FOFInput(array(
+			'input' => new FOF30\Input\Input(array(
 					'option'    => 'com_foftest',
 					'view'      => 'foobar',
 					'task'      => 'test'
@@ -718,7 +714,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerGetName
-     * @covers          FOFController::getName
+     * @covers          FOF30\Controller\Controller::getName
      * @dataProvider    getTestGetName
      *
      * @preventDataLoading
@@ -726,7 +722,7 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testGetName($test, $check)
     {
         //$controller = $this->getMock('FOF30\Controller\Controller', null, array(), $test['classname']);
-        $controller = new FOFController();
+        $controller = new FOF30\Controller\Controller();
 
         $name = new ReflectionProperty($controller, 'name');
         $name->setAccessible(true);
@@ -744,7 +740,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerGetName
-     * @covers          FOFController::getName
+     * @covers          FOF30\Controller\Controller::getName
      *
      * @preventDataLoading
      */
@@ -768,7 +764,7 @@ class FOFControllerTest extends FtestCaseDatabase
     /**
      * @group           FOFController
      * @group           controllerGetView
-     * @covers          FOFController::getView
+     * @covers          FOF30\Controller\Controller::getView
      * @dataProvider    getTestGetView
      *
      * @preventDataLoading
@@ -776,7 +772,7 @@ class FOFControllerTest extends FtestCaseDatabase
     public function testGetView($test, $check)
     {
         $config = array(
-            'input' => new FOFInput(array(
+            'input' => new FOF30\Input\Input(array(
                     'option'    => 'com_foftest',
                     'view'      => 'foobar'
                 ))

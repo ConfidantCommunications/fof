@@ -1059,17 +1059,20 @@ class Table extends FOFUtilsObject implements JTableInterface
 		$fields   = $this->getTableFields();
 		$j_fields = $this->getQueryJoinFields();
 
-		if ($j_fields)
+		if (is_array($j_fields) && !empty($j_fields))
 		{
 			$fields = array_merge($fields, $j_fields);
 		}
 
-		foreach ($fields as $k => $v)
+		if (!empty($fields))
 		{
-			// If the property is not the primary key or private, reset it.
-			if ($k != $this->_tbl_key && (strpos($k, '_') !== 0))
+			foreach ($fields as $k => $v)
 			{
-				$this->$k = $v->Default;
+				// If the property is not the primary key or private, reset it.
+				if ($k != $this->_tbl_key && (strpos($k, '_') !== 0))
+				{
+					$this->$k = $v->Default;
+				}
 			}
 		}
 
@@ -1114,7 +1117,7 @@ class Table extends FOFUtilsObject implements JTableInterface
 			$this->$k = intval($oid);
 		}
 
-		if (is_array($joins))
+		if (is_array($joins) && !empty($joins))
 		{
 			$db      = $this->_db;
 			$query   = $db->getQuery(true)

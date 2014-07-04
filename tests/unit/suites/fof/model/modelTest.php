@@ -113,7 +113,7 @@ class F0FModelTest extends FtestCaseDatabase
 		$model = new F0FModel($config);
 		$rc = $model->setId($modelId);
 
-		$this->assertInstanceOf('F0FModel', $rc, 'F0FModel::setId should return itself in order to support chaining');
+		$this->assertInstanceOf('\\FOF30\\Model\\Model', $rc, 'F0FModel::setId should return itself in order to support chaining');
 
 		$reflect  = new ReflectionClass($model);
 		$property = $reflect->getProperty('id');
@@ -163,7 +163,7 @@ class F0FModelTest extends FtestCaseDatabase
         $model = new F0FModel($config);
         $rc = $model->setIds($modelIds);
 
-        $this->assertInstanceOf('F0FModel', $rc, 'F0FModel::setIds should return itself in order to support chaining');
+        $this->assertInstanceOf('\\FOF30\\Model\\Model', $rc, 'F0FModel::setIds should return itself in order to support chaining');
 
         $reflect  = new ReflectionClass($model);
 
@@ -252,7 +252,7 @@ class F0FModelTest extends FtestCaseDatabase
 
         $result = $model->getItem($test['id']);
 
-        $this->assertInstanceOf('F0FTable', $result, 'F0FModel::getItem should return an instance of F0FTable');
+        $this->assertInstanceOf('\\FOF30\\Table\\Table', $result, 'F0FModel::getItem should return an instance of F0FTable');
 
         foreach($checks as $property => $value)
         {
@@ -292,7 +292,7 @@ class F0FModelTest extends FtestCaseDatabase
 
         $result = $model->getItem(2);
 
-        $this->assertInstanceOf('F0FTable', $result, 'F0FModel::getItem should return an instance of F0FTable');
+        $this->assertInstanceOf('\\FOF30\\Table\\Table', $result, 'F0FModel::getItem should return an instance of F0FTable');
 
 		$result = $model->save($result->getData());
 
@@ -317,7 +317,7 @@ class F0FModelTest extends FtestCaseDatabase
             'view'      => $modelinfo['name']
         );
 
-        $model = $this->getMock('F0FModel', array('buildQuery'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('buildQuery'), array($config));
 
         $model->expects($this->any())->method('buildQuery')->will($this->returnValue($test['query']));
         $model->limit($test['limit']);
@@ -392,7 +392,7 @@ class F0FModelTest extends FtestCaseDatabase
         $tableConstr  = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
         // F0FTable mock
-        $table = $this->getMock('F0FTable',	array('save', 'getErrors'), $tableConstr, '',	true, true, true, true);
+        $table = $this->getMock('\\FOF30\\Table\\Table',	array('save', 'getErrors'), $tableConstr, '',	true, true, true, true);
 
         $table->expects($this->any())->method('save')->will($this->returnCallback(
             function() use(&$table, $test)
@@ -418,7 +418,7 @@ class F0FModelTest extends FtestCaseDatabase
         // F0FForm mock
         if(isset($test['form']['mock']))
         {
-            $form = $this->getMock('F0FForm', array('getAttribute'), array('dummy'));
+            $form = $this->getMock('\\FOF30\\Form\\Form', array('getAttribute'), array('dummy'));
             $form->expects($this->any())->method('getAttribute')->will($this->returnValue($test['form']['validation']));
         }
         else
@@ -429,7 +429,7 @@ class F0FModelTest extends FtestCaseDatabase
         // F0FModel mock
         $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
         $modelMethods    = array('getForm', 'onBeforeSave', 'onAfterSave', 'getTable', 'validateForm');
-        $model           = $this->getMock('F0FModel', $modelMethods, array($config));
+        $model           = $this->getMock('\\FOF30\\Model\\Model', $modelMethods, array($config));
 
         $model->expects($this->any())->method('getForm')->will($this->returnValue($form));
 
@@ -511,7 +511,7 @@ class F0FModelTest extends FtestCaseDatabase
         $tableConstr  = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
         // F0FTable mock
-        $table = $this->getMock('F0FTable',	array('save', 'getErrors', 'getProperties'), $tableConstr, '', true, true, true, true);
+        $table = $this->getMock('\\FOF30\\Table\\Table',	array('save', 'getErrors', 'getProperties'), $tableConstr, '', true, true, true, true);
         $table->expects($this->any())->method('save')->will($this->returnValue($test['table']['save']));
         $table->expects($this->any())->method('getErrors')->will($this->returnValue($test['table']['error']));
         $table->expects($this->any())->method('getProperties')->will($this->returnValue($test['table']['properties']));
@@ -519,7 +519,7 @@ class F0FModelTest extends FtestCaseDatabase
         // F0FModel mock
         $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
         $modelMethods    = array('getTable');
-        $model           = $this->getMock('F0FModel', $modelMethods, array($config));
+        $model           = $this->getMock('\\FOF30\\Model\\Model', $modelMethods, array($config));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
 
         $return = $model->save($test['data']);
@@ -557,11 +557,11 @@ class F0FModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('F0FTable',	array('copy', 'getError'), $constr_args, '',	true, true, true, true);
+        $table = $this->getMock('\\FOF30\\Table\\Table',	array('copy', 'getError'), $constr_args, '',	true, true, true, true);
         $table->expects($this->any())->method('copy')->will($this->returnValue($test['copy']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('F0FModel', array('onBeforeCopy', 'onAfterCopy', 'getTable'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('onBeforeCopy', 'onAfterCopy', 'getTable'), array($config));
         $model->expects($this->any())->method('onBeforeCopy')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterCopy')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
@@ -600,11 +600,11 @@ class F0FModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('F0FTable',	array('delete', 'getError'), $constr_args, '', true, true, true, true);
+        $table = $this->getMock('\\FOF30\\Table\\Table',	array('delete', 'getError'), $constr_args, '', true, true, true, true);
         $table->expects($this->any())->method('delete')->will($this->returnValue($test['delete']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('F0FModel', array('onBeforeDelete', 'onAfterDelete', 'getTable'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('onBeforeDelete', 'onAfterDelete', 'getTable'), array($config));
 
         if(isset($test['beforeFailsOnce']))
         {
@@ -654,11 +654,11 @@ class F0FModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('F0FTable',	array('publish', 'getError'), $constr_args, '', true, true, true, true);
+        $table = $this->getMock('\\FOF30\\Table\\Table',	array('publish', 'getError'), $constr_args, '', true, true, true, true);
         $table->expects($this->any())->method('publish')->will($this->returnValue($test['publish']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('F0FModel', array('onBeforePublish', 'onAfterPublish', 'getTable'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('onBeforePublish', 'onAfterPublish', 'getTable'), array($config));
         $model->expects($this->any())->method('onBeforePublish')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterPublish')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
@@ -679,7 +679,7 @@ class F0FModelTest extends FtestCaseDatabase
             $event = $property->getValue($model);
 
             // Let's create a mock for the platform and check that plugins are run
-            $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('runPlugins'));
+            $platform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('runPlugins'));
             $platform->expects($this->any())->method('runPlugins')->with(
                 $event,
                 array('com_foftest.foobars', $test['id_list'], 1)
@@ -717,11 +717,11 @@ class F0FModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('F0FTable',	array('checkout', 'getError'), $constr_args, '',	true, true, true, true);
+        $table = $this->getMock('\\FOF30\\Table\\Table',	array('checkout', 'getError'), $constr_args, '',	true, true, true, true);
         $table->expects($this->any())->method('checkout')->will($this->returnValue($test['checkout']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('F0FModel', array('getTable'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('getTable'), array($config));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
 
         $return = $model->checkout();
@@ -751,11 +751,11 @@ class F0FModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('F0FTable',	array('checkin', 'getError'), $constr_args, '',	true, true, true, true);
+        $table = $this->getMock('\\FOF30\\Table\\Table',	array('checkin', 'getError'), $constr_args, '',	true, true, true, true);
         $table->expects($this->any())->method('checkin')->will($this->returnValue($test['checkin']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('F0FModel', array('getTable'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('getTable'), array($config));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
 
         $return = $model->checkin();
@@ -785,11 +785,11 @@ class F0FModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('F0FTable',	array('isCheckedOut', 'getError'), $constr_args, '', true, true, true, true);
+        $table = $this->getMock('\\FOF30\\Table\\Table',	array('isCheckedOut', 'getError'), $constr_args, '', true, true, true, true);
         $table->expects($this->any())->method('isCheckedOut')->will($this->returnValue($test['isCheckedOut']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('F0FModel', array('getTable'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('getTable'), array($config));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
 
         $return = $model->isCheckedOut();
@@ -819,11 +819,11 @@ class F0FModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('F0FTable',	array('hit', 'getError'), $constr_args, '', true, true, true, true);
+        $table = $this->getMock('\\FOF30\\Table\\Table',	array('hit', 'getError'), $constr_args, '', true, true, true, true);
         $table->expects($this->any())->method('hit')->will($this->returnValue($test['hit']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('F0FModel', array('onBeforeHit', 'onAfterHit', 'getTable'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('onBeforeHit', 'onAfterHit', 'getTable'), array($config));
         $model->expects($this->any())->method('onBeforeHit')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterHit')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
@@ -862,12 +862,12 @@ class F0FModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('F0FTable',	array('move', 'load', 'getError'), $constr_args, '', true, true, true, true);
+        $table = $this->getMock('\\FOF30\\Table\\Table',	array('move', 'load', 'getError'), $constr_args, '', true, true, true, true);
         $table->expects($this->any())->method('move')->will($this->returnValue($test['move']));
         $table->expects($this->any())->method('load')->will($this->returnValue($test['load']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('F0FModel', array('onBeforeMove', 'onAfterMove', 'getTable'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('onBeforeMove', 'onAfterMove', 'getTable'), array($config));
         $model->expects($this->any())->method('onBeforeMove')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterMove')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
@@ -901,11 +901,11 @@ class F0FModelTest extends FtestCaseDatabase
         $db = JFactory::getDbo();
         $constr_args = array('jos_foftest_foobars', 'foftest_foobar_id', &$db);
 
-        $table = $this->getMock('F0FTable',	array('reorder', 'getError'), $constr_args, '',	true, true, true, true);
+        $table = $this->getMock('\\FOF30\\Table\\Table',	array('reorder', 'getError'), $constr_args, '',	true, true, true, true);
         $table->expects($this->any())->method('reorder')->will($this->returnValue($test['reorder']));
         $table->expects($this->any())->method('getError')->will($this->returnValue($test['error']));
 
-        $model = $this->getMock('F0FModel', array('onBeforeReorder', 'onAfterReorder', 'getTable'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('onBeforeReorder', 'onAfterReorder', 'getTable'), array($config));
         $model->expects($this->any())->method('onBeforeReorder')->will($this->returnValue($test['onBefore']));
         $model->expects($this->any())->method('onAfterReorder')->will($this->returnValue($test['onAfter']));
         $model->expects($this->any())->method('getTable')->will($this->returnValue($table));
@@ -930,7 +930,7 @@ class F0FModelTest extends FtestCaseDatabase
     {
         $config['input'] = array('option' => 'com_foftest', 'view' => 'foobars');
 
-        $model = $this->getMock('F0FModel', array('buildCountQuery', 'buildQuery'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('buildCountQuery', 'buildQuery'), array($config));
         $model->expects($this->any())->method('buildCountQuery')->will($this->returnValue($test['buildCount']));
         $model->expects($this->any())->method('buildQuery')->will($this->returnValue($test['buildQuery']));
 
@@ -982,7 +982,7 @@ class F0FModelTest extends FtestCaseDatabase
         );
 
         // Create a mock so I can test onProcessList, too
-        $model = $this->getMock('F0FModel', array('onProcessList'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('onProcessList'), array($config));
         $model->expects($this->any())->method('onProcessList')->will($this->returnCallback($test['callback']));
 
         $method = new ReflectionMethod($model, '_getList');
@@ -1014,7 +1014,7 @@ class F0FModelTest extends FtestCaseDatabase
         $config['table']  = F0FInflector::singularize($modelinfo['name']);
         $config['input']  = array('option' => 'com_foftest', 'view' => $modelinfo['name']);
 
-        $model = $this->getMock('F0FModel', array('_createTable'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('_createTable'), array($config));
 
         if(!$test['create']['options'])
         {
@@ -1057,7 +1057,7 @@ class F0FModelTest extends FtestCaseDatabase
             'view'      => 'foobars'
         );
 
-        $model = $this->getMock('F0FModel', array('_createTable'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('_createTable'), array($config));
         $model->expects($this->any())->method('_createTable')->will($this->returnValue(false));
 
         $model->getTable();
@@ -1094,7 +1094,7 @@ class F0FModelTest extends FtestCaseDatabase
 
         $tableCheck = F0FTable::getAnInstance($checks['name'], $checks['prefix'], array('dbo' => $model->getDbo()));
 
-        $this->assertInstanceOf('F0FTable', $table, 'F0FModel::_createTable should return an instance of F0FTable');
+        $this->assertInstanceOf('\\FOF30\\Table\\Table', $table, 'F0FModel::_createTable should return an instance of F0FTable');
         $this->assertEquals($tableCheck, $table, 'F0FModel::_createTable returned a wrong table');
     }
 
@@ -1113,11 +1113,11 @@ class F0FModelTest extends FtestCaseDatabase
         $config['input']  = array('option' => 'com_foftest', 'view' => $modelinfo['name']);
 
         // Create a mock so I can test vs different table alias
-        $model = $this->getMock('F0FModel', array('getTableAlias'), array($config));
+        $model = $this->getMock('\\FOF30\\Model\\Model', array('getTableAlias'), array($config));
         $model->expects($this->any())->method('getTableAlias')->will($this->returnValue($test['aliasTable']));
 
         // Let's create a mocked Behavior, so I can manipulate its behavior (LOL)
-        $behavior = $this->getMock('F0FModelDispatcherBehavior', array('trigger'));
+        $behavior = $this->getMock('\\FOF30\\Model\\Dispatcher\\Behavior', array('trigger'));
         $behavior->expects($this->any())->method('trigger')->will($this->returnValue(null));
 
         // Inject the hacked behavior
@@ -1195,7 +1195,7 @@ class F0FModelTest extends FtestCaseDatabase
         $config['input']  = array('option' => 'com_foftest', 'view' => strtolower($modelinfo['name']));
 
         $methods = array('getState', 'loadForm', 'onBeforeLoadForm', 'onAfterLoadForm');
-        $model   = $this->getMock('F0FModel', $methods, array($config));
+        $model   = $this->getMock('\\FOF30\\Model\\Model', $methods, array($config));
 
         // Test vs different form name coming from the request
         $model->expects($this->any())->method('getState')->will($this->returnCallback(
@@ -1283,18 +1283,18 @@ class F0FModelTest extends FtestCaseDatabase
         $config['input']  = array('option' => 'com_foftest', 'view' => strtolower($modelinfo['name']));
 
         $methods = array('findFormFilename', 'loadFormData', 'onBeforePreprocessForm', 'preprocessForm', 'onAfterPreprocessForm');
-        $model   = $this->getMock('F0FModel', $methods, array($config));
+        $model   = $this->getMock('\\FOF30\\Model\\Model', $methods, array($config));
 
         $model->expects($this->any())->method('findFormFilename')->will($this->returnValue($test['formPath']));
         $model->expects($this->any())->method('loadFormData')->will($this->returnValue($test['data']));
 
-        $formMock = $this->getMock('F0FForm', array('bind'), array('dummy'));
+        $formMock = $this->getMock('\\FOF30\\Form\\Form', array('bind'), array('dummy'));
         $formMock->expects($this->any())->method('bind')
                  ->with($checks['bind']['data']);
 
-        $fofform = new ReflectionProperty('F0FForm', 'forms');
+        $fofform = new ReflectionProperty('\\FOF30\\Form\\Form', 'forms');
         $fofform->setAccessible(true);
-        $fofform->setValue('F0FForm', array($test['name'] => $formMock));
+        $fofform->setValue('\\FOF30\\Form\\Form', array($test['name'] => $formMock));
 
         // Let's check if the onBeforePreprocessForm is called with the correct arguments
         // Do I want to modify incoming data in the onBefore event?
@@ -1369,7 +1369,7 @@ class F0FModelTest extends FtestCaseDatabase
         $model->setInput($config['input']);
 
         // First of all I stub the filesystem object, so it won't strip out the protocol part
-        $filesystem = $this->getMock('F0FIntegrationJoomlaPlatform', array('fileExists'));
+        $filesystem = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('fileExists'));
         $filesystem->expects($this->any())
                    ->method('fileExists')
                    ->will($this->returnCallback(function($file){ return is_file($file);}));
@@ -1381,7 +1381,7 @@ class F0FModelTest extends FtestCaseDatabase
             $methods[] = 'getTemplateSuffixes';
         }
 
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', $methods);
+        $platform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', $methods);
 
         // Then I have to trick the platform, providing a template path
         $platform->expects($this->any())
@@ -1464,7 +1464,7 @@ class F0FModelTest extends FtestCaseDatabase
 
         $form = new F0FForm('dummy');
 
-        $platform = $this->getMock('F0FIntegrationJoomlaPlatform', array('importPlugin', 'runPlugins'));
+        $platform = $this->getMock('\\FOF30\\Integration\\Joomla\\Platform', array('importPlugin', 'runPlugins'));
         $platform->expects($this->any())->method('importPlugin')->with('content');
         $platform->expects($this->any())->method('runPlugins')
                  ->with('onContentPrepareForm', array($form, array()))
@@ -1495,7 +1495,7 @@ class F0FModelTest extends FtestCaseDatabase
 
         $model = F0FModel::getTmpInstance('Foobars', 'FoftestModel', $config);
 
-        $form = $this->getMock('F0FForm', array('filter', 'validate', 'getErrors'), array('dummy'));
+        $form = $this->getMock('\\FOF30\\Form\\Form', array('filter', 'validate', 'getErrors'), array('dummy'));
         $form->expects($this->any())->method('filter')
              ->with($checks['data'])
              ->will($this->returnValue($test['filterData']));

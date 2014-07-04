@@ -7,7 +7,7 @@
  * @license	    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-class F0FDatabaseIteratorTest extends FtestCaseDatabase
+class FOFDatabaseIteratorTest extends FtestCaseDatabase
 {
     protected function setUp()
     {

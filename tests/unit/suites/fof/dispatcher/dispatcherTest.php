@@ -157,37 +157,6 @@ class F0FDispatcherTest extends FtestCase
         $dispatcher->transparentAuthentication();
     }
 
-    /**
-     * @TODO This test should be removed, since the tested function is no longer used and it's a private
-     * method, so we should not test it.
-     *
-     * @group           F0FDispatcher
-     * @group           dispatchercreateDecryptionKey
-     * @covers          F0FDispatcher::_createDecryptionKey
-     */
-    public function test_createDecryptionKey()
-	{
-		$dispatcher = F0FDispatcher::getTmpInstance();
-		$reflection = new ReflectionClass($dispatcher);
-
-		$encrypt = new F0FEncryptBase32;
-		$base32  = $encrypt->encode('FOF rocks!');
-
-		$property = $reflection->getProperty('fofAuth_Key');
-		$property->setAccessible(true);
-		$property->setValue($dispatcher, $base32);
-
-		$method  = $reflection->getMethod('_createDecryptionKey');
-		$method->setAccessible(true);
-
-		// Let's call the method I want to test
-		$key = $method->invokeArgs($dispatcher, array(1370123514));
-
-		$this->assertEquals('86b618ea6f2793ad6df388fe47f8883b8a5ac3fd57ac477de77cdce578339737',
-							$key,
-							'Decryption key is not the expected one');
-	}
-
     public function getTestDispatch()
     {
         return DispatcherDataprovider::getTestDispatch();
