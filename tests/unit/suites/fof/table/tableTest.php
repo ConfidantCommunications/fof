@@ -287,7 +287,7 @@ class F0FTableTest extends FtestCaseDatabase
 		$rc = $table->reset();
 
 		// First of all let's check the return value
-		$this->assertNull($rc, 'Reset should return NULL when onBeforeReset returns TRUE');
+		$this->assertTrue($rc, 'Reset should return TRUE when onBeforeReset returns TRUE');
 
 		// Then let's check if reset method worked
 		// @TODO we must check for additional fields, like joined columns

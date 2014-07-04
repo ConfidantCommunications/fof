@@ -1,2 +1,2 @@
 #!/bin/sh
-php `pwd`/../vendor/phpunit/phpunit/phpunit -c configuration.xml "$@" .
+php `pwd`/../phpunit.phar -c configuration.xml "$@" .

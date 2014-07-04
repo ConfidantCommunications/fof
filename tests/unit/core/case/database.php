@@ -1,8 +1,5 @@
 <?php
 
-require_once 'PHPUnit/Extensions/Database/TestCase.php';
-require_once 'PHPUnit/Extensions/Database/DataSet/XmlDataSet.php';
-
 abstract class FtestCaseDatabase extends PHPUnit_Extensions_Database_TestCase
 {
 	public static   $database;
