@@ -9,7 +9,6 @@
 namespace FOF30\Integration\Joomla;
 
 use FOF30\Platform\Platform as FOFPlatform;
-use FOF30\Platform\PlatformInterface as FOFPlatformInterface;
 use FOF30\Inflector\Inflector as FOFInflector;
 use FOF30\Input\Input as FOFInput;
 
@@ -27,7 +26,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-class Platform extends FOFPlatform implements FOFPlatformInterface
+class Platform extends FOFPlatform
 {
 	/**
 	 * The table and table field cache object, used to speed up database access
@@ -49,7 +48,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
     /**
      * Checks if the current script is run inside a valid CMS execution
      *
-     * @see FOFPlatformInterface::checkExecution()
+     * @see FOFPlatform::checkExecution()
      *
      * @return bool
      */
@@ -73,7 +72,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Is this platform enabled?
 	 *
-	 * @see FOFPlatformInterface::isEnabled()
+	 * @see FOFPlatform::isEnabled()
 	 *
 	 * @return  boolean
 	 */
@@ -169,7 +168,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
     /**
      * Returns absolute path to directories used by the CMS.
      *
-     * @see FOFPlatformInterface::getPlatformBaseDirs()
+     * @see FOFPlatform::getPlatformBaseDirs()
      *
      * @return  array  A hash array with keys root, public, admin, tmp and log.
      */
@@ -190,7 +189,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
 	 *
-	 * @see FOFPlatformInterface::getComponentBaseDirs()
+	 * @see FOFPlatform::getComponentBaseDirs()
 	 *
 	 * @return  array  A hash array with keys main, alt, site and admin.
 	 */
@@ -228,7 +227,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	 *                               Otherwise we'll fall back to the 'default' layout if the
 	 *                               specified layout is not found.
 	 *
-	 * @see FOFPlatformInterface::getViewTemplateDirs()
+	 * @see FOFPlatform::getViewTemplateDirs()
 	 *
 	 * @return  array
 	 */
@@ -338,7 +337,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
 	 *
-	 * @see FOFPlatformInterface::loadTranslations()
+	 * @see FOFPlatform::loadTranslations()
 	 *
 	 * @return  void
 	 */
@@ -365,7 +364,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @param   string  $component  The name of the component.
 	 *
-	 * @see FOFPlatformInterface::authorizeAdmin()
+	 * @see FOFPlatform::authorizeAdmin()
 	 *
 	 * @return  boolean  True to allow loading the component, false to halt loading
 	 */
@@ -392,7 +391,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	 * @param   integer  $id  The user ID to load. Skip or use null to retrieve
 	 *                        the object for the currently logged in user.
 	 *
-	 * @see FOFPlatformInterface::getUser()
+	 * @see FOFPlatform::getUser()
 	 *
 	 * @return  JUser  The JUser object for the specified user
 	 */
@@ -404,7 +403,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Returns the JDocument object which handles this component's response.
 	 *
-	 * @see FOFPlatformInterface::getDocument()
+	 * @see FOFPlatform::getDocument()
 	 *
 	 * @return  JDocument
 	 */
@@ -468,7 +467,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	 * @param   string    $type          The filter type for the variable data. Default: none (no filtering)
 	 * @param   boolean   $setUserState  Should I set the user state with the fetched value?
 	 *
-	 * @see FOFPlatformInterface::getUserStateFromRequest()
+	 * @see FOFPlatform::getUserStateFromRequest()
 	 *
 	 * @return  mixed  The value of the variable
 	 */
@@ -521,7 +520,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	 *
 	 * @param   string  $type  The type of the plugins to be loaded
 	 *
-	 * @see FOFPlatformInterface::importPlugin()
+	 * @see FOFPlatform::importPlugin()
 	 *
 	 * @return void
 	 */
@@ -541,7 +540,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	 * @param   string  $event  The event (trigger) name, e.g. onBeforeScratchMyEar
 	 * @param   array   $data   A hash array of data sent to the plugins as part of the trigger
 	 *
-	 * @see FOFPlatformInterface::runPlugins()
+	 * @see FOFPlatform::runPlugins()
 	 *
 	 * @return  array  A simple array containing the results of the plugins triggered
 	 */
@@ -574,7 +573,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	 * @param   string  $action     The ACL privilege to check, e.g. core.edit
 	 * @param   string  $assetname  The asset name to check, typically the component's name
 	 *
-	 * @see FOFPlatformInterface::authorise()
+	 * @see FOFPlatform::authorise()
 	 *
 	 * @return  boolean  True if the user is allowed this action
 	 */
@@ -591,7 +590,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Is this the administrative section of the component?
 	 *
-	 * @see FOFPlatformInterface::isBackend()
+	 * @see FOFPlatform::isBackend()
 	 *
 	 * @return  boolean
 	 */
@@ -605,7 +604,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Is this the public section of the component?
 	 *
-	 * @see FOFPlatformInterface::isFrontend()
+	 * @see FOFPlatform::isFrontend()
 	 *
 	 * @return  boolean
 	 */
@@ -619,7 +618,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	/**
 	 * Is this a component running in a CLI application?
 	 *
-	 * @see FOFPlatformInterface::isCli()
+	 * @see FOFPlatform::isCli()
 	 *
 	 * @return  boolean
 	 */
@@ -634,7 +633,7 @@ class Platform extends FOFPlatform implements FOFPlatformInterface
 	 * Is AJAX re-ordering supported? This is 100% Joomla!-CMS specific. All
 	 * other platforms should return false and never ask why.
 	 *
-	 * @see FOFPlatformInterface::supportsAjaxOrdering()
+	 * @see FOFPlatform::supportsAjaxOrdering()
 	 *
 	 * @return  boolean
 	 */

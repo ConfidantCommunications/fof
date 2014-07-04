@@ -10,7 +10,7 @@ namespace FOF30\Platform;
 
 use FOF30\Input\Input as FOFInput;
 
-use JDocument, JError;
+use JDate, JDocument, JUser, JDatabaseDriver, JLanguage, JError;
 
 // Protect from unauthorized access
 defined('FOF30_INCLUDED') or die;
@@ -28,7 +28,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    2.1
  */
-abstract class Platform implements PlatformInterface
+class Platform
 {
 	/**
 	 * The ordering for this platform class. The lower this number is, the more
@@ -94,7 +94,7 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * The platform class instance which will be returned by getInstance
 	 *
-	 * @var  PlatformInterface
+	 * @var  Platform
 	 */
 	protected static $instance = null;
 
@@ -140,13 +140,13 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Force a specific platform object to be used. If null, nukes the cache
 	 *
-	 * @param   PlatformInterface|null  $instance  The Platform object to be used
+	 * @param   Platform|null  $instance  The Platform object to be used
 	 *
 	 * @return  void
 	 */
 	public static function forceInstance($instance)
 	{
-		if ($instance instanceof PlatformInterface || is_null($instance))
+		if ($instance instanceof Platform || is_null($instance))
 		{
 			self::$instance = $instance;
 		}
@@ -232,14 +232,8 @@ abstract class Platform implements PlatformInterface
 					continue;
 				}
 
-				// If it doesn't implement PlatformInterface, skip it
-				if (!class_implements($class_name, '\\FOF30\\Platform\\PlatformInterface'))
-				{
-					continue;
-				}
-
 				// Get an object of this platform
-				/** @var PlatformInterface $o */
+				/** @var Platform $o */
 				$o = new $class_name;
 
 				// If it's not enabled, skip it
@@ -274,9 +268,8 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * Returns the ordering of the platform class.
-	 *
-	 * @see PlatformInterface::getOrdering()
+	 * Returns the ordering of the platform class. Files with a lower ordering
+	 * number will be loaded first.
 	 *
 	 * @return  integer
 	 */
@@ -286,9 +279,10 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * Is this platform enabled?
-	 *
-	 * @see PlatformInterface::isEnabled()
+	 * Is this platform enabled? This is used for automatic platform detection.
+	 * If the environment we're currently running in doesn't seem to be your
+	 * platform return false. If many classes return true, the one with the
+	 * lowest order will be picked by FOF Platform.
 	 *
 	 * @return  boolean
 	 */
@@ -406,12 +400,30 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * Returns the base (root) directories for a given component.
+	 * Returns the base (root) directories for a given component. The
+	 * "component" is used in the sense of what we call "component" in Joomla!,
+	 * "plugin" in WordPress and "module" in Drupal, i.e. an application which
+	 * is running inside our main application (CMS).
+	 *
+	 * The return is a table with the following keys:
+	 * * main	The normal location of component files. For a back-end Joomla!
+	 *          component this is the administrator/components/com_example
+	 *          directory.
+	 * * alt	The alternate location of component files. For a back-end
+	 *          Joomla! component this is the front-end directory, e.g.
+	 *          components/com_example
+	 * * site	The location of the component files serving the public part of
+	 *          the application.
+	 * * admin	The location of the component files serving the administrative
+	 *          part of the application.
+	 *
+	 * All paths MUST be absolute. All four paths MAY be the same if the
+	 * platform doesn't make a distinction between public and private parts,
+	 * or when the component does not provide both a public and private part.
+	 * All of the directories MUST be defined and non-empty.
 	 *
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
-	 *
-	 * @see PlatformInterface::getComponentBaseDirs()
 	 *
 	 * @return  array  A hash array with keys main, alt, site and admin.
 	 */
@@ -426,7 +438,12 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * Return a list of the view template directories for this component.
+	 * Return a list of the view template paths for this component. The paths
+	 * are in the format site:/component_name/view_name/layout_name or
+	 * admin:/component_name/view_name/layout_name
+	 *
+	 * The list of paths returned is a prioritised list. If a file is
+	 * found in the first path the other paths will not be scanned.
 	 *
 	 * @param   string   $component  The name of the component. For Joomla! this
 	 *                               is something like "com_example"
@@ -438,8 +455,6 @@ abstract class Platform implements PlatformInterface
 	 *                               searched for. Otherwise we'll fall back to
 	 *                               the 'default' layout if the specified layout
 	 *                               is not found.
-	 *
-	 * @see PlatformInterface::getViewTemplateDirs()
 	 *
 	 * @return  array
 	 */
@@ -476,12 +491,13 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * Load the translation files for a given component.
+	 * Load the translation files for a given component. The
+	 * "component" is used in the sense of what we call "component" in Joomla!,
+	 * "plugin" in WordPress and "module" in Drupal, i.e. an application which
+	 * is running inside our main application (CMS).
 	 *
 	 * @param   string  $component  The name of the component. For Joomla! this
 	 *                              is something like "com_example"
-	 *
-	 * @see PlatformInterface::loadTranslations()
 	 *
 	 * @return  void
 	 */
@@ -491,11 +507,13 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * Authorise access to the component in the back-end.
+	 * By default FOF will only use the Controller's onBefore* methods to
+	 * perform user authorisation. In some cases, like the Joomla! back-end,
+	 * you alos need to perform component-wide user authorisation in the
+	 * Dispatcher. This method MUST implement this authorisation check. If you
+	 * do not need this in your platform, please always return true.
 	 *
 	 * @param   string  $component  The name of the component.
-	 *
-	 * @see PlatformInterface::authorizeAdmin()
 	 *
 	 * @return  boolean  True to allow loading the component, false to halt loading
 	 */
@@ -505,13 +523,12 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * Returns the JUser object for the current user
+	 * Returns a user object.
 	 *
-	 * @param   integer  $id  The ID of the user to fetch
+	 * @param   integer  $id  The user ID to load. Skip or use null to retrieve
+	 *                        the object for the currently logged in user.
 	 *
-	 * @see PlatformInterface::getUser()
-	 *
-	 * @return  JDocument
+	 * @return  JUser  The JUser object for the specified user
 	 */
 	public function getUser($id = null)
 	{
@@ -519,9 +536,11 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * Returns the JDocument object which handles this component's response.
-	 *
-	 * @see PlatformInterface::getDocument()
+	 * Returns the JDocument object which handles this component's response. You
+	 * may also return null and FOF will a. try to figure out the output type by
+	 * examining the "format" input parameter (or fall back to "html") and b.
+	 * FOF will not attempt to load CSS and Javascript files (as it doesn't make
+	 * sense if there's no JDocument to handle them).
 	 *
 	 * @return  JDocument
 	 */
@@ -532,6 +551,10 @@ abstract class Platform implements PlatformInterface
 
 	/**
 	 * This method will try retrieving a variable from the request (input) data.
+	 * If it doesn't exist it will be loaded from the user state, typically
+	 * stored in the session. If it doesn't exist there either, the $default
+	 * value will be used. If $setUserState is set to true, the retrieved
+	 * variable will be stored in the user session.
 	 *
 	 * @param   string    $key           The user state key for the variable
 	 * @param   string    $request       The request variable name for the variable
@@ -539,8 +562,6 @@ abstract class Platform implements PlatformInterface
 	 * @param   mixed     $default       The default value. Default: null
 	 * @param   string    $type          The filter type for the variable data. Default: none (no filtering)
 	 * @param   boolean   $setUserState  Should I set the user state with the fetched value?
-	 *
-	 * @see PlatformInterface::getUserStateFromRequest()
 	 *
 	 * @return  mixed  The value of the variable
 	 */
@@ -555,8 +576,6 @@ abstract class Platform implements PlatformInterface
 	 *
 	 * @param   string  $type  The type of the plugins to be loaded
 	 *
-	 * @see PlatformInterface::importPlugin()
-	 *
 	 * @return void
 	 */
 	public function importPlugin($type)
@@ -570,9 +589,7 @@ abstract class Platform implements PlatformInterface
 	 * @param   string  $event  The event (trigger) name, e.g. onBeforeScratchMyEar
 	 * @param   array   $data   A hash array of data sent to the plugins as part of the trigger
 	 *
-	 * @see PlatformInterface::runPlugins()
-	 *
-	 * @return  array  A simple array containing the results of the plugins triggered
+	 * @return  array  A simple array containing the resutls of the plugins triggered
 	 */
 	public function runPlugins($event, $data)
 	{
@@ -580,12 +597,13 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * Perform an ACL check.
+	 * Perform an ACL check. Please note that FOF uses by default the Joomla!
+	 * CMS convention for ACL privileges, e.g core.edit for the edit privilege.
+	 * If your platform uses different conventions you'll have to override the
+	 * FOF defaults using fof.xml or by specialising the controller.
 	 *
 	 * @param   string  $action     The ACL privilege to check, e.g. core.edit
 	 * @param   string  $assetname  The asset name to check, typically the component's name
-	 *
-	 * @see PlatformInterface::authorise()
 	 *
 	 * @return  boolean  True if the user is allowed this action
 	 */
@@ -597,8 +615,6 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Is this the administrative section of the component?
 	 *
-	 * @see PlatformInterface::isBackend()
-	 *
 	 * @return  boolean
 	 */
 	public function isBackend()
@@ -608,8 +624,6 @@ abstract class Platform implements PlatformInterface
 
 	/**
 	 * Is this the public section of the component?
-	 *
-	 * @see PlatformInterface::isFrontend()
 	 *
 	 * @return  boolean
 	 */
@@ -621,8 +635,6 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Is this a component running in a CLI application?
 	 *
-	 * @see PlatformInterface::isCli()
-	 *
 	 * @return  boolean
 	 */
 	public function isCli()
@@ -633,8 +645,6 @@ abstract class Platform implements PlatformInterface
 	/**
 	 * Is AJAX re-ordering supported? This is 100% Joomla!-CMS specific. All
 	 * other platforms should return false and never ask why.
-	 *
-	 * @see PlatformInterface::supportsAjaxOrdering()
 	 *
 	 * @return  boolean
 	 */
@@ -650,6 +660,8 @@ abstract class Platform implements PlatformInterface
 	 * @param   string  $version1  First version number
 	 * @param   string  $version2  Second version number
 	 * @param   string  $operator  Operator (see version_compare for valid operators)
+	 *
+	 * @deprecated Use PHP's version_compare against JVERSION in your code. This method is scheduled for removal in FOF 3.0
 	 *
 	 * @return  boolean
 	 */
@@ -711,7 +723,7 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * logs in a user
+	 * Logs in a user
 	 *
 	 * @param   array  $authInfo  authentification information
 	 *
@@ -723,7 +735,7 @@ abstract class Platform implements PlatformInterface
 	}
 
 	/**
-	 * logs out a user
+	 * Logs out a user
 	 *
 	 * @return  boolean  True on success
 	 */
