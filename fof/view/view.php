@@ -967,7 +967,7 @@ abstract class View extends FOFUtilsObject
 			{
 				foreach ($renderFiles as $filename)
 				{
-					if ($filename == 'abstract.php')
+					if ($filename == 'renderabstract.php')
 					{
 						continue;
 					}

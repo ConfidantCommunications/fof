@@ -212,7 +212,6 @@ class F0FViewTest extends FtestCase
 	public function testParseTemplatePath()
 	{
 		$this->view->loadAnyTemplate('admin:test/default');
-		$this->view->loadAnyTemplate('');
 	}
 
 	public function testGetRenderer()
