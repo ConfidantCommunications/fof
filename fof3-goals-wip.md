@@ -45,7 +45,13 @@ What _has_ changed is how you create your custom integration. Most of you have n
 
 # TO-DO for FOF 3.0
 
-We only have Joomla! integration. Fold it back to the Platform abstraction layer.
+## **B/C BREAK – MAYBE** MVC Autoloader
+
+You may gave observed that we have a F0FAutoloaderComponent which is not activated by default. The reason is that it's using the evil eval() to work around the fact that PHP doesn't allow class aliases to know whether they are called through their alias or their real class name. The only way around this is following a deprecation route you will not like much. For starters we can modify all getTmpInstance/getAnInstance methods to use the class autoloader, but if the class is not found create a new object using the default F0FModel/Controller/View/Table/Dispatcher classes. This will move a lot of code from these classes to the autoloader. The second step (for FOF4 or later) would be to get rid of the getTmpInstance methods altogether and require class files to exist at all times. That's a pity, as it makes FOF a bit less RAD and that's why I've not decided to go there yet.
+
+## **B/C BREAK** $config becomes a DI container.
+
+Right now we are passing around a $config array from Dispatcher to Controller to Model and View. At the same time we have the Integration and Platform packages to provide abstraction for certain things like user management, filesystem handling etc. Moreover we have some static stuff which affect FOF globally, e.g. the choice of renderer, adding words in the Inflector etc. Not to mention the performance hit of having to go through the fof.xml parsing several times (yikes!). You know how this can all be solved? Using a DI container. I've already tinkered with Pimple which is a simple and effective solution. Even better? It exposes an array interface, so the learning curve will not be as steep as using, say, the DI container included in Joomla! 3.2.
 
 ## More file formats for RAD configuration (fof.xml)
 
@@ -68,14 +74,6 @@ Allows us to add FOF-specific CSS and JS.
 ## Templating (TENTATIVE)
 
 Shortcuts in the PHP templates, e.g. `@text(SOMETHING)` => `<?php echo JText::_('SOMETHING') ?>
-
-## **B/C BREAK – MAYBE** MVC Autoloader
-
-You may gave observed that we have a F0FAutoloaderComponent which is not activated by default. The reason is that it's using the evil eval() to work around the fact that PHP doesn't allow class aliases to know whether they are called through their alias or their real class name. The only way around this is following a deprecation route you will not like much. For starters we can modify all getTmpInstance/getAnInstance methods to use the class autoloader, but if the class is not found create a new object using the default F0FModel/Controller/View/Table/Dispatcher classes. This will move a lot of code from these classes to the autoloader. The second step (for FOF4 or later) would be to get rid of the getTmpInstance methods altogether and require class files to exist at all times. That's a pity, as it makes FOF a bit less RAD and that's why I've not decided to go there yet.
-
-## **B/C BREAK** $config becomes a DI container.
-
-Right now we are passing around a $config array from Dispatcher to Controller to Model and View. At the same time we have the Integration and Platform packages to provide abstraction for certain things like user management, filesystem handling etc. Moreover we have some static stuff which affect FOF globally, e.g. the choice of renderer, adding words in the Inflector etc. Not to mention the performance hit of having to go through the fof.xml parsing several times (yikes!). You know how this can all be solved? Using a DI container. I've already tinkered with Pimple which is a simple and effective solution. Even better? It exposes an array interface, so the learning curve will not be as steep as using, say, the DI container included in Joomla! 3.2.
 
 ## Basic route helper.
 

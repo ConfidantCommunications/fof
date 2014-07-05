@@ -8,6 +8,7 @@
 
 namespace FOF30\Config;
 
+use FOF30\Config\Domain\Domain;
 use FOF30\Platform\Platform as FOFPlatform;
 
 defined('FOF30_INCLUDED') or die();
@@ -100,6 +101,7 @@ class Provider
 		}
 
 		$class = '\\FOF30\\Config\\Domain\\' . ucfirst($domain);
+		/** @var Domain $o */
 		$o = new $class;
 
 		return $o->get(self::$configurations[$component], $var, $default);
@@ -108,7 +110,7 @@ class Provider
 	/**
 	 * Parses the configuration options of a specific component area
 	 *
-	 * @param   string  $component  Which component's cionfiguration to parse
+	 * @param   string  $component  Which component's configuration to parse
 	 * @param   string  $area       Which area to parse (frontend, backend, cli)
 	 *
 	 * @return  array  A hash array with the configuration data
@@ -199,7 +201,7 @@ class Provider
 				{
 					$domain = basename($file, '.php');
 
-					if ($domain == 'interface')
+					if ($domain == 'domain')
 					{
 						continue;
 					}

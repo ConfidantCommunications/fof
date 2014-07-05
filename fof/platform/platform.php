@@ -255,10 +255,7 @@ class Platform
 	}
 
 	/**
-	 * Returns the base (root) directories for a given component. The
-	 * "component" is used in the sense of what we call "component" in Joomla!,
-	 * "plugin" in WordPress and "module" in Drupal, i.e. an application which
-	 * is running inside our main application (CMS).
+	 * Returns the base (root) directories for a given component.
 	 *
 	 * The return is a table with the following keys:
 	 * * main    The normal location of component files. For a back-end Joomla!

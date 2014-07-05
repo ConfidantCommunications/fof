@@ -1,0 +1,76 @@
+<?php
+/**
+ *  @package     FrameworkOnFramework
+ *  @subpackage  config
+ *  @copyright   Copyright (c)2010-2014 Nicholas K. Dionysopoulos
+ *  @license     GNU General Public License version 2, or later
+ */
+
+namespace FOF30\Config\Domain;
+
+defined('FOF30_INCLUDED') or die();
+
+/**
+ * Configuration parser for the component's config
+ *
+ * @package  FrameworkOnFramework
+ * @since    2.1
+ */
+class Config implements Domain
+{
+	/**
+	 * Parse the XML data, adding them to the $ret array
+	 *
+	 * @param   \SimpleXMLElement  $xml   The XML data of the component's configuration area
+	 * @param   array             &$ret  The parsed data, in the form of a hash array
+	 *
+	 * @return  void
+	 */
+	public function parseDomain(\SimpleXMLElement $xml, array &$ret)
+	{
+		// Initialise
+		$ret['config'] = array();
+
+		// Parse the dispatcher configuration
+		$configData = $xml->config;
+
+		// Sanity check
+
+		if (empty($configData))
+		{
+			return;
+		}
+
+		$options = $xml->xpath('config/option');
+
+		if (!empty($options))
+		{
+			foreach ($options as $option)
+			{
+				$key = (string) $option['name'];
+				$ret['config'][$key] = (string) $option;
+			}
+		}
+	}
+
+	/**
+	 * Return a configuration variable
+	 *
+	 * @param   string  &$configuration  Configuration variables (hashed array)
+	 * @param   string  $var             The variable we want to fetch
+	 * @param   mixed   $default         Default value
+	 *
+	 * @return  mixed  The variable's value
+	 */
+	public function get(&$configuration, $var, $default)
+	{
+		if (isset($configuration['config'][$var]))
+		{
+			return $configuration['config'][$var];
+		}
+		else
+		{
+			return $default;
+		}
+	}
+}

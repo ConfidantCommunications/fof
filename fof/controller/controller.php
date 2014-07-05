@@ -9,6 +9,7 @@
 namespace FOF30\Controller;
 
 use FOF30\Config\Provider as FOFConfigProvider;
+use FOF30\Utils\Filefinder\Filefinder;
 use FOF30\Utils\Object\Object as FOFUtilsObject;
 use FOF30\Input\Input as FOFInput;
 use FOF30\View\View as FOFView;
@@ -323,97 +324,47 @@ class Controller extends FOFUtilsObject
 		$config['option'] = !is_null($option) ? $option : $input->getCmd('option', 'com_foobar');
 		$config['view'] = !is_null($view) ? $view : $input->getCmd('view', 'cpanel');
 
-		// Get the class base name, e.g. FoobarController
-		$classBaseName = ucfirst(str_replace('com_', '', $config['option'])) . 'Controller';
-
-		// Get the class name suffixes, in the order to be searched for: plural, singular, 'default'
-		$classSuffixes = array(
-			FOFInflector::pluralize($config['view']),
-			FOFInflector::singularize($config['view']),
-			'default'
-		);
-
 		// Get the path names for the component
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
-        $filesystem     = FOFPlatform::getInstance()->getFilesystemObject();
 
-		// Look for the best classname match
-		foreach ($classSuffixes as $suffix)
+		// Get the vendor prefix and additional paths
+		$configProvider = new FOFConfigProvider;
+		$addPaths = array();
+		$vendor = null;
+
+		if (array_key_exists('searchpath', $config))
 		{
-			$className = $classBaseName . ucfirst($suffix);
+			$addPaths[] = $config['searchpath'];
+		}
+		else
+		{
+			$searchPath = $configProvider->get($config['option'] . '.views.' . FOFInflector::singularize($config['view']) . '.config.searchpath', null);
 
-			if (class_exists($className))
+			if ($searchPath)
 			{
-				// The class is already loaded. We have a match!
-				break;
-			}
-
-			// The class is not already loaded. Try to find and load it.
-			$searchPaths = array(
-				$componentPaths['main'] . '/controllers',
-				$componentPaths['admin'] . '/controllers'
-			);
-
-			// If we have a searchpath in the configuration please search it first
-
-			if (array_key_exists('searchpath', $config))
-			{
-				array_unshift($searchPaths, $config['searchpath']);
-			}
-			else
-			{
-				$configProvider = new FOFConfigProvider;
-				$searchPath = $configProvider->get($config['option'] . '.views.' . FOFInflector::singularize($config['view']) . '.config.searchpath', null);
-
-				if ($searchPath)
-				{
-					array_unshift($searchPaths, $componentPaths['admin'] . '/' . $searchPath);
-					array_unshift($searchPaths, $componentPaths['main'] . '/' . $searchPath);
-				}
-			}
-
-			/**
-			 * Try to find the path to this file. First try to find the
-			 * format-specific controller file, e.g. foobar.json.php for
-			 * format=json, then the regular one-size-fits-all controller
-			 */
-
-			$format = $input->getCmd('format', 'html');
-			$path = null;
-
-			if (!empty($format))
-			{
-				$path = $filesystem->pathFind(
-					$searchPaths, strtolower($suffix) . '.' . strtolower($format) . '.php'
-				);
-			}
-
-			if (!$path)
-			{
-				$path = $filesystem->pathFind(
-						$searchPaths, strtolower($suffix) . '.php'
-				);
-			}
-
-			// The path is found. Load the file and make sure the expected class name exists.
-
-			if ($path)
-			{
-				require_once $path;
-
-				if (class_exists($className))
-				{
-					// The class was loaded successfully. We have a match!
-					break;
-				}
+				$addPaths[] = $componentPaths['main'] . '/' . $searchPath;
+				$addPaths[] = $componentPaths['alt'] . '/' . $searchPath;
 			}
 		}
 
-		if (!class_exists($className))
+		// Get the vendor from configProvider or $config
+		if (array_key_exists('vendor', $config))
 		{
-			// If no specialised class is found, instantiate the generic FOFController
-			$className = '\\FOF30\\Controller\\Controller';
+			$vendor = $config['vendor'];
 		}
+		else
+		{
+			$vendor = $configProvider->get($config['option'] . '.config.vendor', 'Component');
+			$vendor = ucfirst($vendor);
+		}
+
+		// Use the format as a specifier
+		$specifier = $input->getCmd('format', 'html');
+
+		// Get the class name using the Filefinder utility class
+		$classData = Filefinder::getClassFile($vendor, $config['option'], 'Controller', $config['view'], $specifier, $addPaths);
+
+		$className = $classData['class'];
 
 		$instance = new $className($config);
 
@@ -2232,11 +2183,13 @@ class Controller extends FOFUtilsObject
 			$config = array_merge($this->config);
 		}
 
+		// Get the Model's name
 		if (empty($name))
 		{
 			$name = $this->getName();
 		}
 
+		// Get the Model's prefix
 		if (empty($prefix))
 		{
 			$prefix = $this->model_prefix;
