@@ -9,7 +9,10 @@
 namespace FOF30\Controller;
 
 use FOF30\Config\Provider as FOFConfigProvider;
+use FOF30\Input\Input;
+use FOF30\Platform\Platform;
 use FOF30\Utils\Filefinder\Filefinder;
+use FOF30\Utils\Mvc\Base;
 use FOF30\Utils\Object\Object as FOFUtilsObject;
 use FOF30\Input\Input as FOFInput;
 use FOF30\View\View as FOFView;
@@ -34,7 +37,7 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class Controller extends FOFUtilsObject
+class Controller extends Base
 {
 	/**
 	 * @var int Bit mask to enable Routing on redirects.
@@ -44,13 +47,6 @@ class Controller extends FOFUtilsObject
 	 * 3 = always
 	 */
 	protected $autoRouting = 0;
-
-	/**
-	 * The current component's name without the com_ prefix
-	 *
-	 * @var    string
-	 */
-	protected $bareComponent = 'foobar';
 
 	/**
 	 * The base path of the controller
@@ -65,27 +61,6 @@ class Controller extends FOFUtilsObject
 	 * @var array
 	 */
 	protected $cacheableTasks = array('browse', 'read');
-
-	/**
-	 * The current component's name; you can override it in the configuration
-	 *
-	 * @var    string
-	 */
-	protected $component = 'com_foobar';
-
-	/**
-	 * A cached copy of the class configuration parameter passed during initialisation
-	 *
-	 * @var    array
-	 */
-	protected $config = array();
-
-	/**
-	 * An instance of FOFConfigProvider to provision configuration overrides
-	 *
-	 * @var    FOFConfigProvider
-	 */
-	protected $configProvider = null;
 
 	/**
 	 * Set to true to enable CSRF protection on selected tasks. The possible
@@ -114,13 +89,6 @@ class Controller extends FOFUtilsObject
 	protected $doTask;
 
 	/**
-	 * The input object for this MVC triad; you can override it in the configuration
-	 *
-	 * @var    FOFInput
-	 */
-	protected $input = array();
-
-	/**
 	 * Redirect message.
 	 *
 	 * @var    string
@@ -133,13 +101,6 @@ class Controller extends FOFUtilsObject
 	 * @var    string
 	 */
 	protected $messageType;
-
-	/**
-	 * The current layout; you can override it in the configuration
-	 *
-	 * @var    string
-	 */
-	protected $layout = null;
 
 	/**
 	 * Array of class methods
@@ -177,25 +138,11 @@ class Controller extends FOFUtilsObject
 	protected $redirect;
 
 	/**
-	 * Current or most recently performed task.
-	 *
-	 * @var    string
-	 */
-	protected $task;
-
-	/**
 	 * Array of class methods to call for a given task.
 	 *
 	 * @var    array
 	 */
 	protected $taskMap;
-
-	/**
-	 * The name of the controller
-	 *
-	 * @var    array
-	 */
-	protected $name;
 
 	/**
 	 * The current view name; you can override it in the configuration
@@ -378,16 +325,7 @@ class Controller extends FOFUtilsObject
 	 */
 	public function __construct($config = array())
 	{
-		// Make sure $config is an array
-		if (is_object($config))
-		{
-			$config = (array) $config;
-		}
-		elseif (!is_array($config))
-		{
-			$config = array();
-		}
-
+		// ===== Initialisation
 		$this->methods = array();
 		$this->message = null;
 		$this->messageType = 'message';
@@ -395,40 +333,12 @@ class Controller extends FOFUtilsObject
 		$this->redirect = null;
 		$this->taskMap = array();
 
-		// Cache the config
-		$this->config = $config;
+		parent::__construct($config);
 
-		// Get the input for this MVC triad
+		// ===== Populate $this->view
+		$this->view = $this->input->getCmd('view', $this->name);
 
-		if (array_key_exists('input', $config))
-		{
-			$input = $config['input'];
-		}
-		else
-		{
-			$input = null;
-		}
-
-		if (array_key_exists('input_options', $config))
-		{
-			$input_options = $config['input_options'];
-		}
-		else
-		{
-			$input_options = array();
-		}
-
-		if ($input instanceof FOFInput)
-		{
-			$this->input = $input;
-		}
-		else
-		{
-			$this->input = new FOFInput($input, $input_options);
-		}
-
-		// Load the configuration provider
-		$this->configProvider = new FOFConfigProvider;
+		// ===== Create the task map
 
 		// Determine the methods to exclude from the base class.
 		$xMethods = get_class_methods('\\FOF30\\Controller\\Controller');
@@ -457,49 +367,7 @@ class Controller extends FOFUtilsObject
 			}
 		}
 
-		// Get the default values for the component and view names
-		$classNameParts = FOFInflector::explode(get_class($this));
-
-		if (count($classNameParts) == 3)
-		{
-			$defComponent = "com_" . $classNameParts[0];
-			$defView = $classNameParts[2];
-		}
-		else
-		{
-			$defComponent = 'com_foobar';
-			$defView = 'cpanel';
-		}
-
-		$this->component = $this->input->get('option', $defComponent, 'cmd');
-		$this->view = $this->input->get('view', $defView, 'cmd');
-		$this->layout = $this->input->get('layout', null, 'cmd');
-
-		// Overrides from the config
-		if (array_key_exists('option', $config))
-		{
-			$this->component = $config['option'];
-		}
-
-		if (array_key_exists('view', $config))
-		{
-			$this->view = $config['view'];
-		}
-
-		if (array_key_exists('layout', $config))
-		{
-			$this->layout = $config['layout'];
-		}
-
-		$this->layout = $this->configProvider->get($this->component . '.views.' . FOFInflector::singularize($this->view) . '.config.layout', $this->layout);
-
-		$this->input->set('option', $this->component);
-
-		// Set the bareComponent variable
-		$this->bareComponent = str_replace('com_', '', strtolower($this->component));
-
-		// Set the $name variable
-		$this->name = $this->bareComponent;
+		// ===== Get the base and alternate paths for the views
 
 		// Set the basePath variable
 		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->component);
@@ -510,10 +378,7 @@ class Controller extends FOFUtilsObject
 			$basePath = $config['base_path'];
 		}
 
-		$altBasePath = $this->configProvider->get(
-			$this->component . '.views.' .
-			FOFInflector::singularize($this->view) . '.config.base_path', null
-		);
+		$altBasePath = $this->configProvider->get($this->providerKey . '.config.base_path', null);
 
 		if (!is_null($altBasePath))
 		{
@@ -523,11 +388,9 @@ class Controller extends FOFUtilsObject
 
 		$this->basePath = $basePath;
 
-		// If the default task is set, register it as such
-		$defaultTask = $this->configProvider->get(
-			$this->component . '.views.' .
-			FOFInflector::singularize($this->view) . '.config.default_task', 'display'
-		);
+		// ===== Set the default task
+
+		$defaultTask = $this->configProvider->get($this->providerKey . '.config.default_task', 'display');
 
 		if (array_key_exists('default_task', $config))
 		{
@@ -538,7 +401,7 @@ class Controller extends FOFUtilsObject
 			$this->registerDefaultTask($defaultTask);
 		}
 
-		// Set the models prefix
+		// ===== Set the models prefix
 
 		if (empty($this->model_prefix))
 		{
@@ -549,15 +412,12 @@ class Controller extends FOFUtilsObject
 			}
 			else
 			{
-				$this->model_prefix = $this->name . 'Model';
-				$this->model_prefix = $this->configProvider->get(
-					$this->component . '.views.' .
-					FOFInflector::singularize($this->view) . '.config.model_prefix', $this->model_prefix
-				);
+				$this->model_prefix = $this->bareComponent . 'Model';
+				$this->model_prefix = $this->configProvider->get($this->providerKey . '.config.model_prefix', $this->model_prefix);
 			}
 		}
 
-		// Set the default model search path
+		// ===== Set the default model search path
 
 		if (array_key_exists('model_path', $config))
 		{
@@ -567,10 +427,7 @@ class Controller extends FOFUtilsObject
 		else
 		{
 			$modelPath = $this->basePath . '/models';
-			$altModelPath = $this->configProvider->get(
-				$this->component . '.views.' .
-				FOFInflector::singularize($this->view) . '.config.model_path', null
-			);
+			$altModelPath = $this->configProvider->get($this->providerKey . '.config.model_path', null);
 
 			if (!is_null($altModelPath))
 			{
@@ -580,7 +437,7 @@ class Controller extends FOFUtilsObject
 			$this->addModelPath($modelPath, $this->model_prefix);
 		}
 
-		// Set the default view search path
+		// ===== Set the default view search path
 		if (array_key_exists('view_path', $config))
 		{
 			// User-defined dirs
@@ -589,10 +446,7 @@ class Controller extends FOFUtilsObject
 		else
 		{
 			$viewPath = $this->basePath . '/views';
-			$altViewPath = $this->configProvider->get(
-				$this->component . '.views.' .
-				FOFInflector::singularize($this->view) . '.config.view_path', null
-			);
+			$altViewPath = $this->configProvider->get($this->providerKey . '.config.view_path', null);
 
 			if (!is_null($altViewPath))
 			{
@@ -602,7 +456,7 @@ class Controller extends FOFUtilsObject
 			$this->setPath('view', $viewPath);
 		}
 
-		// Set the default view.
+		// ===== Set the default view.
 
 		if (array_key_exists('default_view', $config))
 		{
@@ -615,34 +469,25 @@ class Controller extends FOFUtilsObject
 				$this->default_view = $this->getName();
 			}
 
-			$this->default_view = $this->configProvider->get(
-				$this->component . '.views.' .
-				FOFInflector::singularize($this->view) . '.config.default_view', $this->default_view
-			);
+			$this->default_view = $this->configProvider->get($this->providerKey . '.config.default_view', $this->default_view);
 		}
 
-		// Set the CSRF protection
+		// ===== Set the CSRF protection
 		if (array_key_exists('csrf_protection', $config))
 		{
 			$this->csrfProtection = $config['csrf_protection'];
 		}
 
-		$this->csrfProtection = $this->configProvider->get(
-			$this->component . '.views.' .
-			FOFInflector::singularize($this->view) . '.config.csrf_protection', $this->csrfProtection
-		);
+		$this->csrfProtection = $this->configProvider->get($this->providerKey . '.config.csrf_protection', $this->csrfProtection);
 
-		// Set any model/view name overrides
+		// ===== Set any model/view name overrides
 		if (array_key_exists('viewName', $config))
 		{
 			$this->setThisViewName($config['viewName']);
 		}
 		else
 		{
-			$overrideViewName = $this->configProvider->get(
-				$this->component . '.views.' .
-				FOFInflector::singularize($this->view) . '.config.viewName', null
-			);
+			$overrideViewName = $this->configProvider->get($this->providerKey . '.config.viewName', null);
 
 			if ($overrideViewName)
 			{
@@ -656,10 +501,7 @@ class Controller extends FOFUtilsObject
 		}
 		else
 		{
-			$overrideModelName = $this->configProvider->get(
-				$this->component . '.views.' .
-				FOFInflector::singularize($this->view) . '.config.modelName', null
-			);
+			$overrideModelName = $this->configProvider->get($this->providerKey . '.config.modelName', null);
 
 			if ($overrideModelName)
 			{
@@ -677,10 +519,7 @@ class Controller extends FOFUtilsObject
 		}
 		else
 		{
-			$cacheableTasks = $this->configProvider->get(
-				$this->component . '.views.' .
-				FOFInflector::singularize($this->view) . '.config.cacheableTasks', null
-			);
+			$cacheableTasks = $this->configProvider->get($this->providerKey . '.config.cacheableTasks', null);
 
 			if ($cacheableTasks)
 			{
@@ -701,22 +540,16 @@ class Controller extends FOFUtilsObject
 			}
 		}
 
-		// Bit mask for auto routing on setRedirect
-		$this->autoRouting = $this->configProvider->get(
-			$this->component . '.views.' .
-			FOFInflector::singularize($this->view) . '.config.autoRouting', $this->autoRouting
-		);
+		// ===== Bit mask for auto routing on setRedirect
+		$this->autoRouting = $this->configProvider->get($this->providerKey . '.config.autoRouting', $this->autoRouting);
 
 		if (array_key_exists('autoRouting', $config))
 		{
 			$this->autoRouting = $config['autoRouting'];
 		}
 
-		// Apply task map
-		$taskmap = $this->configProvider->get(
-			$this->component . '.views.' .
-			FOFInflector::singularize($this->view) . '.taskmap'
-		);
+		// ===== Apply task map
+		$taskmap = $this->configProvider->get($this->providerKey . '.taskmap');
 
 		if (is_array($taskmap) && !empty($taskmap))
 		{
@@ -2374,7 +2207,7 @@ class Controller extends FOFUtilsObject
 
 		if (empty($prefix))
 		{
-			$prefix = $this->getName() . 'View';
+			$prefix = $this->bareComponent . 'View';
 		}
 
 		$signature = md5($name . $type . $prefix . serialize($config));

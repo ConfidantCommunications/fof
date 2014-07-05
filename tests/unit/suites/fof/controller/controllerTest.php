@@ -695,7 +695,7 @@ class FOFControllerTest extends FtestCaseDatabase
         $controller->expects($this->any())->method('createModel')->with(
             $this->equalTo($check['name']),
             $this->equalTo($check['prefix']),
-            $this->equalTo($check['config'])
+            $this->anything()
         );
 
 		$return = $controller->getModel($test['name'], $test['prefix'], $test['config']);
@@ -797,7 +797,7 @@ class FOFControllerTest extends FtestCaseDatabase
                 $this->equalTo($check['name']),
                 $this->equalTo($check['prefix']),
                 $this->equalTo($check['type']),
-                $this->equalTo($check['config'])
+                $this->anything()
             );
         }
 

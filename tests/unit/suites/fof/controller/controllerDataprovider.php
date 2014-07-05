@@ -863,6 +863,8 @@ class ControllerDataprovider
 
 	public static function getTestGetModel()
 	{
+		// test, check
+
         // Everything is automatically set
 		$data[] = array(
             array(
@@ -872,7 +874,7 @@ class ControllerDataprovider
                 'model'  => true
             ),
             array(
-                'name'   => 'foftest',
+                'name'   => 'foobar',
                 'prefix' => 'foftestModel',
                 'config' => '',
                 'return' => true
@@ -932,7 +934,7 @@ class ControllerDataprovider
                 'model'  => false
             ),
             array(
-                'name'   => 'foftest',
+                'name'   => 'foobar',
                 'prefix' => 'foftestModel',
                 'config' => '',
                 'return' => false
@@ -988,7 +990,7 @@ class ControllerDataprovider
                 'config' => ''
             ),
             array(
-                'name'   => 'foftest',
+                'name'   => 'foobar',
                 'type'   => '',
                 'prefix' => 'foftestView',
                 'config' => array(),
@@ -1090,7 +1092,7 @@ class ControllerDataprovider
                 'config' => ''
             ),
             array(
-                'name'   => 'foftest',
+                'name'   => 'foobar',
                 'type'   => '',
                 'prefix' => 'foftestView',
                 'config' => array(),
