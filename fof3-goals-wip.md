@@ -45,6 +45,48 @@ What _has_ changed is how you create your custom integration. Most of you have n
 
 # TO-DO for FOF 3.0
 
+## More sense into MVC classes and templates
+
+**BACKWARDS COMPATIBILITY BREAK (MAJOR BREAK!)**
+
+FOF 1.x and 2.x would allow you a gazillion possible ways to name and locate Dispatcher, Toolbar, Model, Component, View and Table classes. It was so complicated that it made it impossible for newcomers to figure out which file is loaded where and why. In order to save our collective sanity, the new rules are as follows.
+
+### Front-end and back-end separation
+
+* **You only get the classes found in the respective side of the application**. When you access the component from the back-end of the site we only look for back-end classes. When you access the component from the front-end of the site or the CLI we only look for front-end classes. If you want a different side you have to explicitly state it to the respective `getInstance`.
+* **`getAnInstance` is removed**. If you need a static object you should implement your own Singleton.
+* **`getTmpInstance` changes to `getInstance` and has a different syntax**
+* **There are no more automatic object instances unless you manually enable scaffolding in fof.xml**. This is better for security. You can no longer accidentally expose data because of an automatically created Controller which inadvertently exposes everything as JSON data. On the downside, you need to create lots of class files inheriting from the FOF parent classes.
+
+### Improved class naming
+
+* **All classes are namespaced**. For example, `YourCompany\Foobar\Frontend\Model\Items` instead of `FoobarModelItems`. This allows you to have cross-inheritance between front- and back-end classes. Old style class names are still supported but deprecated and due for removal.
+* **Vendor prefixes**. It's the "YourCompany" part in the example above. You can define that in fof.xml. By default it is `Component` but you are suggested to change this to your company's name.
+* **Classes can be loaded using the `FOF30\Autoloader\Autoloader` autoloader**. You can define the autoloader mapping in the `fof.xml` file. If not, only the default mapping will be used.
+
+### Dispatcher and Toolbar
+
+No further notes
+
+### Controller
+
+* **The new controllers are stored in the `controller` directory** under your component's main directory. Old controllers (deprecated) are stored in the `controllers` directory – due to be removed in the future.
+* **All controllers have a singular name** unless you specify a different view-controller mapping in fof.xml.
+
+### Model
+
+* **The new models are stored in the `model` directory** under your component's main directory. Old models (deprecated) are stored in the `models` directory – due to be removed in the future.
+* **All models have a plural name** unless you specify a different model name in your controller.
+* **You must use the plural form with Controller's getModel** as no automatic conversion to plural takes place.
+
+### Views
+
+* **The new views have different filenames**. Instead of view.html.php you now simply have html.php.
+* **There is no fallback to the singular/plural view**. If view=items we'll be loading the Items (plural) view class. If it needs to inherit from the Item class you have to do it manually.
+* **There is no automatic loading of back-end/front-end view templates or view templates across singular/plural views**. This prevents a LOT of frustration.
+* **PHP view templates have precedence over XML view templates**. This was true in FOF 2.x as well. It was masked by the fact that there was automatic view template loading between front-end / back-end and singular / plural views.
+
+
 ## **B/C BREAK – MAYBE** MVC Autoloader
 
 You may gave observed that we have a F0FAutoloaderComponent which is not activated by default. The reason is that it's using the evil eval() to work around the fact that PHP doesn't allow class aliases to know whether they are called through their alias or their real class name. The only way around this is following a deprecation route you will not like much. For starters we can modify all getTmpInstance/getAnInstance methods to use the class autoloader, but if the class is not found create a new object using the default F0FModel/Controller/View/Table/Dispatcher classes. This will move a lot of code from these classes to the autoloader. The second step (for FOF4 or later) would be to get rid of the getTmpInstance methods altogether and require class files to exist at all times. That's a pity, as it makes FOF a bit less RAD and that's why I've not decided to go there yet.

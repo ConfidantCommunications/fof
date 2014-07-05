@@ -20,12 +20,28 @@ defined('FOF30_INCLUDED') or die;
  *
  * @package  FrameworkOnFramework
  * @since    2.0
+ *
+ * @method    integer  getInt($name, $default = null)
+ * @method    integer  getInteger($name, $default = null)
+ * @method    integer  getUint($name, $default = null)
+ * @method    float    getFloat($name, $default = null)
+ * @method    float    getDouble($name, $default = null)
+ * @method    boolean  getBool($name, $default = null)
+ * @method    boolean  getBoolean($name, $default = null)
+ * @method    string   getWord($name, $default = null)
+ * @method    string   getAlnum($name, $default = null)
+ * @method    string   getCmd($name, $default = null)
+ * @method    string   getBase64($name, $default = null)
+ * @method    string   getString($name, $default = null)
+ * @method    string   getHtml($name, $default = null)
+ * @method    string   getPath($name, $default = null)
+ * @method    string   getUsername($name, $default = null)
  */
 class Input extends JInput
 {
 	/**
-	 * Public constructor. Overriden to allow specifying the global input array
-	 * to use as a string and instantiate from an objetc holding variables.
+	 * Public constructor. Overridden to allow specifying the global input array
+	 * to use as a string and instantiate from an object holding variables.
 	 *
 	 * @param   array|string|object|null  $source   Source data; set null to use $_REQUEST
 	 * @param   array                     $options  Filter options
@@ -97,7 +113,7 @@ class Input extends JInput
 	}
 
 	/**
-	 * Gets a value from the input data. Overriden to allow specifying a filter
+	 * Gets a value from the input data. Overridden to allow specifying a filter
 	 * mask.
 	 *
 	 * @param   string  $name     Name of the value to get.
@@ -125,6 +141,18 @@ class Input extends JInput
 	public function getData()
 	{
 		return $this->data;
+	}
+
+	/**
+	 * Replaces the (raw) input data with the given array
+	 *
+	 * @param   array|object $data The raw input data to use
+	 *
+	 * @return  void
+	 */
+	public function setData($data)
+	{
+		$this->data = (array)$data;
 	}
 
 	/**
@@ -207,52 +235,6 @@ class Input extends JInput
 			}
 
 			return $this->get($arguments[0], $default, $filter, $mask);
-		}
-	}
-
-	/**
-	 * Sets an input variable. WARNING: IT SHOULD NO LONGER BE USED!
-	 *
-	 * @param   string   $name       The name of the variable to set
-	 * @param   mixed    $value      The value to set it to
-	 * @param   array    &$input     The input array or FOFInput object
-	 * @param   boolean  $overwrite  Should I overwrite existing values (default: true)
-	 *
-	 * @return  string   Previous value
-	 *
-	 * @deprecated
-	 */
-	public static function setVar($name, $value = null, &$input = array(), $overwrite = true)
-	{
-		FOFPlatform::getInstance()->logDeprecated('\\FOF30\\Input\\Input::setVar() is deprecated. Use set() instead.');
-
-		if (empty($input))
-		{
-			return JRequest::setVar($name, $value, 'default', $overwrite);
-		}
-		elseif (is_string($input))
-		{
-			return JRequest::setVar($name, $value, $input, $overwrite);
-		}
-		else
-		{
-			if (!$overwrite && array_key_exists($name, $input))
-			{
-				return $input[$name];
-			}
-
-			$previous = array_key_exists($name, $input) ? $input[$name] : null;
-
-			if (is_array($input))
-			{
-				$input[$name] = $value;
-			}
-			elseif ($input instanceof Input)
-			{
-				$input->set($name, $value);
-			}
-
-			return $previous;
 		}
 	}
 
