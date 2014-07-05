@@ -311,7 +311,7 @@ class F0FToolbarTest extends FtestCase
     public function testGetMyViews($test, $check)
     {
         // First of all I stub the filesystem object, so it won't strip out the protocol part
-        $filesystem = $this->getMock('F0FIntegrationJoomlaFilesystem', array('folderFolders', 'folderFiles'));
+        $filesystem = $this->getMock('\\FOF30\\Platform\\Filesystem\\Filesystem', array('folderFolders', 'folderFiles'));
         $filesystem->expects($this->any())
                    ->method('folderFolders')
                    ->will($this->returnValue($test['folders']));

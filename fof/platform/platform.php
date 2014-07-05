@@ -42,7 +42,7 @@ class Platform
 	/**
 	 * Cached filesystem abstraction object
 	 *
-	 * @var \FOF30\Integration\Joomla\Filesystem\Filesystem
+	 * @var \FOF30\Platform\Filesystem\Filesystem
 	 *
 	 * @since 3.0.0
 	 */
@@ -99,7 +99,7 @@ class Platform
 	/**
 	 * Returns the filesystem integration object
 	 *
-	 * @return \FOF30\Integration\Joomla\Filesystem\Filesystem
+	 * @return \FOF30\Platform\Filesystem\Filesystem
 	 *
 	 * @since 3.0.0
 	 */
@@ -107,7 +107,7 @@ class Platform
 	{
 		if (empty($this->filesystemObject))
 		{
-			$this->filesystemObject = new \FOF30\Integration\Joomla\Filesystem\Filesystem();
+			$this->filesystemObject = new \FOF30\Platform\Filesystem\Filesystem();
 		}
 
 		return $this->filesystemObject;
