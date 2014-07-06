@@ -86,6 +86,11 @@ abstract class Filefinder
 		// Get the default FOF class name
 		$defaultClass = '\\FOF30\\' . $type . '\\' . $type . (empty($specifier) ? '' : ('\\' . $specifier));
 
+		if (!empty($specifier) && !class_exists($defaultClass, true))
+		{
+			$defaultClass = '\\FOF30\\' . $type . '\\' . $type;
+		}
+
 		// Initialise
 		self::$classCache[$signature] = array(
 			'file'	=> null,
