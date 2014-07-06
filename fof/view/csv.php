@@ -54,16 +54,6 @@ class Csv extends FOFViewHtml
 	*/
 	public function __construct($config = array())
 	{
-		// Make sure $config is an array
-		if (is_object($config))
-		{
-			$config = (array) $config;
-		}
-		elseif (!is_array($config))
-		{
-			$config = array();
-		}
-
 		parent::__construct($config);
 
 		if (array_key_exists('csv_header', $config))

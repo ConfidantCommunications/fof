@@ -42,15 +42,7 @@ class Html extends FOFViewRaw
 	 */
 	public function __construct($config = array())
 	{
-		// Make sure $config is an array
-		if (is_object($config))
-		{
-			$config = (array)$config;
-		}
-		elseif (!is_array($config))
-		{
-			$config = array();
-		}
+		parent::__construct($config);
 
 		if (isset($config['setFrontendPageTitle']))
 		{
@@ -61,8 +53,6 @@ class Html extends FOFViewRaw
 		{
 			$this->defaultPageTitle = $config['defaultPageTitle'];
 		}
-
-		parent::__construct($config);
 	}
 
 	/**

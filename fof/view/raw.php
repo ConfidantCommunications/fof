@@ -40,46 +40,7 @@ class Raw extends FOFView
 	 */
 	public function __construct($config = array())
 	{
-		// Make sure $config is an array
-		if (is_object($config))
-		{
-			$config = (array) $config;
-		}
-		elseif (!is_array($config))
-		{
-			$config = array();
-		}
-
 		parent::__construct($config);
-
-		$this->config = $config;
-
-		// Get the input
-		if (array_key_exists('input', $config))
-		{
-			if ($config['input'] instanceof FOFInput)
-			{
-				$this->input = $config['input'];
-			}
-			else
-			{
-				$this->input = new FOFInput($config['input']);
-			}
-		}
-		else
-		{
-			$this->input = new FOFInput;
-		}
-
-		if (!array_key_exists('option', $this->config))
-		{
-			$this->config['option'] = $this->input->getCmd('option', 'com_foobar');
-		}
-
-		if (!array_key_exists('view', $this->config))
-		{
-			$this->config['view'] = $this->input->getCmd('view', 'cpanel');
-		}
 
 		$this->lists = new FOFUtilsObject;
 

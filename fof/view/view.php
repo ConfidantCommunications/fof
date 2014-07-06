@@ -8,10 +8,12 @@
 
 namespace FOF30\View;
 
-use FOF30\Input\Input as FOFInput;
-use FOF30\Utils\Object\Object as FOFUtilsObject;
-use FOF30\Render\RenderAbstract as FOFRenderAbstract;
-use FOF30\Platform\Platform as FOFPlatform;
+use FOF30\Config\Provider;
+use FOF30\Inflector\Inflector;
+use FOF30\Input\Input;
+use FOF30\Platform\Platform;
+use FOF30\Render\RenderAbstract;
+use FOF30\Utils\Object\Object;
 use FOF30\Inflector\Inflector as FOFInflector;
 use FOF30\Model\Model as FOFModel;
 
@@ -30,14 +32,84 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-abstract class View extends FOFUtilsObject
+abstract class View extends Object
 {
 	/**
-	 * The name of the view
+	 * The configuration array passed between MVC objects
 	 *
-	 * @var    array
+	 * @var array
+	 */
+	protected $config = array();
+
+	/**
+	 * The name of this MVC object
+	 *
+	 * @var string
 	 */
 	protected $_name = null;
+
+	/**
+	 * The configuration parameters provider instance
+	 *
+	 * @var Provider
+	 */
+	protected $_configProvider = null;
+
+	/**
+	 * The config provider key for this MVC class
+	 *
+	 * @var string
+	 */
+	protected $_providerKey = null;
+
+	/**
+	 * The input object we're operating on
+	 *
+	 * @var Input
+	 */
+	protected $input = null;
+
+	/**
+	 * The vendor prefix for our class names
+	 *
+	 * @var string
+	 */
+	protected $_vendor = null;
+
+	/**
+	 * The application side we're located in
+	 *
+	 * @var string
+	 */
+	protected $_appSide = 'backend';
+
+	/**
+	 * The name of the component we belong to, with the com_prefix
+	 *
+	 * @var string
+	 */
+	protected $_component = null;
+
+	/**
+	 * Our component's name, without the com_prefix
+	 *
+	 * @var string
+	 */
+	protected $_bareComponent = null;
+
+	/**
+	 * The format specifier of the request (e.g. html, raw, json, form, csv, ...)
+	 *
+	 * @var string
+	 */
+	protected $_format = null;
+
+	/**
+	 * The task in the request. Not necessarily the one being executed in the context of this MVC class' triad.
+	 *
+	 * @var string
+	 */
+	protected $_task = null;
 
 	/**
 	 * Registered models
@@ -103,45 +175,16 @@ abstract class View extends FOFUtilsObject
 	protected $_output = null;
 
 	/**
-	 * Callback for escaping.
-	 *
-	 * @var string
-	 * @deprecated 13.3
-	 */
-	protected $_escape = 'htmlspecialchars';
-
-	/**
-	 * Charset to use in escaping mechanisms; defaults to urf8 (UTF-8)
-	 *
-	 * @var string
-	 */
-	protected $_charset = 'UTF-8';
-
-	/**
 	 * The available renderer objects we can use to render views
 	 *
-	 * @var    array  Contains objects of the FOFRenderAbstract class
+	 * @var    array  Contains objects of the RenderAbstract class
 	 */
 	public static $renderers = array();
 
 	/**
-	 * Cache of the configuration array
-	 *
-	 * @var    array
-	 */
-	protected $config = array();
-
-	/**
-	 * The input object of this view
-	 *
-	 * @var    FOFInput
-	 */
-	protected $input = null;
-
-	/**
 	 * The chosen renderer object
 	 *
-	 * @var    FOFRenderAbstract
+	 * @var    RenderAbstract
 	 */
 	protected $rendererObject = null;
 
@@ -166,127 +209,82 @@ abstract class View extends FOFUtilsObject
 	 */
 	public function __construct($config = array())
 	{
-		// Make sure $config is an array
-		if (is_object($config))
-		{
-			$config = (array) $config;
-		}
-		elseif (!is_array($config))
+		if (is_null($config))
 		{
 			$config = array();
 		}
 
-		// Get the input
-		if (array_key_exists('input', $config))
+		if (!is_array($config))
 		{
-			if ($config['input'] instanceof FOFInput)
-			{
-				$this->input = $config['input'];
-			}
-			else
-			{
-				$this->input = new FOFInput($config['input']);
-			}
-		}
-		else
-		{
-			$this->input = new FOFInput;
+			$config = array();
 		}
 
-		parent::__construct($config);
+		// Get the input for this MVC triad
+		$input = isset($config['input']) ? $config['input'] : null;
+		$input_options = isset($config['input_options']) ? $config['input_options'] : array();
+		$input_options = !is_array($input_options) ? array() : $input_options;
+		$input = ($input instanceof Input) ? $input : new Input($input, $input_options);
+		$config['input'] = $input;
+		$this->input = $input;
 
-		$component = 'com_foobar';
+		// Load the configuration provider
+		$this->_configProvider = new Provider();
+
+		// Analyse our class name
+		$classParts = $this->analyseClassName();
 
 		// Get the component name
-		if (array_key_exists('input', $config))
-		{
-			if ($config['input'] instanceof FOFInput)
-			{
-				$tmpInput = $config['input'];
-			}
-			else
-			{
-				$tmpInput = new FOFInput($config['input']);
-			}
+		$this->_component = $this->input->getCmd('option');
+		$this->_component = $classParts['component'] ? $classParts['component'] : $this->_component;
+		$this->_component = isset($config['option']) ? $config['option'] : $this->_component;
+		$this->_component = empty($this->_component) ? 'com_foobar' : $this->_component;
+		$config['option'] = $this->_component;
 
-			$component = $tmpInput->getCmd('option', '');
-		}
-		else
-		{
-			$tmpInput = $this->input;
-		}
+		// Get the bare component name
+		$this->_bareComponent = (substr($this->_component, 0, 4) == 'com_') ? substr($this->_component, 4) : $this->_component;
 
-		if (array_key_exists('option', $config))
-		{
-			if ($config['option'])
-			{
-				$component = $config['option'];
-			}
-		}
+		// Get the vendor name
+		$this->_vendor = $classParts['vendor'] ? $classParts['vendor'] : 'Component';
+		$this->_vendor = $this->_configProvider->get($this->_component . '.config.vendor', $this->_vendor);
 
-		$config['option'] = $component;
+		// Get the application side
+		$this->_appSide = Platform::getInstance()->isBackend() ? 'Backend' : 'Frontend';
+		$this->_appSide = isset($config['application_side']) ? $config['application_side'] : $this->_appSide;
+		$config['application_side'] = $this->_appSide;
 
-		// Get the view name
-		$view = null;
-		if (array_key_exists('input', $config))
-		{
-			$view = $tmpInput->getCmd('view', '');
-		}
-
-		if (array_key_exists('view', $config))
-		{
-			if ($config['view'])
-			{
-				$view = $config['view'];
-			}
-		}
-
-		$config['view'] = $view;
-
-		// Set the component and the view to the input array
-
-		if (array_key_exists('input', $config))
-		{
-			$tmpInput->set('option', $config['option']);
-			$tmpInput->set('view', $config['view']);
-		}
-
-		// Set the view name
-
-		if (array_key_exists('name', $config))
-		{
-			$this->_name = $config['name'];
-		}
-		else
-		{
-			$this->_name = $config['view'];
-		}
-
-		$tmpInput->set('view', $this->_name);
-		$config['input'] = $tmpInput;
+		// Get the class name
+		$this->_name = $this->input->getCmd('view');
+		$this->_name = $classParts['name'] ? $classParts['name'] : $this->_name;
+		$this->_name = isset($config['name']) ? $config['name'] : $this->_name;
+		$this->_name = empty($this->_name) ? 'invalid' : $this->_name;
 		$config['name'] = $this->_name;
-		$config['view'] = $this->_name;
+
+		// Get the format
+		$this->_format = $classParts['specifier'];
+		$this->_format = isset($config['format']) ? $config['format'] : $this->_format;
+		$config['format'] = $this->_format;
+
+		// Get the provider key
+		$this->_providerKey = $this->_component . '.views.' . Inflector::singularize($this->_name);
+
+		// Get the layout
+		$this->_layout = $this->_configProvider->get($this->_providerKey . '.config.layout', $this->_layout);
+		$this->_layout = $this->input->getCmd('layout', $this->_layout);
+		$this->_layout = isset($config['layout']) ? $config['layout'] : $this->_layout;
+		$config['layout'] = $this->_layout;
+
+		// Get the task
+		$this->_task = $this->input->getCmd('task', null);
+		$this->_task = isset($config['task']) ? $config['task'] : $this->_task;
+		$config['task'] = $this->_task;
+
+		// Cache the config
+		$this->config = $config;
 
 		// Get the component directories
-		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
-
-		// Set the charset (used by the variable escaping functions)
-
-		if (array_key_exists('charset', $config))
-		{
-			FOFPlatform::getInstance()->logDeprecated('Setting a custom charset for escaping in FOFView\'s constructor is deprecated. Override FOFView::escape() instead.');
-			$this->_charset = $config['charset'];
-		}
-
-		// User-defined escaping callback
-
-		if (array_key_exists('escape', $config))
-		{
-			$this->setEscape($config['escape']);
-		}
+		$componentPaths = Platform::getInstance()->getComponentBaseDirs($this->_component);
 
 		// Set a base path for use by the view
-
 		if (array_key_exists('base_path', $config))
 		{
 			$this->_basePath = $config['base_path'];
@@ -297,7 +295,6 @@ abstract class View extends FOFUtilsObject
 		}
 
 		// Set the default template search path
-
 		if (array_key_exists('template_path', $config))
 		{
 			// User-defined dirs
@@ -311,7 +308,6 @@ abstract class View extends FOFUtilsObject
 		}
 
 		// Set the default helper search path
-
 		if (array_key_exists('helper_path', $config))
 		{
 			// User-defined dirs
@@ -323,7 +319,6 @@ abstract class View extends FOFUtilsObject
 		}
 
 		// Set the layout
-
 		if (array_key_exists('layout', $config))
 		{
 			$this->setLayout($config['layout']);
@@ -335,11 +330,11 @@ abstract class View extends FOFUtilsObject
 
 		$this->config = $config;
 
-		if (!FOFPlatform::getInstance()->isCli())
+		if (!Platform::getInstance()->isCli())
 		{
-			$this->baseurl = FOFPlatform::getInstance()->URIbase(true);
+			$this->baseurl = Platform::getInstance()->URIbase(true);
 
-			$fallback = FOFPlatform::getInstance()->getTemplateOverridePath($component) . '/' . $this->getName();
+			$fallback = Platform::getInstance()->getTemplateOverridePath($this->_component) . '/' . $this->getName();
 			$this->_addPath('template', $fallback);
 		}
 	}
@@ -365,7 +360,7 @@ abstract class View extends FOFUtilsObject
 		// Automatically check for a Joomla! version specific override
 		$throwErrorIfNotFound = true;
 
-		$suffixes = FOFPlatform::getInstance()->getTemplateSuffixes();
+		$suffixes = Platform::getInstance()->getTemplateSuffixes();
 
 		foreach ($suffixes as $suffix)
 		{
@@ -395,8 +390,8 @@ abstract class View extends FOFUtilsObject
 		$templateParts = $this->_parseTemplatePath($path);
 
 		// Get the paths
-		$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($templateParts['component']);
-		$templatePath   = FOFPlatform::getInstance()->getTemplateOverridePath($templateParts['component']);
+		$componentPaths = Platform::getInstance()->getComponentBaseDirs($templateParts['component']);
+		$templatePath   = Platform::getInstance()->getTemplateOverridePath($templateParts['component']);
 
 		// Get the default paths
 		$paths = array();
@@ -421,11 +416,11 @@ abstract class View extends FOFUtilsObject
 		}
 
 		$filetofind = $templateParts['template'] . '.php';
-        $filesystem = FOFPlatform::getInstance()->getFilesystemObject();
+        $filesystem = Platform::getInstance()->getFilesystemObject();
 
-		$this->_tempFilePath = $filesystem->pathFind($paths, $filetofind);
+		$_tempFilePath = $filesystem->pathFind($paths, $filetofind);
 
-		if ($this->_tempFilePath)
+		if ($_tempFilePath)
 		{
 			// Unset from local scope
 			unset($template);
@@ -452,7 +447,7 @@ abstract class View extends FOFUtilsObject
 			ob_start();
 
 			// Include the requested template filename in the local scope (this will execute the view logic).
-			include $this->_tempFilePath;
+			include $_tempFilePath;
 
 			// Done with the requested template; get the buffer and clear it.
 			$this->_output = ob_get_contents();
@@ -482,13 +477,13 @@ abstract class View extends FOFUtilsObject
 	 */
 	public function display($tpl = null)
 	{
-		FOFPlatform::getInstance()->setErrorHandling(E_ALL, 'ignore');
+		Platform::getInstance()->setErrorHandling(E_ALL, 'ignore');
 
 		$result = $this->loadTemplate($tpl);
 
 		if ($result instanceof Exception)
 		{
-            FOFPlatform::getInstance()->raiseError($result->getCode(), $result->getMessage());
+			Platform::getInstance()->raiseError($result->getCode(), $result->getMessage());
 
 			return $result;
 		}
@@ -512,7 +507,7 @@ abstract class View extends FOFUtilsObject
 	 */
 	public function assign()
 	{
-		FOFPlatform::getInstance()->logDeprecated(__CLASS__ . '::' . __METHOD__ . ' is deprecated. Use native PHP syntax.');
+		Platform::getInstance()->logDeprecated(__CLASS__ . '::' . __METHOD__ . ' is deprecated. Use native PHP syntax.');
 
 		// Get the arguments; there may be 1 or 2.
 		$arg0 = @func_get_arg(0);
@@ -579,7 +574,7 @@ abstract class View extends FOFUtilsObject
 	 */
 	public function assignRef($key, &$val)
 	{
-		FOFPlatform::getInstance()->logDeprecated(__CLASS__ . '::' . __METHOD__ . ' is deprecated. Use native PHP syntax.');
+		Platform::getInstance()->logDeprecated(__CLASS__ . '::' . __METHOD__ . ' is deprecated. Use native PHP syntax.');
 
 		if (is_string($key) && substr($key, 0, 1) != '_')
 		{
@@ -603,12 +598,7 @@ abstract class View extends FOFUtilsObject
 	 */
 	public function escape($var)
 	{
-		if (in_array($this->_escape, array('htmlspecialchars', 'htmlentities')))
-		{
-			return call_user_func($this->_escape, $var, ENT_COMPAT, $this->_charset);
-		}
-
-		return call_user_func($this->_escape, $var);
+		return htmlspecialchars($var, ENT_COMPAT, 'UTF-8');
 	}
 
 	/**
@@ -792,22 +782,6 @@ abstract class View extends FOFUtilsObject
 	}
 
 	/**
-	 * Sets the _escape() callback.
-	 *
-	 * @param   mixed  $spec  The callback for _escape() to use.
-	 *
-	 * @return  void
-	 *
-	 * @deprecated  2.1  Override FOFView::escape() instead.
-	 */
-	public function setEscape($spec)
-	{
-		FOFPlatform::getInstance()->logDeprecated(__CLASS__ . '::' . __METHOD__ . ' is deprecated. Override FOFView::escape() instead.');
-
-		$this->_escape = $spec;
-	}
-
-	/**
 	 * Adds to the stack of view script paths in LIFO order.
 	 *
 	 * @param   mixed  $path  A directory path or an array of paths.
@@ -843,7 +817,7 @@ abstract class View extends FOFUtilsObject
 	 */
 	public function loadTemplate($tpl = null, $strict = false)
 	{
-		$paths = FOFPlatform::getInstance()->getViewTemplatePaths(
+		$paths = Platform::getInstance()->getViewTemplatePaths(
 			$this->input->getCmd('option', ''),
 			$this->input->getCmd('view', ''),
 			$this->getLayout(),
@@ -863,7 +837,7 @@ abstract class View extends FOFUtilsObject
 
 		if ($result instanceof Exception)
 		{
-            FOFPlatform::getInstance()->raiseError($result->getCode(), $result->getMessage());
+			Platform::getInstance()->raiseError($result->getCode(), $result->getMessage());
 		}
 
 		return $result;
@@ -923,11 +897,11 @@ abstract class View extends FOFUtilsObject
 	/**
 	 * Get the renderer object for this view
 	 *
-	 * @return  FOFRenderAbstract
+	 * @return  RenderAbstract
 	 */
 	public function &getRenderer()
 	{
-		if (!($this->rendererObject instanceof FOFRenderAbstract))
+		if (!($this->rendererObject instanceof RenderAbstract))
 		{
 			$this->rendererObject = $this->findRenderer();
 		}
@@ -938,11 +912,11 @@ abstract class View extends FOFUtilsObject
 	/**
 	 * Sets the renderer object for this view
 	 *
-	 * @param   FOFRenderAbstract  &$renderer  The render class to use
+	 * @param   RenderAbstract  &$renderer  The render class to use
 	 *
 	 * @return  void
 	 */
-	public function setRenderer(FOFRenderAbstract &$renderer)
+	public function setRenderer(RenderAbstract &$renderer)
 	{
 		$this->rendererObject = $renderer;
 	}
@@ -950,11 +924,11 @@ abstract class View extends FOFUtilsObject
 	/**
 	 * Finds a suitable renderer
 	 *
-	 * @return  FOFRenderAbstract
+	 * @return  RenderAbstract
 	 */
 	protected function findRenderer()
 	{
-        $filesystem     = FOFPlatform::getInstance()->getFilesystemObject();
+        $filesystem     = Platform::getInstance()->getFilesystemObject();
 
 		// Try loading the stock renderers shipped with FOF
 
@@ -989,6 +963,7 @@ abstract class View extends FOFUtilsObject
 
 		if (!empty(self::$renderers))
 		{
+			/** @var RenderAbstract $r */
 			foreach (self::$renderers as $r)
 			{
 				$info = $r->getInformation();
@@ -1013,11 +988,11 @@ abstract class View extends FOFUtilsObject
 	/**
 	 * Registers a renderer object with the view
 	 *
-	 * @param   FOFRenderAbstract  &$renderer  The render object to register
+	 * @param   RenderAbstract  &$renderer  The render object to register
 	 *
 	 * @return  void
 	 */
-	public static function registerRenderer(FOFRenderAbstract &$renderer)
+	public static function registerRenderer(RenderAbstract &$renderer)
 	{
 		self::$renderers[] = $renderer;
 	}
@@ -1059,13 +1034,13 @@ abstract class View extends FOFUtilsObject
 		$file = preg_replace('/[^A-Z0-9_\.-]/i', '', $hlp);
 
 		// Load the template script using the default Joomla! features
-        $filesystem = FOFPlatform::getInstance()->getFilesystemObject();
+        $filesystem = Platform::getInstance()->getFilesystemObject();
 
 		$helper = $filesystem->pathFind($this->_path['helper'], $this->_createFileName('helper', array('name' => $file)));
 
 		if ($helper == false)
 		{
-			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($this->config['option']);
+			$componentPaths = Platform::getInstance()->getComponentBaseDirs($this->config['option']);
 			$path = $componentPaths['main'] . '/helpers';
 			$helper = $filesystem->pathFind($path, $this->_createFileName('helper', array('name' => $file)));
 
@@ -1119,9 +1094,9 @@ abstract class View extends FOFUtilsObject
 			case 'template':
 				// Set the alternative template search dir
 
-				if (!FOFPlatform::getInstance()->isCli())
+				if (!Platform::getInstance()->isCli())
 				{
-					$fallback = FOFPlatform::getInstance()->getTemplateOverridePath($this->input->getCmd('option', '')) . '/' . $this->getName();
+					$fallback = Platform::getInstance()->getTemplateOverridePath($this->input->getCmd('option', '')) . '/' . $this->getName();
 					$this->_addPath('template', $fallback);
 				}
 
@@ -1170,8 +1145,6 @@ abstract class View extends FOFUtilsObject
 	 */
 	protected function _createFileName($type, $parts = array())
 	{
-		$filename = '';
-
 		switch ($type)
 		{
 			case 'template':
@@ -1184,5 +1157,69 @@ abstract class View extends FOFUtilsObject
 		}
 
 		return $filename;
+	}
+
+	/**
+	 * Analyses an MVC class name to the parts that compose it (vendor, side, component, type, name and specifier)
+	 *
+	 * @param string $className The class name to analyse. Leave null to use our own class.
+	 *
+	 * @return array
+	 */
+	protected function analyseClassName($className = null)
+	{
+		$ret = array(
+			'vendor'	=> null,
+			'side'		=> null,
+			'component'	=> null,
+			'type'		=> null,
+			'name'		=> null,
+			'specifier'	=> null
+		);
+
+		if (is_null($className))
+		{
+			$className = get_class($this);
+		}
+
+		if (strstr($className, '\\'))
+		{
+			// Remove leading and trailing slashes
+			$className = trim($className, '\\');
+
+			// Explode to parts
+			$parts = explode('\\', $className);
+
+			// If the parts are too few we have a default FOF class, we can't analyse it
+			if (count($parts) < 5)
+			{
+				return $ret;
+			}
+
+			$ret['vendor'] = strtolower($parts[0]);
+			$ret['side'] = strtolower($parts[1]);
+			$ret['component'] = 'com_' . strtolower($parts[2]);
+			$ret['type'] = strtolower($parts[3]);
+			$ret['name'] = strtolower($parts[4]);
+
+			if (count($parts) > 5)
+			{
+				$ret['specifier'] = strtolower($parts[5]);
+			}
+
+			return $ret;
+		}
+
+		// Fallback to legacy class names
+		$classNameParts = Inflector::explode($className);
+
+		if (count($classNameParts) == 3)
+		{
+			$ret['component'] = "com_" . $classNameParts[0];
+			$ret['type'] = $classNameParts[1];
+			$ret['name'] = $classNameParts[2];
+		}
+
+		return $ret;
 	}
 }
