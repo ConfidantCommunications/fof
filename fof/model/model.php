@@ -8,6 +8,7 @@
 
 namespace FOF30\Model;
 
+use FOF30\Input\Input;
 use FOF30\Utils\Object\Object as FOFUtilsObject;
 use FOF30\Input\Input as FOFInput;
 use FOF30\Table\Table as FOFTable;
@@ -1987,7 +1988,9 @@ class Model extends FOFUtilsObject
 			$prefix        = ucfirst($bareComponent) . 'Table';
 		}
 
-		if (empty($options))
+		$options = array_merge($this->config, $options);
+
+		if (!($options['input'] instanceof Input))
 		{
 			$options = array('input' => $this->input);
 		}

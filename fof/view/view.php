@@ -256,8 +256,8 @@ abstract class View extends Object
 		$this->_name = $this->input->getCmd('view');
 		$this->_name = $classParts['name'] ? $classParts['name'] : $this->_name;
 		$this->_name = isset($config['name']) ? $config['name'] : $this->_name;
-		$this->_name = empty($this->_name) ? 'invalid' : $this->_name;
 		$config['name'] = $this->_name;
+		$config['view'] = $this->_name;
 
 		// Get the format
 		$this->_format = $classParts['specifier'];
@@ -687,6 +687,8 @@ abstract class View extends Object
 	 * by passing a $config['name'] in the class constructor
 	 *
 	 * @return  string  The name of the model
+	 *
+	 * @throws Exception When the view has no name
 	 */
 	public function getName()
 	{

@@ -85,17 +85,6 @@ class F0FViewHtmlTest extends FtestCase
 	/**
 	 * @cover  	F0FViewHtml::__construct()
 	 */
-	public function testContructorWithConfigObject()
-	{
-		$config = array();
-		$config['input'] = new F0FInput(array('option' => 'com_foftest', 'view' => 'Ftest'));
-
-		$view = new F0FViewHtml((object)$config);
-	}
-
-	/**
-	 * @cover  	F0FViewHtml::__construct()
-	 */
 	public function testContructorWithConfigWrong()
 	{
 		$view = new F0FViewHtml(0);

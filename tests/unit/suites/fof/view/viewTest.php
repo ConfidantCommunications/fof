@@ -268,18 +268,6 @@ class F0FViewTest extends FtestCase
 		$this->assertEquals($this->view->getRenderer(), $renderer, 'registerRenderer should get the renderer we set before');
 	}
 
-	public function testSetEscape()
-	{
-		$this->view->setEscape(array($this, 'exampleEscape'));
-		$string = '&';
-		$this->assertEquals($this->view->escape($string), '&amp;', 'escape should encode & to &amp;');
-	}
-
-	public function exampleEscape($value)
-	{
-		return htmlentities($value);
-	}
-
 	/**
 	 * @covers F0FView::setPreRender
 	 */

@@ -38,6 +38,8 @@ class F0FViewRawTest extends FtestCase
 		// Fake the session
 		JFactory::$session = $this->getMockSession();
 		$application = JFactory::getApplication('site');
+		$language = new JLanguage('en-GB');
+		TestReflection::setValue($application, 'language', $language);
 
 		// Fake the template
 		$template = (object)array(
