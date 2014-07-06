@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="library" version="2.5" method="upgrade">
-    <name>FOF</name>
+    <name>FOF30</name>
 	<libraryname>fof</libraryname>
 	<description>Framework-on-Framework (FOF) 3.x</description>
 	<creationDate>##DATE##</creationDate>

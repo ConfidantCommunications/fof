@@ -88,7 +88,7 @@
 		</copy>
 
 		<!-- Generate XML file for FOF -->
-		<copy file="./templates/lib_f0f.xml" tofile="${dirs.root}/lib_f0f.xml" overwrite="true">
+		<copy file="./templates/lib_fof.xml" tofile="${dirs.root}/lib_fof.xml" overwrite="true">
 			<filterchain>
 				<replacetokens begintoken="##" endtoken="##">
 					<token key="DATE" value="${git.date}" />
@@ -96,7 +96,7 @@
 				</replacetokens>
 			</filterchain>
 		</copy>
-		<copy file="${dirs.root}/lib_f0f.xml" tofile="${dirs.library}/lib_f0f.xml" overwrite="true" />
+		<copy file="${dirs.root}/lib_fof.xml" tofile="${dirs.library}/lib_fof.xml" overwrite="true" />
 
 		<!-- Generate version.txt file for FOF -->
 		<copy file="./templates/version.txt" tofile="${dirs.library}/version.txt" overwrite="true">
@@ -135,14 +135,14 @@
 		</zipme>
 		<zipme basedir="${dirs.root}" destfile="${dirs.release}/lib_fof-${version}.zip" includeemptydirs="true">
 			<fileset dir="${dirs.root}">
-				<include name="lib_f0f.xml" />
+				<include name="lib_fof.xml" />
 			</fileset>
 		</zipme>
 
 		<!-- Clean up -->
 		<delete>
 			<fileset dir="${dirs.root}">
-				<include name="lib_f0f.xml" />
+				<include name="lib_fof.xml" />
 			</fileset>
 		</delete>
 	</target>
