@@ -8,7 +8,7 @@
 
 namespace FOF30\Dispatcher;
 
-use FOF30\Utils\Object\Object as FOFUtilsObject;
+use FOF30\Utils\Mvc\Base;
 use FOF30\Config\Provider as FOFConfigProvider;
 use FOF30\Controller\Controller as FOFController;
 use FOF30\Encrypt\Aes as FOFEncryptAes;
@@ -33,13 +33,8 @@ defined('FOF30_INCLUDED') or die;
  * @package  FrameworkOnFramework
  * @since    1.0
  */
-class Dispatcher extends FOFUtilsObject
+class Dispatcher extends Base
 {
-	/** @var array Configuration variables */
-	protected $config = array();
-
-	/** @var FOFInput Input variables */
-	protected $input = array();
 
 	/** @var string The name of the default view, in case none is specified */
 	public $defaultView = 'cpanel';
@@ -91,9 +86,9 @@ class Dispatcher extends FOFUtilsObject
 	/**
 	 * Get a static (Singleton) instance of a particular Dispatcher
 	 *
-	 * @param   string  $option  The component name
-	 * @param   string  $view    The View name
-	 * @param   array   $config  Configuration data
+	 * @param   string $option The component name
+	 * @param   string $view   The View name
+	 * @param   array  $config Configuration data
 	 *
 	 * @staticvar  array  $instances  Holds the array of Dispatchers FOF knows about
 	 *
@@ -116,9 +111,9 @@ class Dispatcher extends FOFUtilsObject
 	/**
 	 * Gets a temporary instance of a Dispatcher
 	 *
-	 * @param   string  $option  The component name
-	 * @param   string  $view    The View name
-	 * @param   array   $config  Configuration data
+	 * @param   string $option The component name
+	 * @param   string $view   The View name
+	 * @param   array  $config Configuration data
 	 *
 	 * @return Dispatcher
 	 */
@@ -134,7 +129,7 @@ class Dispatcher extends FOFUtilsObject
 			{
 				if (!is_array($config['input']))
 				{
-					$config['input'] = (array) $config['input'];
+					$config['input'] = (array)$config['input'];
 				}
 
 				$config['input'] = array_merge($_REQUEST, $config['input']);
@@ -146,8 +141,8 @@ class Dispatcher extends FOFUtilsObject
 			$input = new FOFInput;
 		}
 
-		$config['option']   = !is_null($option) ? $option : $input->getCmd('option', 'com_foobar');
-		$config['view']     = !is_null($view) ? $view : $input->getCmd('view', '');
+		$config['option'] = !is_null($option) ? $option : $input->getCmd('option', 'com_foobar');
+		$config['view'] = !is_null($view) ? $view : $input->getCmd('view', '');
 
 		$input->set('option', $config['option']);
 		$input->set('view', $config['view']);
@@ -175,7 +170,7 @@ class Dispatcher extends FOFUtilsObject
 			$filesystem = FOFPlatform::getInstance()->getFilesystemObject();
 
 			$path = $filesystem->pathFind(
-					$searchPaths, 'dispatcher.php'
+				$searchPaths, 'dispatcher.php'
 			);
 
 			if ($path)
@@ -197,29 +192,13 @@ class Dispatcher extends FOFUtilsObject
 	/**
 	 * Public constructor
 	 *
-	 * @param   array  $config  The configuration variables
+	 * @param   array $config The configuration variables
 	 */
 	public function __construct($config = array())
 	{
-		// Cache the config
-		$this->config = $config;
+		parent::__construct($config);
 
-		// Get the input for this MVC triad
-		if (array_key_exists('input', $config))
-		{
-			$this->input = $config['input'];
-		}
-		else
-		{
-			$this->input = new FOFInput;
-		}
-
-		// Get the default values for the component name
-		$this->component = $this->input->getCmd('option', 'com_foobar');
-
-		// Load the component's fof.xml configuration file
-		$configProvider = new FOFConfigProvider;
-		$this->defaultView = $configProvider->get($this->component . '.dispatcher.default_view', $this->defaultView);
+		$this->defaultView = $this->configProvider->get($this->component . '.dispatcher.default_view', $this->defaultView);
 
 		// Get the default values for the view name
 		$this->view = $this->input->getCmd('view', null);
@@ -241,22 +220,9 @@ class Dispatcher extends FOFUtilsObject
 			$this->view = $this->defaultView;
 		}
 
-		$this->layout = $this->input->getCmd('layout', null);
-
-		// Overrides from the config
-		if (array_key_exists('option', $config))
-		{
-			$this->component = $config['option'];
-		}
-
 		if (array_key_exists('view', $config))
 		{
 			$this->view = empty($config['view']) ? $this->view : $config['view'];
-		}
-
-		if (array_key_exists('layout', $config))
-		{
-			$this->layout = $config['layout'];
 		}
 
 		$this->input->set('option', $this->component);
@@ -264,21 +230,21 @@ class Dispatcher extends FOFUtilsObject
 		$this->input->set('layout', $this->layout);
 	}
 
-    /**
-     * The main code of the Dispatcher. It spawns the necessary controller and
-     * runs it.
-     *
-     * @throws Exception
-     *
-     * @return  void|Exception
-     */
+	/**
+	 * The main code of the Dispatcher. It spawns the necessary controller and
+	 * runs it.
+	 *
+	 * @throws Exception
+	 *
+	 * @return  void|Exception
+	 */
 	public function dispatch()
 	{
-        $platform = FOFPlatform::getInstance();
+		$platform = FOFPlatform::getInstance();
 
 		if (!$platform->authorizeAdmin($this->input->getCmd('option', 'com_foobar')))
 		{
-            return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+			return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}
 
 		$this->transparentAuthentication();
@@ -297,19 +263,19 @@ class Dispatcher extends FOFUtilsObject
 
 		if (!$canDispatch)
 		{
-            // We can set header only if we're not in CLI
-            if(!$platform->isCli())
-            {
-                $platform->setHeader('Status', '403 Forbidden', true);
-            }
+			// We can set header only if we're not in CLI
+			if (!$platform->isCli())
+			{
+				$platform->setHeader('Status', '403 Forbidden', true);
+			}
 
-            return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+			return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}
 
 		// Get and execute the controller
 		$option = $this->input->getCmd('option', 'com_foobar');
-		$view   = $this->input->getCmd('view', $this->defaultView);
-		$task   = $this->input->getCmd('task', null);
+		$view = $this->input->getCmd('view', $this->defaultView);
+		$task = $this->input->getCmd('task', null);
 
 		if (empty($task))
 		{
@@ -330,20 +296,19 @@ class Dispatcher extends FOFUtilsObject
 		$this->input->set('task', $task);
 
 		$config = $this->config;
-		$config['input'] = $this->input;
 
 		$controller = FOFController::getTmpInstance($option, $view, $config);
 		$status = $controller->execute($task);
 
 		if (!$this->onAfterDispatch())
 		{
-            // We can set header only if we're not in CLI
-            if(!$platform->isCli())
-            {
-                $platform->setHeader('Status', '403 Forbidden', true);
-            }
+			// We can set header only if we're not in CLI
+			if (!$platform->isCli())
+			{
+				$platform->setHeader('Status', '403 Forbidden', true);
+			}
 
-            return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
+			return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}
 
 		$format = $this->input->get('format', 'html', 'cmd');
@@ -359,7 +324,7 @@ class Dispatcher extends FOFUtilsObject
 	 * Tries to guess the controller task to execute based on the view name and
 	 * the HTTP request method.
 	 *
-	 * @param   string  $view  The name of the view
+	 * @param   string $view The name of the view
 	 *
 	 * @return  string  The best guess of the task to execute
 	 */
@@ -577,8 +542,8 @@ class Dispatcher extends FOFUtilsObject
 					}
 
 					$authInfo = array(
-						'username'	 => $_SERVER['PHP_AUTH_USER'],
-						'password'	 => $_SERVER['PHP_AUTH_PW']
+						'username' => $_SERVER['PHP_AUTH_USER'],
+						'password' => $_SERVER['PHP_AUTH_PW']
 					);
 					break;
 
@@ -604,8 +569,8 @@ class Dispatcher extends FOFUtilsObject
 
 				case 'SplitQueryString_Plaintext':
 					$authInfo = array(
-						'username'	 => $this->input->get('_fofauthentication_username', '', 'raw'),
-						'password'	 => $this->input->get('_fofauthentication_password', '', 'raw'),
+						'username' => $this->input->get('_fofauthentication_username', '', 'raw'),
+						'password' => $this->input->get('_fofauthentication_password', '', 'raw'),
 					);
 
 					if (empty($authInfo['username']))
@@ -634,9 +599,9 @@ class Dispatcher extends FOFUtilsObject
 	/**
 	 * Decrypts a transparent authentication message using a TOTP
 	 *
-	 * @param   string  $encryptedData  The encrypted data
+	 * @param   string $encryptedData The encrypted data
 	 *
-     * @codeCoverageIgnore
+	 * @codeCoverageIgnore
 	 * @return  array  The decrypted data
 	 */
 	private function _decryptWithTOTP($encryptedData)
@@ -696,12 +661,12 @@ class Dispatcher extends FOFUtilsObject
 	 */
 	public static function isCliAdmin()
 	{
-		static $isCLI   = null;
+		static $isCLI = null;
 		static $isAdmin = null;
 
 		if (is_null($isCLI) && is_null($isAdmin))
 		{
-			$isCLI   = FOFPlatform::getInstance()->isCli();
+			$isCLI = FOFPlatform::getInstance()->isCli();
 			$isAdmin = FOFPlatform::getInstance()->isBackend();
 		}
 
