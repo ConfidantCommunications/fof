@@ -12,9 +12,14 @@ Backwards compatibility notes (B/C breaks):
   F0FSomething names. BE CAREFUL! This is only meant to be used in DEVELOPMENT, NOT PRODUCTION.
 * A clean up of which class is loaded where has taken place. Please consult the update documentation @TODO: WRITE THE DOCS.
 * The $config array you pass to MVC objects now MUST be an array (previously you could pass an object – not any more)
+* Model: $this->option renamed to $this->component
 * View: deprecated setEscape was removed
-* Table: You can no longer use getAnInstance / getTmpInstance to get Joomla! core tables. Use JTable::getInstance instead.
+* Table: You can no longer use getAnInstance to get Joomla! core tables. Use JTable::getInstance instead.
 * Table: You are supposed to pass the component name (com_foobar) instead of a prefix (FoobarTable) in getAnInstance/getTmpInstance
+* $this->input in all MVC objects contains the input data given in $config or, if none was given, the global request
+  data. Previously the option, view and task variables would be replaced with the MVC's objects component name, MVC
+  triad name and (for controllers) task being executed. You can now use $config['option'], $config['name'] (Controller)
+  / $config['view'] (anything else) and $config['task'] to get the current MVC object's respective variables.
 * Support for LESS files has been removed as they were notoriously slow. The recommended practice is to compile and
   minimise your LESS files before shipping your component.
 * F0FQueryAbstract –a leftover from the Joomla! 1.5 days– has been removed. Use JDatabaseQuery instead.
@@ -23,13 +28,6 @@ Backwards compatibility notes (B/C breaks):
 * The "integration" package is removed. We only provided a Joomla! integration anyway, it makes sense to roll it back
   into a single Platform abstraction package. For the same reasons the Interfaces of the Platform package have been
   removed.
-* $this->input in all MVC objects contains the input data given in $config or, if none was given, the global request
-  data. Previously the option, view and task variables would be replaced with the MVC's objects component name, MVC
-  triad name and (for controllers) task being executed. You can now use $config['option'], $config['name'] (Controller)
-  / $config['view'] (anything else) and $config['task'] to get the current MVC object's respective variables.
-
-HMVC: when you call an MVC object from another view / component its $this->input object contains the request data
-  passed in the $config array. Previously the option, view and task would be replaced
 
 Deprecation notes (change now to avoid B/C breaks):
 ---------------------------------------------------

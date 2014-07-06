@@ -1,3 +1,17 @@
+# Scratchpad
+
+* Use Filefinder for Model::addBehavior
+
+* Refactor all getAnInstance / getTmpInstance to throw deprecated notices when prefixes, instead of component names, are used.
+* Remove all getAnInstance methods.
+
+* Use Filefinder for Table (getAnInstance)
+* Use Filefinder for Model in Component
+* Use Filefinder for Toolbar
+* Write Filefinder method for template / form files
+* Use Filefinder for template / form files
+
+
 # Major changes in FOF 3.0
 
 ## Namespacing and versioning
@@ -47,44 +61,36 @@ What _has_ changed is how you create your custom integration. Most of you have n
 
 ## More sense into MVC classes and templates
 
-**BACKWARDS COMPATIBILITY BREAK (MAJOR BREAK!)**
+**BACKWARDS COMPATIBILITY BREAK** B/C breaks are noted in bold letters. Everything else is suggestions regarding deprecated practices which will be removed in FOF 3.1 or later.
 
-FOF 1.x and 2.x would allow you a gazillion possible ways to name and locate Dispatcher, Toolbar, Model, Component, View and Table classes. It was so complicated that it made it impossible for newcomers to figure out which file is loaded where and why. In order to save our collective sanity, the new rules are as follows.
+### Changes on all MVC classes
 
-### Front-end and back-end separation
-
-* **You only get the classes found in the respective side of the application**. When you access the component from the back-end of the site we only look for back-end classes. When you access the component from the front-end of the site or the CLI we only look for front-end classes. If you want a different side you have to explicitly state it to the respective `getInstance`.
-* **`getAnInstance` is removed**. If you need a static object you should implement your own Singleton.
-* **`getTmpInstance` changes to `getInstance` and has a different syntax**
-* **There are no more automatic object instances unless you manually enable scaffolding in fof.xml**. This is better for security. You can no longer accidentally expose data because of an automatically created Controller which inadvertently exposes everything as JSON data. On the downside, you need to create lots of class files inheriting from the FOF parent classes.
-
-### Improved class naming
-
-* **All classes are namespaced**. For example, `YourCompany\Foobar\Frontend\Model\Items` instead of `FoobarModelItems`. This allows you to have cross-inheritance between front- and back-end classes. Old style class names are still supported but deprecated and due for removal.
-* **Vendor prefixes**. It's the "YourCompany" part in the example above. You can define that in fof.xml. By default it is `Component` but you are suggested to change this to your company's name.
-* **Classes can be loaded using the `FOF30\Autoloader\Autoloader` autoloader**. You can define the autoloader mapping in the `fof.xml` file. If not, only the default mapping will be used.
-
-### Dispatcher and Toolbar
-
-No further notes
+* **B/C BREAK** The `$config` array you pass to MVC objects now MUST be an array (previously you could pass an object – not any more)
+* **B/C BREAK** `$this->input` in all MVC objects contains the input data given in `$config` or, if none was given, the global request data. Previously the option, view and task variables would be replaced with the MVC's objects component name, MVC triad name and (for controllers) task being executed. You can now use $config['option'], $config['name'] (Controller) / $config['view'] (anything else) and $config['task'] to get the current MVC object's respective variables.
+* **B/C BREAK** You are supposed to pass the component name (com_foobar) instead of a prefix (e.g. FoobarTable) in getAnInstance/getTmpInstance. Doing so will result in a deprecated notice in FOF 3.0 and an exception in a future FOF version.
+* All classes should be namespaced. For example, `YourCompany\Foobar\Frontend\Model\Items` instead of `FoobarModelItems`. This allows you to have cross-inheritance between front- and back-end classes. Old style class names are still supported but deprecated and due for removal.
+* Vendor prefixes. It's the "YourCompany" part in the example above. You can define that in fof.xml. By default it is `Component` but you are suggested to change this to your company's name.
 
 ### Controller
 
-* **The new controllers are stored in the `controller` directory** under your component's main directory. Old controllers (deprecated) are stored in the `controllers` directory – due to be removed in the future.
-* **All controllers have a singular name** unless you specify a different view-controller mapping in fof.xml.
+* The namespaced controllers are stored in the `controller` directory under your component's main directory. Old controllers (deprecated) are stored in the `controllers` directory – due to be removed in the future.
+* All controllers should have a singular name. Support for plural controllers will be removed in the future.
 
 ### Model
 
-* **The new models are stored in the `model` directory** under your component's main directory. Old models (deprecated) are stored in the `models` directory – due to be removed in the future.
-* **All models have a plural name** unless you specify a different model name in your controller.
-* **You must use the plural form with Controller's getModel** as no automatic conversion to plural takes place.
+* The namespaced models are stored in the `model` directory under your component's main directory. Old models (deprecated) are stored in the `models` directory – due to be removed in the future.
+* All models should have a plural name unless you specify a different model name in your controller. Support for Models with singular names will be removed in the future.
+* You should use the plural form with Controller's getModel as no automatic conversion to plural will be taking place in the future
 
 ### Views
 
-* **The new views have different filenames**. Instead of view.html.php you now simply have html.php.
-* **There is no fallback to the singular/plural view**. If view=items we'll be loading the Items (plural) view class. If it needs to inherit from the Item class you have to do it manually.
-* **There is no automatic loading of back-end/front-end view templates or view templates across singular/plural views**. This prevents a LOT of frustration.
-* **PHP view templates have precedence over XML view templates**. This was true in FOF 2.x as well. It was masked by the fact that there was automatic view template loading between front-end / back-end and singular / plural views.
+* The views should have different filenames. Instead of view.html.php you should now simply use html.php. Support for the long name (view.html.php) will be removed.
+* There will be no fallback to the singular/plural view in the future. If view=items we'll be loading the Items (plural) view class. If it needs to inherit from the Item class you have to do it manually. Tip: you can always inherit one class from another.
+* There will be no automatic loading of back-end/front-end view templates or view templates across singular/plural views. This prevents a LOT of frustration.
+
+### Tables
+
+* **B/C BREAK** You can no longer use getAnInstance to get Joomla! core tables. Use JTable::getInstance instead.
 
 
 ## **B/C BREAK – MAYBE** MVC Autoloader

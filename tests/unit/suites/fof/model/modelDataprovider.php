@@ -159,6 +159,8 @@ abstract class ModelDataprovider
 
     public static function getTestGetItem()
     {
+		// $modelinfo, $test, $session, $checks
+
         // Load setting the model id
         $data[] = array(
             array('name' => 'Foobars'),
@@ -1541,6 +1543,7 @@ abstract class ModelDataprovider
 
     public static function getTestGetTable()
     {
+		// $modelinfo, $test
         $data[] = array(
             array('name' => 'foobars'),
             array(
@@ -1559,7 +1562,7 @@ abstract class ModelDataprovider
                 'name'   => 'Foobar', 'prefix'  => null, 'options' => array(),
                 'create' => array(
                     'name'    => 'Foobar',
-                    'prefix'  => 'FoftestTable',
+                    'prefix'  => 'com_foftest',
                     'options' => ''
                 )
             )
@@ -1571,7 +1574,7 @@ abstract class ModelDataprovider
                 'name'   => '', 'prefix'  => null, 'options' => array(),
                 'create' => array(
                     'name'    => 'foobar',
-                    'prefix'  => 'FoftestTable',
+                    'prefix'  => 'com_foftest',
                     'options' => ''
                 )
             )
@@ -1583,7 +1586,7 @@ abstract class ModelDataprovider
                 'name'   => '', 'prefix'  => null, 'options' => array(), 'wipeTable' => true,
                 'create' => array(
                     'name'    => 'foobar',
-                    'prefix'  => 'FoftestTable',
+                    'prefix'  => 'com_foftest',
                     'options' => ''
                 )
             )

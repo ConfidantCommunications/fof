@@ -286,7 +286,7 @@ class F0FModelTest extends FtestCaseDatabase
 
         // We're in CLI an no $_SESSION variable? No problem, I'll manually create it!
         // I'm going to hell for doing this...
-        $_SESSION['__default']['com_foftest.cpanels.savedata'] = $session;
+        $_SESSION['__default']['com_foftest.foobars.savedata'] = $session;
 
         JFactory::$session = $hackedSession;
 
@@ -298,7 +298,7 @@ class F0FModelTest extends FtestCaseDatabase
 
 		$this->assertEquals($result, true, 'F0FModel::save failed');
 
-        $this->assertArrayNotHasKey('com_foftest.cpanels.savedata', $_SESSION['__default'], 'F0FModel::save should wipe saved session data');
+        $this->assertArrayNotHasKey('com_foftest.foobars.savedata', $_SESSION['__default'], 'F0FModel::save should wipe saved session data');
 
         // Let's remove any evidence...
         unset($_SESSION);
@@ -1036,7 +1036,7 @@ class F0FModelTest extends FtestCaseDatabase
               ->with(
                 $test['create']['name'],
                 $test['create']['prefix'],
-                $test['create']['options']
+                $this->anything()
             );
 
         $table = $model->getTable($test['name'], $test['prefix'], $test['options']);

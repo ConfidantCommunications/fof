@@ -152,8 +152,8 @@ abstract class Base extends Object
 		// Get the class name
 		$this->name = $this->input->getCmd('view');
 		$this->name = $classParts['name'] ? $classParts['name'] : $this->name;
+		$this->name = isset($config['view']) ? $config['view'] : $this->name;
 		$this->name = isset($config['name']) ? $config['name'] : $this->name;
-		$this->name = empty($this->name) ? 'invalid' : $this->name;
 		$config['name'] = $this->name;
 
 		// Get the format

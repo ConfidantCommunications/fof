@@ -340,11 +340,6 @@ class Table extends FOFUtilsObject implements JTableInterface
 		// Get the type (final part of the table class name)
 		if (is_null($type))
 		{
-			if ($prefix == 'JTable')
-			{
-				$prefix = 'Table';
-			}
-
 			$type = $config['view'];
 		}
 
