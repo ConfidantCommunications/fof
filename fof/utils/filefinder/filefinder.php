@@ -117,22 +117,26 @@ abstract class Filefinder
 		$classNames = array(
 			implode('\\', array($vendor, $option, $thisSide, $type, $name)),
 			implode('\\', array($vendor, $option, $thisSide, $type, $altName)),
-			implode('\\', array($vendor, $option, $thisSide, $type, 'Default')),
 
 			implode('\\', array($vendor, $option, $otherSide, $type, $name)),
 			implode('\\', array($vendor, $option, $otherSide, $type, $altName)),
-			implode('\\', array($vendor, $option, $otherSide, $type, 'Default')),
 
 			implode('\\', array($option, $thisSide, $type, $name)),
 			implode('\\', array($option, $thisSide, $type, $altName)),
-			implode('\\', array($option, $thisSide, $type, 'Default')),
 
 			implode('\\', array($option, $otherSide, $type, $name)),
 			implode('\\', array($option, $otherSide, $type, $altName)),
-			implode('\\', array($option, $otherSide, $type, 'Default')),
 
 			implode('', array($option, $type, $name)),
 			implode('', array($option, $type, $altName)),
+		);
+
+		// Get all the possible component-default class names
+		$defaultClassNames = array(
+			implode('\\', array($vendor, $option, $thisSide, $type, 'Default')),
+			implode('\\', array($vendor, $option, $otherSide, $type, 'Default')),
+			implode('\\', array($option, $thisSide, $type, 'Default')),
+			implode('\\', array($option, $otherSide, $type, 'Default')),
 			implode('', array($option, $type, 'Default')),
 		);
 
@@ -150,19 +154,9 @@ abstract class Filefinder
 			$classNames = $temp;
 		}
 
-		// First check if the class autoloader can find the namespaced class without us having to explicitly look for it
-		// We do not check for the legacy (e.g. FoobarControllerSomething) classes because funky things can happen, e.g.
-		// a legacy dispatcher having force-included the FoobarControllerDefault class because FoobarControllerSomething
-		// inherits from it. In this case we'd try to create an instance of FoobarControllerDefault which is just plain
-		// wrong!
+		// First check if the class autoloader can find the class without us having to explicitly look for it
 		foreach ($classNames as $className)
 		{
-			// Only deal with namespaced classes
-			if ($className[0] != '\\')
-			{
-				continue;
-			}
-
 			if (class_exists($className, true))
 			{
 				self::$classCache[$signature] = array(
@@ -300,7 +294,21 @@ abstract class Filefinder
 			}
 		}
 
-		// If you have reached this point, we haven't found the class and we're returning the default value instead
+		// Finally check for component-default classes
+		foreach ($defaultClassNames as $className)
+		{
+			if (class_exists($className, true))
+			{
+				self::$classCache[$signature] = array(
+					'file'  => null,
+					'class' => $className,
+				);
+
+				return self::$classCache[$signature];
+			}
+		}
+
+		// If you have reached this point, we haven't found the class and we're returning the FOF-default value instead
 		return self::$classCache[$signature];
 	}
 
