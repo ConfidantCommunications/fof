@@ -206,12 +206,12 @@ class Dispatcher extends Base
 		if (empty($this->view))
 		{
 			// Do we have a task formatted as controller.task?
-			$task = $this->input->getCmd('task', '');
+			$task = $this->config['task'];
 
 			if (!empty($task) && (strstr($task, '.') !== false))
 			{
-				list($this->view, $task) = explode('.', $task, 2);
-				$this->input->set('task', $task);
+				list($this->view, $this->task) = explode('.', $task, 2);
+				$this->config['task'] = $this->task;
 			}
 		}
 
@@ -225,9 +225,9 @@ class Dispatcher extends Base
 			$this->view = empty($config['view']) ? $this->view : $config['view'];
 		}
 
-		$this->input->set('option', $this->component);
-		$this->input->set('view', $this->view);
-		$this->input->set('layout', $this->layout);
+		$this->config['option'] = $this->component;
+		$this->config['view'] = $this->view;
+		$this->config['layout'] = $this->layout;
 	}
 
 	/**
@@ -242,7 +242,8 @@ class Dispatcher extends Base
 	{
 		$platform = FOFPlatform::getInstance();
 
-		if (!$platform->authorizeAdmin($this->input->getCmd('option', 'com_foobar')))
+		// ACL check for the back-end
+		if (!$platform->authorizeAdmin($this->component))
 		{
 			return $platform->raiseError(403, JText::_('JLIB_APPLICATION_ERROR_ACCESS_FORBIDDEN'));
 		}
@@ -273,32 +274,26 @@ class Dispatcher extends Base
 		}
 
 		// Get and execute the controller
-		$option = $this->input->getCmd('option', 'com_foobar');
-		$view = $this->input->getCmd('view', $this->defaultView);
-		$task = $this->input->getCmd('task', null);
-
-		if (empty($task))
+		if (empty($this->task))
 		{
-			$task = $this->getTask($view);
+			$this->task = $this->getTask($this->view);
 		}
 
 		// Pluralise/sungularise the view name for typical tasks
-		if (in_array($task, array('edit', 'add', 'read')))
+		if (in_array($this->task, array('edit', 'add', 'read')))
 		{
-			$view = FOFInflector::singularize($view);
+			$this->view = FOFInflector::singularize($this->view);
 		}
-		elseif (in_array($task, array('browse')))
+		elseif (in_array($this->task, array('browse')))
 		{
-			$view = FOFInflector::pluralize($view);
+			$this->view = FOFInflector::pluralize($this->view);
 		}
 
-		$this->input->set('view', $view);
-		$this->input->set('task', $task);
+		$this->config['view'] = $this->view;
+		$this->config['task'] = $this->task;
 
-		$config = $this->config;
-
-		$controller = FOFController::getTmpInstance($option, $view, $config);
-		$status = $controller->execute($task);
+		$controller = FOFController::getTmpInstance($this->component, $this->view, $this->config);
+		$status = $controller->execute($this->task);
 
 		if (!$this->onAfterDispatch())
 		{
@@ -471,7 +466,7 @@ class Dispatcher extends Base
 			return;
 		}
 
-		// @todo Check the format
+		// Check the format
 		$format = $this->input->getCmd('format', 'html');
 
 		if (!in_array($format, $this->fofAuth_Formats))

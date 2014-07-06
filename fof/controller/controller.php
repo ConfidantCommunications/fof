@@ -681,8 +681,13 @@ class Controller extends Base
      *
      * @return  null|bool  False on execution failure
      */
-	public function execute($task)
+	public function execute($task = null)
 	{
+		if (empty($task))
+		{
+			$task = $this->task;
+		}
+
 		$this->task = $task;
 
 		$method_name = 'onBefore' . ucfirst($task);
