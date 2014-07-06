@@ -145,14 +145,24 @@ abstract class Filefinder
 			$classNames = $temp;
 		}
 
-		// First check if the class autoloader can find the class without us having to explicitly look for it
+		// First check if the class autoloader can find the namespaced class without us having to explicitly look for it
+		// We do not check for the legacy (e.g. FoobarControllerSomething) classes because funky things can happen, e.g.
+		// a legacy dispatcher having force-included the FoobarControllerDefault class because FoobarControllerSomething
+		// inherits from it. In this case we'd try to create an instance of FoobarControllerDefault which is just plain
+		// wrong!
 		foreach ($classNames as $className)
 		{
+			// Only deal with namespaced classes
+			if ($className[0] != '\\')
+			{
+				continue;
+			}
+
 			if (class_exists($className, true))
 			{
 				self::$classCache[$signature] = array(
-					'file'	=> null,
-					'class'	=> $className,
+					'file'  => null,
+					'class' => $className,
 				);
 
 				return self::$classCache[$signature];
@@ -160,7 +170,8 @@ abstract class Filefinder
 		}
 
 		// Get the component directories
-		$componentDirs = Platform::getInstance()->getComponentBaseDirs($option);
+		$componentName = 'com_' . strtolower($option);
+		$componentDirs = Platform::getInstance()->getComponentBaseDirs($componentName);
 		$mainDir = $componentDirs['main'];
 		$altDir = $componentDirs['alt'];
 
@@ -229,7 +240,7 @@ abstract class Filefinder
 
 			foreach ($filePaths as $path)
 			{
-				$baseName = substr($path, 0, -4) . '.';
+				$baseName = substr($path, 0, -4);
 
 				$newFiles[] = $baseName . '.' . $specifier . '.php';
 				$newFiles[] = $baseName . '.' . $lowercaseSpecifier . '.php';
