@@ -8,6 +8,11 @@
 
 namespace FOF30\Table;
 
+use FOF30\Config\Provider;
+use FOF30\Inflector\Inflector;
+use FOF30\Input\Input;
+use FOF30\Platform\Platform;
+use FOF30\Utils\Filefinder\Filefinder;
 use FOF30\Utils\Object\Object as FOFUtilsObject;
 use FOF30\Input\Input as FOFInput;
 use FOF30\Config\Provider as FOFConfigProvider;
@@ -286,52 +291,53 @@ class Table extends FOFUtilsObject implements JTableInterface
 	public static function &getAnInstance($type = null, $prefix = 'JTable', $config = array())
 	{
 		// Make sure $config is an array
-		if (is_object($config))
-		{
-			$config = (array) $config;
-		}
-		elseif (!is_array($config))
+		if (is_null($config))
 		{
 			$config = array();
 		}
 
-		// Guess the component name
-		if (!array_key_exists('input', $config))
+		if (!is_array($config))
 		{
-			$config['input'] = new FOFInput;
+			$config = array();
 		}
 
-		if ($config['input'] instanceof FOFInput)
-		{
-			$tmpInput = $config['input'];
-		}
-		else
-		{
-			$tmpInput = new FOFInput($config['input']);
-		}
+		// Get the input object
+		$input = isset($config['input']) ? $config['input'] : null;
+		$input_options = isset($config['input_options']) ? $config['input_options'] : array();
+		$input_options = !is_array($input_options) ? array() : $input_options;
+		$input = ($input instanceof Input) ? $input : new Input($input, $input_options);
+		$config['input'] = $input;
 
-		$option = $tmpInput->getCmd('option', '');
-		$tmpInput->set('option', $option);
-		$config['input'] = $tmpInput;
+		// Get the component name
+		$option = $config['input']->getCmd('option');
+		$option = isset($config['option']) ? $config['option'] : $option;
+		$option = empty($option) ? 'com_foobar' : $option;
 
-		if (!in_array($prefix, array('Table', 'JTable')))
+		if (!empty($prefix))
 		{
-			preg_match('/(.*)Table$/', $prefix, $m);
-			$option = 'com_' . strtolower($m[1]);
-		}
+			if (substr($prefix, -5) == 'Table')
+			{
+				Platform::getInstance()->logDeprecated(__CLASS__ . '::' . __METHOD__ . ' -- You should use the component name (e.g. com_foobar) instead of a table prefix (e.g. FoobarTable). Prefix given: ' . $prefix);
+				$prefix = substr($prefix, 0, -5);
+			}
 
-		if (array_key_exists('option', $config))
-		{
-			$option = $config['option'];
+			if (substr($prefix, 0, 4) == 'com_')
+			{
+				$prefix = substr($prefix, 4);
+			}
+
+			$option = 'com_' . strtolower($prefix);
 		}
 
 		$config['option'] = $option;
 
-		if (!array_key_exists('view', $config))
-		{
-			$config['view'] = $config['input']->getCmd('view', 'cpanel');
-		}
+		// Get the view name
+		$view = $config['input']->getCmd('view');
+		$view = isset($config['name']) ? $config['name'] : $view;
+		$view = isset($config['view']) ? $config['view'] : $view;
+		$config['view'] = $view;
 
+		// Get the type (final part of the table class name)
 		if (is_null($type))
 		{
 			if ($prefix == 'JTable')
@@ -343,49 +349,24 @@ class Table extends FOFUtilsObject implements JTableInterface
 		}
 
 		$type       = preg_replace('/[^A-Z0-9_\.-]/i', '', $type);
-		$tableClass = $prefix . ucfirst($type);
+
+		// Load the configuration provider
+		$configProvider = new Provider();
+
+		// Get the vendor name
+		$vendor = $configProvider->get($config['option'] . '.config.vendor', 'Component');
+
+		// Find the class name
+		$classNameParts = Filefinder::getClassFile($vendor, $config['option'], 'Table', $type);
+		$tableClass = $classNameParts['class'];
 
 		$config['_table_type'] = $type;
 		$config['_table_class'] = $tableClass;
 
-		$configProvider = new FOFConfigProvider;
-		$configProviderKey = $option . '.views.' . FOFInflector::singularize($type) . '.config.';
+		$configProviderKey = $config['option'] . '.views.' . FOFInflector::singularize($type) . '.config.';
 
 		if (!array_key_exists($tableClass, self::$instances))
 		{
-			if (!class_exists($tableClass))
-			{
-				$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
-
-				$searchPaths = array(
-					$componentPaths['main'] . '/tables',
-					$componentPaths['admin'] . '/tables'
-				);
-
-				if (array_key_exists('tablepath', $config))
-				{
-					array_unshift($searchPaths, $config['tablepath']);
-				}
-
-				$altPath = $configProvider->get($configProviderKey . 'table_path', null);
-
-				if ($altPath)
-				{
-					array_unshift($searchPaths, $componentPaths['admin'] . '/' . $altPath);
-				}
-
-                $filesystem = FOFPlatform::getInstance()->getFilesystemObject();
-
-				$path = $filesystem->pathFind(
-					$searchPaths, strtolower($type) . '.php'
-				);
-
-				if ($path)
-				{
-					require_once $path;
-				}
-			}
-
 			if (!class_exists($tableClass))
 			{
 				$tableClass = '\\FOF30\\Table\\Table';
@@ -451,7 +432,7 @@ class Table extends FOFUtilsObject implements JTableInterface
 			// Create a new table instance
 			/** @var Table $instance */
 			$instance = new $tableClass($config['tbl'], $config['tbl_key'], $config['db'], $config);
-			$instance->setInput($tmpInput);
+			$instance->setInput($config['input']);
 			$instance->setTablePrefix($prefix);
 			$instance->setTableAlias($table_alias);
 
@@ -484,8 +465,8 @@ class Table extends FOFUtilsObject implements JTableInterface
 				$instance->setHasTags(false);
 			}
 
-			$configProviderFieldmapKey = $option . '.tables.' . FOFInflector::singularize($type) . '.field';
-			$aliases = $configProvider->get($configProviderFieldmapKey, $instance->_columnAlias);
+			$configProviderFieldMapKey = $option . '.tables.' . FOFInflector::singularize($type) . '.field';
+			$aliases = $configProvider->get($configProviderFieldMapKey, $instance->_columnAlias);
 			$instance->_columnAlias = array_merge($instance->_columnAlias, $aliases);
 
 			self::$instances[$tableClass] = $instance;
@@ -572,31 +553,18 @@ class Table extends FOFUtilsObject implements JTableInterface
 		}
 
 		// Get the input
-		if (array_key_exists('input', $config))
-		{
-			if ($config['input'] instanceof FOFInput)
-			{
-				$this->input = $config['input'];
-			}
-			else
-			{
-				$this->input = new FOFInput($config['input']);
-			}
-		}
-		else
-		{
-			$this->input = new FOFInput;
-		}
+		$input = isset($config['input']) ? $config['input'] : null;
+		$input_options = isset($config['input_options']) ? $config['input_options'] : array();
+		$input_options = !is_array($input_options) ? array() : $input_options;
+		$input = ($input instanceof Input) ? $input : new Input($input, $input_options);
+		$config['input'] = $input;
+		$this->input = $input;
 
-		// Set the $name/$_name variable
-		$component = $this->input->getCmd('option', 'com_foobar');
-
-		if (array_key_exists('option', $config))
-		{
-			$component = $config['option'];
-		}
-
-		$this->input->set('option', $component);
+		// Set the name
+		$component = $this->input->getCmd('option');
+		$component = isset($config['option']) ? $config['option'] : $component;
+		$component = empty($component) ? 'com_foobar' : $component;
+		$config['option'] = $component;
 
 		// Apply table behaviors
 		$type = explode("_", $this->_tbl);
