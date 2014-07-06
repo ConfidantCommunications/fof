@@ -8,13 +8,15 @@
 
 namespace FOF30\Dispatcher;
 
+use FOF30\Config\Provider;
+use FOF30\Platform\Platform;
+use FOF30\Utils\Filefinder\Filefinder;
 use FOF30\Utils\Mvc\Base;
-use FOF30\Config\Provider as FOFConfigProvider;
 use FOF30\Controller\Controller as FOFController;
 use FOF30\Encrypt\Aes as FOFEncryptAes;
 use FOF30\Encrypt\Totp as FOFEncryptTotp;
 use FOF30\Inflector\Inflector as FOFInflector;
-use FOF30\Input\Input as FOFInput;
+use FOF30\Input\Input;
 use FOF30\Platform\Platform as FOFPlatform;
 
 // Joomla! class inclusion
@@ -119,27 +121,22 @@ class Dispatcher extends Base
 	 */
 	public static function &getTmpInstance($option = null, $view = null, $config = array())
 	{
-		if (array_key_exists('input', $config))
+		if (is_null($config))
 		{
-			if ($config['input'] instanceof FOFInput)
-			{
-				$input = $config['input'];
-			}
-			else
-			{
-				if (!is_array($config['input']))
-				{
-					$config['input'] = (array)$config['input'];
-				}
+			$config = array();
+		}
 
-				$config['input'] = array_merge($_REQUEST, $config['input']);
-				$input = new FOFInput($config['input']);
-			}
-		}
-		else
+		if (!is_array($config))
 		{
-			$input = new FOFInput;
+			$config = array();
 		}
+
+		// Get the input for this MVC triad
+		$input = isset($config['input']) ? $config['input'] : null;
+		$input_options = isset($config['input_options']) ? $config['input_options'] : array();
+		$input_options = !is_array($input_options) ? array() : $input_options;
+		$input = ($input instanceof Input) ? $input : new Input($input, $input_options);
+		$config['input'] = $input;
 
 		$config['option'] = !is_null($option) ? $option : $input->getCmd('option', 'com_foobar');
 		$config['view'] = !is_null($view) ? $view : $input->getCmd('view', '');
@@ -147,42 +144,20 @@ class Dispatcher extends Base
 		$input->set('option', $config['option']);
 		$input->set('view', $config['view']);
 
-		$config['input'] = $input;
+		// Load the configuration provider
+		$configProvider = new Provider();
 
-		$className = ucfirst(str_replace('com_', '', $config['option'])) . 'Dispatcher';
+		// Get the vendor name
+		$config['vendor'] = isset($config['vendor']) ? $config['vendor'] : 'Component';
+		$config['vendor'] = $configProvider->get($config['option']. '.config.vendor', $config['vendor']);
 
-		if (!class_exists($className))
-		{
-			$componentPaths = FOFPlatform::getInstance()->getComponentBaseDirs($config['option']);
+		// Get the application side
+		$appSide = Platform::getInstance()->isBackend() ? 'Backend' : 'Frontend';
+		$config['application_side'] = isset($config['application_side']) ? $config['application_side'] : $appSide;
 
-			$searchPaths = array(
-				$componentPaths['main'],
-				$componentPaths['main'] . '/dispatchers',
-				$componentPaths['admin'],
-				$componentPaths['admin'] . '/dispatchers'
-			);
+		$classParts = Filefinder::getClassFile($config['vendor'], $config['option'], 'Dispatcher', null, null);
 
-			if (array_key_exists('searchpath', $config))
-			{
-				array_unshift($searchPaths, $config['searchpath']);
-			}
-
-			$filesystem = FOFPlatform::getInstance()->getFilesystemObject();
-
-			$path = $filesystem->pathFind(
-				$searchPaths, 'dispatcher.php'
-			);
-
-			if ($path)
-			{
-				require_once $path;
-			}
-		}
-
-		if (!class_exists($className))
-		{
-			$className = '\\FOF30\\Dispatcher\\Dispatcher';
-		}
+		$className = $classParts['class'];
 
 		$instance = new $className($config);
 

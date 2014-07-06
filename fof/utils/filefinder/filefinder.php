@@ -41,8 +41,9 @@ abstract class Filefinder
 	 * @param   string   $vendor    The optional vendor name of the component. If none is specified "Component" is
 	 *                              assumed.
 	 * @param   string  $option     The component name, with or without the com_ prefix (com_foobar or foobar)
-	 * @param   string  $type       The class type. One of Controller, Model, Table or View
+	 * @param   string  $type       The class type. One of Controller, Model, Table, View, Dispatcher, Toolbar
 	 * @param   string  $name       The specific name of the class, e.g. "Bar" for \VendorName\OptionName\Controller\Bar
+	 *                              For Dispatcher and Toolbar this must be NULL.
 	 * @param   string  $specifier  OPTIONAL. A specifier used for View files, appended to the class name. Typically one
 	 *                              of Html, Json, Csv or Raw.
 	 * @param   array   $addPaths   Additional paths where to look for class files. These take precedence over defaults.
@@ -108,10 +109,15 @@ abstract class Filefinder
 		}
 
 		// Get the alternate pluralised form
-		$altName = Inflector::isPlural($name) ? Inflector::singularize($name) : Inflector::pluralize($name);
+		$altName = '';
+
+		if (!empty($name))
+		{
+			$altName = Inflector::isPlural($name) ? Inflector::singularize($name) : Inflector::pluralize($name);
+		}
 
 		// Get the pluralised type form
-		$altType = Inflector::pluralize($type);
+		$altType = empty($name) ? $type : Inflector::pluralize($type);
 
 		// Get all of the possible class names
 		$classNames = array(
@@ -139,6 +145,22 @@ abstract class Filefinder
 			implode('\\', array($option, $otherSide, $type, 'Default')),
 			implode('', array($option, $type, 'Default')),
 		);
+
+		// If the name is empty (Dispatcher, Toolbar) we need to do some further filtering
+		if (empty($name))
+		{
+			$classNames = array_map(function ($c) {
+				return rtrim($c, '\\');
+			}, $classNames);
+
+			$classNames = array_unique($classNames);
+
+			$defaultClassNames = array_map(function ($c) {
+				return rtrim($c, '\\');
+			}, $defaultClassNames);
+
+			$defaultClassNames = array_unique($defaultClassNames);
+		}
 
 		// Add the optional specifier if necessary
 		if (!empty($specifier))
@@ -259,6 +281,14 @@ abstract class Filefinder
 			}
 
 			$filePaths = array_merge($newFiles, $filePaths);
+		}
+
+		// If the name is empty (Dispatcher, Toolbar) we need to do some further filtering
+		if (empty($name))
+		{
+			$filePaths = array_map(function ($path) {
+				return str_replace('/.', '.', $path);
+			}, $filePaths);
 		}
 
 		// Keep only unique file path names
