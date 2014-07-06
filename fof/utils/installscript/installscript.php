@@ -14,7 +14,8 @@ use FOF30\Platform\Platform as FOFPlatform;
 use stdClass, Exception;
 
 // Joomla! class inclusion
-use JText, JLoader, JInstaller, JLog, JError, JFile, JFactory, JObject, JFolder, JDate;
+use JText, JLoader, JInstaller, JLog, JError, JFile, JFactory, JObject, JFolder, JDate, JTable,
+	JInstallerAdapterComponent, JTableMenu, InvalidArgumentException;
 
 defined('FOF30_INCLUDED') or die;
 
